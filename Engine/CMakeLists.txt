@@ -4,7 +4,7 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package(OpenGL REQUIRED)
 
-set(TARGET_NAME Engine)
+set(TARGET_NAME "Engine")
 
 file(GLOB_RECURSE SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
