@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.8)
+
+set(OpenGL_GL_PREFERENCE GLVND)
+
+find_package(OpenGL REQUIRED)
+
+set(TARGET_NAME "Editor")
+
+file(GLOB_RECURSE SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.c" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+
+add_executable(${TARGET_NAME}
+  ${SOURCE}
+)
+
+set_target_properties(${TARGET_NAME}
+  PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY ${BINARY_DIR}
+  LIBRARY_OUTPUT_DIRECTORY ${BINARY_DIR}
+  RUNTIME_OUTPUT_DIRECTORY ${BINARY_DIR}
+  PREFIX ""
+)
+
+target_include_directories(${TARGET_NAME}
+  PUBLIC ${ROOT_DIR}
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_directories(${TARGET_NAME}
+    PUBLIC ${BINARY_DIR}
+)   
+
+target_link_libraries(${TARGET_NAME}
+  PUBLIC ${OPENGL_LIBRARIES}
+  PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/$<IF:$<PLATFORM_ID:Windows>,glfw3.lib,glfw3.a">
+)

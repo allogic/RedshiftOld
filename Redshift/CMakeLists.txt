@@ -4,9 +4,9 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package(OpenGL REQUIRED)
 
-set(TARGET_NAME Redshift)
+set(TARGET_NAME "Redshift")
 
-file(GLOB_RECURSE SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB_RECURSE SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.c" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 add_library(${TARGET_NAME} STATIC
   ${SOURCE}
@@ -21,6 +21,7 @@ set_target_properties(${TARGET_NAME}
 )
 
 target_include_directories(${TARGET_NAME}
+  PUBLIC ${ROOT_DIR}
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
