@@ -3,18 +3,18 @@
 
 namespace rsh
 {
-  typedef signed char I8;
-  typedef signed short I16;
-  typedef signed int I32;
-  typedef signed long long I64;
+  using I8 = signed char;
+  using I16 = signed short;
+  using I32 = signed int;
+  using I64 = signed long long;
 
-  typedef unsigned char U8;
-  typedef unsigned short U16;
-  typedef unsigned int U32;
-  typedef unsigned long long U64;
+  using U8 = unsigned char;
+  using U16 = unsigned short;
+  using U32 = unsigned int;
+  using U64 = unsigned long long;
 
-  typedef float R32;
-  typedef double R64;
+  using R32 = float;
+  using R64 = double;
 }
 
 #endif

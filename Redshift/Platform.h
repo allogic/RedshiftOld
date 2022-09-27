@@ -4,7 +4,7 @@
 #if defined(_WIN32) || defined(WIN32)
   #define OS_WINDOWS
 #elif defined(__unix__)
-  #define OS_UNIX
+  #define OS_LINUX
 #endif
 
 #endif

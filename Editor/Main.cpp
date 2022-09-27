@@ -3,12 +3,19 @@
 
 #include <Redshift/Types.h>
 #include <Redshift/Debug.h>
+#include <Redshift/World.h>
 
 #include <Editor/HotLoader.h>
 
 #include <Vendor/Glad/glad.h>
 
 #include <Vendor/Glfw/glfw3.h>
+
+///////////////////////////////////////////////////////////
+// Globals
+///////////////////////////////////////////////////////////
+
+rsh::World sWorld{};
 
 ///////////////////////////////////////////////////////////
 // Locals
@@ -30,6 +37,8 @@ static rsh::R32 sTimeFpsPrev{};
 static rsh::R32 sTimeRenderPrev{};
 static rsh::R32 sTimePhysicPrev{};
 static rsh::R32 sTimeHotLoadPrev{};
+
+static rsh::HotLoader sHotLoader{ SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR };
 
 ///////////////////////////////////////////////////////////
 // Debug callbacks
@@ -87,11 +96,18 @@ rsh::I32 main()
           sTimePrev = sTime;
 
           sFps++;
+
           if ((sTime - sTimeFpsPrev) > 1.0f)
           {
             sTimeFpsPrev = sTime;
             glfwSetWindowTitle(window, std::format("Editor Fps:{}", sFps).c_str());
             sFps = 0;
+          }
+
+          if ((sTime - sTimeHotLoadPrev) > (1.0f / sHotLoadFps))
+          {
+            sTimeHotLoadPrev = sTime;
+            sHotLoader.Update();
           }
 
           glfwPollEvents();

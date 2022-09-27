@@ -32,6 +32,13 @@ target_link_directories(${TARGET_NAME}
 
 target_link_libraries(${TARGET_NAME}
   PUBLIC ${OPENGL_LIBRARIES}
+  PUBLIC "Redshift.lib"
   PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/$<$<PLATFORM_ID:Windows>:glfw3.lib>"
   PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/$<$<PLATFORM_ID:Linux>:glfw3.a>"
+)
+
+target_compile_definitions(${TARGET_NAME}
+  PUBLIC SCENE_DIR="${SCENE_DIR}"
+  PUBLIC SCENE_EXT=".dll"
+  PUBLIC SCENE_STREAMING_DIR="${SCENE_STREAMING_DIR}"
 )

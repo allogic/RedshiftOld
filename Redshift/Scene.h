@@ -6,35 +6,47 @@
 
 namespace rsh
 {
+  class World;
+
   class Scene
   {
   public:
-    typedef Scene* (*CreateProc)();
-    typedef void (*DestroyProc)();
-
-  public:
-    Scene() = default;
-    virtual ~Scene() = default;
+    Scene(World* world);
+    virtual ~Scene();
 
   public:
     virtual U32 Tick(R32 deltaTime) = 0;
+
+  private:
+    World* mWorld{};
+  };
+
+  using SceneCreateProc = Scene* (*)(World* world);
+  using SceneDestroyProc = void (*)(Scene* scene);
+
+  struct SceneProxy
+  {
+    void* instance{};
+    Scene* scene{};
+    SceneCreateProc createProc{};
+    SceneDestroyProc destroyProc{};
   };
 }
 
 extern "C"
 {
 #if defined(OS_WINDOWS)
-  __declspec(dllexport) rsh::Scene* CreateScene();
+  __declspec(dllexport) rsh::Scene* CreateScene(rsh::World* world);
   __declspec(dllexport) void DestroyScene(rsh::Scene* scene);
-#elif defined(OS_UNIX)
+#elif defined(OS_LINUX)
   #warning "Platform not implemented!"
 #else
   #error "Platform not supported!"
 #endif
 }
 
-#define DECLARE_SCENE_IMPL(SCENE)                       \
-rsh::Scene* CreateScene() { return new SCENE; }         \
-void DestroyModule(rsh::Scene* scene) { delete scene; }
+#define DECLARE_SCENE_IMPL(SCENE) \
+rsh::Scene* CreateScene(rsh::World* world) { return new SCENE{ world }; } \
+void DestroyScene(rsh::Scene* scene) { delete scene; }
 
 #endif

@@ -2,16 +2,29 @@
 #define RSH_HOTLOADER_H
 
 #include <string>
+#include <filesystem>
+
+#include <Editor/Watchdog.h>
 
 namespace rsh
 {
   class HotLoader
   {
   public:
-    HotLoader(std::string const& streamingPath);
+    HotLoader(std::filesystem::path const& scenePath, std::string const& sceneExt, std::filesystem::path const& sceneStreamingPath);
+
+  public:
+    void Update();
 
   private:
-    std::string mStreamingPath{};
+    void UpdateScenes();
+
+  private:
+    std::filesystem::path mScenePath{};
+    std::string mSceneExt{};
+    std::filesystem::path mSceneStreamingPath{};
+
+    Watchdog mSceneWatchdog{ mScenePath, mSceneExt };
   };
 }
 
