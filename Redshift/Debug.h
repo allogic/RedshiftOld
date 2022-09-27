@@ -1,8 +1,9 @@
 #ifndef RSH_DEBUG_H
 #define RSH_DEBUG_H
 
-#include <cstdio>
+#include <iostream>
+#include <format>
 
-#define RSH_LOG(FMT) std::printf(FMT)
+#define RSH_LOG(FMT, ...) std::cout << std::format(FMT, __VA_ARGS__)
 
 #endif

@@ -18,11 +18,12 @@ set_target_properties(${TARGET_NAME}
   LIBRARY_OUTPUT_DIRECTORY ${BINARY_DIR}
   RUNTIME_OUTPUT_DIRECTORY ${BINARY_DIR}
   PREFIX ""
+  C_STANDARD 23
+  CXX_STANDARD 23
 )
 
 target_include_directories(${TARGET_NAME}
   PUBLIC ${ROOT_DIR}
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_directories(${TARGET_NAME}

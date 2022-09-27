@@ -18,11 +18,12 @@ set_target_properties(${TARGET_NAME}
   LIBRARY_OUTPUT_DIRECTORY ${BINARY_DIR}
   RUNTIME_OUTPUT_DIRECTORY ${BINARY_DIR}
   PREFIX ""
+  C_STANDARD 23
+  CXX_STANDARD 23
 )
 
 target_include_directories(${TARGET_NAME}
   PUBLIC ${ROOT_DIR}
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_directories(${TARGET_NAME}
@@ -31,5 +32,6 @@ target_link_directories(${TARGET_NAME}
 
 target_link_libraries(${TARGET_NAME}
   PUBLIC ${OPENGL_LIBRARIES}
-  PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/glfw3.a"
+  PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/$<$<PLATFORM_ID:Windows>:glfw3.lib>"
+  PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/$<$<PLATFORM_ID:Linux>:glfw3.a>"
 )
