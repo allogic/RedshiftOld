@@ -1,5 +1,5 @@
-#ifndef RS_TYPES_H
-#define RS_TYPES_H
+#ifndef RSH_TYPES_H
+#define RSH_TYPES_H
 
 namespace rsh
 {

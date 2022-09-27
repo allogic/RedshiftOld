@@ -3,8 +3,9 @@
 #include <Redshift/Types.h>
 #include <Redshift/Debug.h>
 
-#include <Vendor/Glfw/glfw3.h>
 #include <Vendor/Glad/glad.h>
+
+#include <Vendor/Glfw/glfw3.h>
 
 ///////////////////////////////////////////////////////////
 // Locals
@@ -36,7 +37,7 @@ rsh::I32 main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window{ glfwCreateWindow(sWindowWidth, sWindowHeight, "Redshift", nullptr, nullptr)};
+    GLFWwindow* window{ glfwCreateWindow(sWindowWidth, sWindowHeight, "Redshift", nullptr, nullptr) };
 
     if (window)
     {

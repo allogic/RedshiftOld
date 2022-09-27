@@ -27,9 +27,9 @@ target_include_directories(${TARGET_NAME}
 
 target_link_directories(${TARGET_NAME}
     PUBLIC ${BINARY_DIR}
-)   
+)
 
 target_link_libraries(${TARGET_NAME}
   PUBLIC ${OPENGL_LIBRARIES}
-  PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/$<IF:$<PLATFORM_ID:Windows>,glfw3.lib,glfw3.a">
+  PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/glfw3.a"
 )
