@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <format>
 
 #include <Redshift/Types.h>
 #include <Redshift/Debug.h>
@@ -46,7 +45,7 @@ static rsh::HotLoader sHotLoader{ SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR };
 
 static void GlfwDebugCallback(rsh::I32 error, char const* message)
 {
-  RSH_LOG("{}", message);
+  RSH_LOG("%s\n", message);
 }
 
 static void GlDebugCallback(rsh::U32 source, rsh::U32 type, rsh::U32 id, rsh::U32 severity, rsh::I32 length, char const* msg, void const* userParam)
@@ -71,7 +70,7 @@ rsh::I32 main()
   if (glfwInit())
   {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_SAMPLES, 0);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -100,7 +99,7 @@ rsh::I32 main()
           if ((sTime - sTimeFpsPrev) > 1.0f)
           {
             sTimeFpsPrev = sTime;
-            glfwSetWindowTitle(window, std::format("Editor Fps:{}", sFps).c_str());
+            glfwSetWindowTitle(window, std::string{ std::string{ "Editor Fps:" } + std::to_string(sFps) }.c_str());
             sFps = 0;
           }
 

@@ -39,7 +39,8 @@ extern "C"
   __declspec(dllexport) rsh::Scene* CreateScene(rsh::World* world);
   __declspec(dllexport) void DestroyScene(rsh::Scene* scene);
 #elif defined(OS_LINUX)
-  #warning "Platform not implemented!"
+  rsh::Scene* CreateScene(rsh::World* world);
+  void DestroyScene(rsh::Scene* scene);
 #else
   #error "Platform not supported!"
 #endif

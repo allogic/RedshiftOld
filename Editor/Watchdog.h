@@ -2,9 +2,10 @@
 #define RSH_WATCHDOG_H
 
 #include <string>
-#include <filesystem>
 #include <set>
 #include <map>
+
+#include <Redshift/Platform.h>
 
 namespace rsh
 {

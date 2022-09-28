@@ -12,7 +12,7 @@ namespace rsh
   class World
   {
   public:
-    static U32 CreateScene(std::string const& sceneName, std::string const& scenePath);
+    static U32 CreateScene(std::string const& sceneName, std::string const& sceneFile);
     static U32 DestroyScene(std::string const& sceneName);
 
   private:

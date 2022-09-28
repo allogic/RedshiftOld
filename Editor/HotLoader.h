@@ -2,7 +2,8 @@
 #define RSH_HOTLOADER_H
 
 #include <string>
-#include <filesystem>
+
+#include <Redshift/Platform.h>
 
 #include <Editor/Watchdog.h>
 

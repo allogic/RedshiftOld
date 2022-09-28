@@ -1,5 +1,3 @@
-#include <filesystem>
-
 #include <Redshift/World.h>
 
 #include <Editor/HotLoader.h>
