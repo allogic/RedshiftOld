@@ -26,7 +26,7 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_compile_options(${TARGET_NAME}
-  PUBLIC "-fPIC"
+  PUBLIC "$<$<PLATFORM_ID:Linux>:-fPIC>"
 )
 
 target_link_libraries(${TARGET_NAME}

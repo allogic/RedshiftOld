@@ -6,6 +6,7 @@
 
 #include <Redshift/Types.h>
 #include <Redshift/Scene.h>
+#include <Redshift/Actor.h>
 
 namespace rsh
 {

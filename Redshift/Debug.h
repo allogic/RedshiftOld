@@ -3,6 +3,6 @@
 
 #include <cstdio>
 
-#define RSH_LOG(FMT, ...) std::printf(FMT __VA_OPT__(,) __VA_ARGS__)
+#define RSH_LOG(FMT, ...) std::printf(FMT, __VA_ARGS__)
 
 #endif

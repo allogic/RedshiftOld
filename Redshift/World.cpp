@@ -37,7 +37,7 @@ namespace rsh
           Scene* scene{ sceneCreateProc(&sWorld) };
           if (scene)
           {
-            auto const& [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instance, scene, sceneCreateProc, sceneDestroyProc }) };
+            auto const [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instance, scene, sceneCreateProc, sceneDestroyProc }) };
             return inserted;
           }
         }
@@ -57,7 +57,7 @@ namespace rsh
           Scene* scene{ sceneCreateProc(&sWorld) };
           if (scene)
           {
-            auto const& [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instance, scene, sceneCreateProc, sceneDestroyProc }) };
+            auto const [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instance, scene, sceneCreateProc, sceneDestroyProc }) };
             return inserted;
           }
         }
@@ -76,8 +76,8 @@ namespace rsh
     if (sceneIt != sWorld.mScenes.end())
     {
       SceneProxy sceneProxy = sceneIt->second;
-      sceneProxy.destroyProc(sceneProxy.scene);
-      FreeLibrary((HMODULE)sceneProxy.instance);
+      sceneProxy.DestroyProc(sceneProxy.Scene);
+      FreeLibrary((HMODULE)sceneProxy.Instance);
       sWorld.mScenes.erase(sceneIt);
       return 1;
     }
@@ -86,8 +86,8 @@ namespace rsh
     if (sceneIt != sWorld.mScenes.end())
     {
       SceneProxy sceneProxy = sceneIt->second;
-      sceneProxy.destroyProc(sceneProxy.scene);
-      dlclose(sceneProxy.instance);
+      sceneProxy.DestroyProc(SceneProxy.scene);
+      dlclose(sceneProxy.Instance);
       sWorld.mScenes.erase(sceneIt);
       return 1;
     }

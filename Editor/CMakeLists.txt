@@ -26,8 +26,8 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME}
-  PUBLIC "stdc++fs"
-  PUBLIC "pthread"
+  PUBLIC "$<$<PLATFORM_ID:Linux>:stdc++fs>"
+  PUBLIC "$<$<PLATFORM_ID:Linux>:pthread>"
   PUBLIC ${OPENGL_LIBRARIES}
   PUBLIC ${CMAKE_DL_LIBS}
   PUBLIC "${BINARY_DIR}/Redshift${STATIC_LIBRARY_EXT}"

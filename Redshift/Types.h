@@ -1,6 +1,8 @@
 #ifndef RSH_TYPES_H
 #define RSH_TYPES_H
 
+#include <Vendor/Glm/glm.hpp>
+
 namespace rsh
 {
   using I8 = signed char;
@@ -15,6 +17,14 @@ namespace rsh
 
   using R32 = float;
   using R64 = double;
+
+  using R32V2 = glm::fvec2;
+  using R32V3 = glm::fvec3;
+  using R32V4 = glm::fvec4;
+
+  using R32M2 = glm::fmat2;
+  using R32M3 = glm::fmat3;
+  using R32M4 = glm::fmat4;
 }
 
 #endif

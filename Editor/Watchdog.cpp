@@ -37,8 +37,8 @@ namespace rsh
     mFilesDeleted.clear();
     std::erase_if(mFileInfos, [&](const auto& fileInfo)
       {
-        const auto& file = fileInfo.first;
-        const auto exists = std::filesystem::exists(file);
+        const auto& file{ fileInfo.first };
+        const auto exists{ std::filesystem::exists(file) };
         if (!exists) mFilesDeleted.emplace(file);
         return !exists;
       });
@@ -49,7 +49,7 @@ namespace rsh
     mFilesModified.clear();
     for (auto& [file, prevTime] : mFileInfos)
     {
-      auto const time = std::filesystem::last_write_time(file);
+      auto const time{ std::filesystem::last_write_time(file) };
       if (time > prevTime)
       {
         prevTime = time;
