@@ -7,6 +7,18 @@
 
 #include <Redshift/Platform.h>
 
+#if defined(OS_WINDOWS)
+  #include <filesystem>
+#elif defined(OS_LINUX)
+  #include <experimental/filesystem>
+  namespace std
+  {
+    namespace filesystem = experimental::filesystem;
+  }
+#else
+  #error "Platform not supported!"
+#endif
+
 namespace rsh
 {
   class Watchdog

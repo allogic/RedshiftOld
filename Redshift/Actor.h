@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include <type_traits>
+#include <typeinfo>
 
 #include <Redshift/Types.h>
 #include <Redshift/Component.h>
@@ -20,7 +20,6 @@ namespace rsh
 
   public:
     template<typename C, typename ... Args>
-    requires std::is_base_of_v<Component, C>
     C* AttachComponent(Args &&... args);
 
   private:
@@ -32,7 +31,6 @@ namespace rsh
   };
 
   template<typename C, typename ... Args>
-  requires std::is_base_of_v<Component, C>
   C* Actor::AttachComponent(Args &&... args)
   {
     U64 hash{ typeid(C).hash_code() };

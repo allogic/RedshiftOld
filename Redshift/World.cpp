@@ -27,17 +27,17 @@ namespace rsh
     auto const sceneIt{ sWorld.mScenes.find(sceneName) };
     if (sceneIt == sWorld.mScenes.end())
     {
-      HINSTANCE instance{ LoadLibraryA(sceneFile.c_str()) };
-      if (instance)
+      HINSTANCE instanceModule{ LoadLibraryA(sceneFile.c_str()) };
+      if (instanceModule)
       {
-        SceneCreateProc sceneCreateProc{ (SceneCreateProc)GetProcAddress(instance, "CreateScene") };
-        SceneDestroyProc sceneDestroyProc{ (SceneDestroyProc)GetProcAddress(instance, "DestroyScene") };
+        SceneCreateProc sceneCreateProc{ (SceneCreateProc)GetProcAddress(instanceModule, "CreateScene") };
+        SceneDestroyProc sceneDestroyProc{ (SceneDestroyProc)GetProcAddress(instanceModule, "DestroyScene") };
         if (sceneCreateProc && sceneDestroyProc)
         {
-          Scene* scene{ sceneCreateProc(&sWorld) };
-          if (scene)
+          Scene* instanceScene{ sceneCreateProc(&sWorld) };
+          if (instanceScene)
           {
-            auto const [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instance, scene, sceneCreateProc, sceneDestroyProc }) };
+            auto const [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instanceModule, instanceScene, sceneCreateProc, sceneDestroyProc }) };
             return inserted;
           }
         }
@@ -47,17 +47,17 @@ namespace rsh
     auto const sceneIt{ sWorld.mScenes.find(sceneName) };
     if (sceneIt == sWorld.mScenes.end())
     {
-      void* instance{ dlopen(sceneFile.c_str(), RTLD_LAZY) };
-      if (instance)
+      void* instanceModule{ dlopen(sceneFile.c_str(), RTLD_LAZY) };
+      if (instanceModule)
       {
-        SceneCreateProc sceneCreateProc{ (SceneCreateProc)dlsym(instance, "CreateScene") };
-        SceneDestroyProc sceneDestroyProc{ (SceneDestroyProc)dlsym(instance, "DestroyScene") };
+        SceneCreateProc sceneCreateProc{ (SceneCreateProc)dlsym(instanceModule, "CreateScene") };
+        SceneDestroyProc sceneDestroyProc{ (SceneDestroyProc)dlsym(instanceModule, "DestroyScene") };
         if (sceneCreateProc && sceneDestroyProc)
         {
-          Scene* scene{ sceneCreateProc(&sWorld) };
-          if (scene)
+          Scene* instanceScene{ sceneCreateProc(&sWorld) };
+          if (instanceScene)
           {
-            auto const [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instance, scene, sceneCreateProc, sceneDestroyProc }) };
+            auto const [emplaceIt, inserted] { sWorld.mScenes.emplace(sceneName, SceneProxy{ instanceModule, instanceScene, sceneCreateProc, sceneDestroyProc }) };
             return inserted;
           }
         }
@@ -76,8 +76,8 @@ namespace rsh
     if (sceneIt != sWorld.mScenes.end())
     {
       SceneProxy sceneProxy = sceneIt->second;
-      sceneProxy.DestroyProc(sceneProxy.Scene);
-      FreeLibrary((HMODULE)sceneProxy.Instance);
+      sceneProxy.DestroyProc(sceneProxy.InstanceScene);
+      FreeLibrary((HMODULE)sceneProxy.InstanceModule);
       sWorld.mScenes.erase(sceneIt);
       return 1;
     }
@@ -86,8 +86,8 @@ namespace rsh
     if (sceneIt != sWorld.mScenes.end())
     {
       SceneProxy sceneProxy = sceneIt->second;
-      sceneProxy.DestroyProc(SceneProxy.scene);
-      dlclose(sceneProxy.Instance);
+      sceneProxy.DestroyProc(sceneProxy.InstanceScene);
+      dlclose(sceneProxy.InstanceModule);
       sWorld.mScenes.erase(sceneIt);
       return 1;
     }

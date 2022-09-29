@@ -37,7 +37,10 @@ static rsh::R32 sTimeRenderPrev{};
 static rsh::R32 sTimePhysicPrev{};
 static rsh::R32 sTimeHotLoadPrev{};
 
-static rsh::HotLoader sHotLoader{ SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR };
+static rsh::HotLoader sHotLoader{
+  SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR,
+  SHADER_DIR, SHADER_EXT,
+};
 
 ///////////////////////////////////////////////////////////
 // Debug callbacks

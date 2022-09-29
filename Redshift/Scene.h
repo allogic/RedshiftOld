@@ -3,7 +3,6 @@
 
 #include <string>
 #include <map>
-#include <type_traits>
 
 #include <Redshift/Types.h>
 #include <Redshift/Platform.h>
@@ -24,7 +23,6 @@ namespace rsh
 
   public:
     template<typename A>
-    requires std::is_base_of_v<Actor, A>
     A* CreateActor(std::string const& actorName, Actor* parent = nullptr);
 
     void DestroyActor(Actor* actor);
@@ -36,7 +34,6 @@ namespace rsh
   };
 
   template<typename A>
-  requires std::is_base_of_v<Actor, A>
   A* Scene::CreateActor(std::string const& actorName, Actor* parent)
   {
     auto const findIt{ mActors.find(actorName) };
@@ -57,8 +54,8 @@ namespace rsh
 
   struct SceneProxy
   {
-    void* Instance{};
-    Scene* Scene{};
+    void* InstanceModule{};
+    Scene* InstanceScene{};
     SceneCreateProc CreateProc{};
     SceneDestroyProc DestroyProc{};
   };

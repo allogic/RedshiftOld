@@ -8,18 +8,23 @@
 
 namespace rsh
 {
-  HotLoader::HotLoader(std::filesystem::path const& scenePath, std::string const& sceneExt, std::filesystem::path const& sceneStreamingPath)
+  HotLoader::HotLoader(
+    std::filesystem::path const& scenePath, std::string const& sceneExt, std::filesystem::path const& sceneStreamingPath,
+    std::filesystem::path const& shaderPath, std::string const& shaderExt
+  )
     : mScenePath{ scenePath }
     , mSceneExt{ sceneExt }
     , mSceneStreamingPath{ sceneStreamingPath }
+    , mShaderPath{ shaderPath }
+    , mShaderExt{ shaderExt }
   {
-    std::filesystem::create_directory(mScenePath);
     std::filesystem::create_directory(mSceneStreamingPath);
   }
 
   void HotLoader::Update()
   {
     UpdateScenes();
+    UpdateShaders();
   }
 
   void HotLoader::UpdateScenes()
@@ -57,6 +62,26 @@ namespace rsh
       {
     
       }
+    }
+  }
+
+  void HotLoader::UpdateShaders()
+  {
+    mShaderWatchdog.Update();
+
+    for (auto const& file : mSceneWatchdog.FilesDeleted())
+    {
+      
+    }
+    
+    for (auto const& file : mSceneWatchdog.FilesModified())
+    {
+      
+    }
+    
+    for (auto const& file : mSceneWatchdog.FilesCreated())
+    {
+      
     }
   }
 }

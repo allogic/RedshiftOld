@@ -1,7 +1,7 @@
 #ifndef RSH_VAO_H
 #define RSH_VAO_H
 
-#include <type_traits>
+#include <typeinfo>
 
 #include <Redshift/Types.h>
 #include <Redshift/Vertex.h>
@@ -14,14 +14,12 @@ namespace rsh
   {
   public:
     template<typename V, typename E>
-    requires std::is_integral_v<E>
     static U32 Create(U32 vertexCount, V* vertices, U32 elementCount, E* elements);
 
     static void Destroy(U32 vao);
   };
 
   template<typename V, typename E>
-  requires std::is_integral_v<E>
   U32 Vao::Create(U32 vertexCount, V* vertices, U32 elementCount, E* elements)
   {
     U32 vao{};
@@ -38,9 +36,9 @@ namespace rsh
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(V), vertices, GL_STATIC_READ | GL_STATIC_DRAW);
 
-    switch (typeid(V).hash_code())
+    switch (V::VertexType)
     {
-      case 0xFFCC46F05213C55C:
+      case VertexType::Gizmos:
       {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -48,7 +46,7 @@ namespace rsh
         glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexGizmos), (void*)(sizeof(R32V3)));
         break;
       }
-      case 0x6FC6F9FB2C270CD0:
+      case VertexType::Pbr:
       {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);

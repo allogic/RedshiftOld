@@ -16,7 +16,8 @@ class Player : public rsh::Actor
 public:
   Player(std::string const& name) : rsh::Actor{ name }
   {
-
+    RSH_LOG("%llX\n", (rsh::U64)typeid(rsh::VertexGizmos).hash_code());
+    RSH_LOG("%llX\n", (rsh::U64)typeid(rsh::VertexPbr).hash_code());
   }
 };
 
