@@ -1,11 +1,11 @@
-#ifndef RSH_SHADER_H
-#define RSH_SHADER_H
+#ifndef RSH_SHADER_FACTORY_H
+#define RSH_SHADER_FACTORY_H
 
 #include <Redshift/Types.h>
 
 namespace rsh
 {
-  class Shader
+  class ShaderFactory
   {
   public:
     static U32 Create();

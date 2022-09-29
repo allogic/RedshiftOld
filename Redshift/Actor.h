@@ -40,7 +40,7 @@ namespace rsh
       auto const [emplaceIt, inserted] { mComponents.emplace(hash, new C{ std::forward<Args>(args) ... }) };
       return (C*)emplaceIt->second;
     }
-    return nullptr;
+    return (C*)findIt->second;
   }
 }
 

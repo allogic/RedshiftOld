@@ -16,8 +16,7 @@ class Player : public rsh::Actor
 public:
   Player(std::string const& name) : rsh::Actor{ name }
   {
-    RSH_LOG("%llX\n", (rsh::U64)typeid(rsh::VertexGizmos).hash_code());
-    RSH_LOG("%llX\n", (rsh::U64)typeid(rsh::VertexPbr).hash_code());
+
   }
 };
 
@@ -41,10 +40,10 @@ public:
   {
     RSH_LOG("Created\n");
 
-    mPlayer = CreateActor<Player>("Player");
+    mPlayer = rsh::World::CreateActor<Player>(mWorld, "Player");
     mPlayer->AttachComponent<rsh::Transform>(rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 1.0f, 1.0f, 1.0f });
 
-    mCamera = CreateActor<Camera>("Camera", mPlayer);
+    mCamera = rsh::World::CreateActor<Camera>(mWorld, "Camera", mPlayer);
     mCamera->AttachComponent<rsh::Transform>(rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 1.0f, 1.0f, 1.0f });
     mCamera->AttachComponent<rsh::Camera>(45.0f, 0.001f, 1000.0f);
   }

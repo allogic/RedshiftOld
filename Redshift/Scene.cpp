@@ -16,9 +16,4 @@ namespace rsh
   {
 
   }
-
-  void Scene::DestroyActor(Actor* actor)
-  {
-
-  }
 }

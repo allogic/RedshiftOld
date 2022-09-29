@@ -7,13 +7,13 @@ namespace rsh
 {
   enum VertexType
   {
-    Gizmos,
-    Pbr,
+    eVertexTypeGizmos,
+    eVertexTypePbr,
   };
 
   struct VertexGizmos
   {
-    constexpr static VertexType Type{ Gizmos };
+    static constexpr VertexType Type{ eVertexTypeGizmos };
 
     R32V3 Position{};
     R32V4 Color{};
@@ -21,7 +21,7 @@ namespace rsh
 
   struct VertexPbr
   {
-    constexpr static VertexType Type{ Pbr };
+    static constexpr VertexType Type{ eVertexTypePbr };
 
     R32V3 Position{};
     R32V3 Normal{};

@@ -36,9 +36,9 @@ namespace rsh
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(V), vertices, GL_STATIC_READ | GL_STATIC_DRAW);
 
-    switch (V::VertexType)
+    switch (V::Type)
     {
-      case VertexType::Gizmos:
+      case VertexType::eVertexTypeGizmos:
       {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -46,7 +46,7 @@ namespace rsh
         glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexGizmos), (void*)(sizeof(R32V3)));
         break;
       }
-      case VertexType::Pbr:
+      case VertexType::eVertexTypePbr:
       {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);

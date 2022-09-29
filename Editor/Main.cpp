@@ -3,6 +3,7 @@
 #include <Redshift/Types.h>
 #include <Redshift/Debug.h>
 #include <Redshift/World.h>
+#include <Redshift/Gizmos.h>
 
 #include <Editor/HotLoader.h>
 
@@ -15,6 +16,7 @@
 ///////////////////////////////////////////////////////////
 
 rsh::World sWorld{};
+rsh::Gizmos sGizmos{ 65535, 65535 * 2 };
 
 ///////////////////////////////////////////////////////////
 // Locals
@@ -111,6 +113,8 @@ rsh::I32 main()
             sTimeHotLoadPrev = sTime;
             sHotLoader.Update();
           }
+
+          sGizmos.Render();
 
           glfwPollEvents();
 

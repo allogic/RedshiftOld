@@ -1,5 +1,6 @@
 #include <Redshift/World.h>
 #include <Redshift/Platform.h>
+#include <Redshift/ShaderFactory.h>
 
 #if defined(OS_WINDOWS)
   #include <windows.h>
@@ -82,8 +83,8 @@ namespace rsh
       return 1;
     }
 #elif defined(OS_LINUX)
-    auto const sceneIt = sWorld.mScenes.find(sceneName);
-    if (sceneIt != sWorld.mScenes.end())
+    auto const sceneIt = world->mScenes.find(sceneName);
+    if (sceneIt != world->mScenes.end())
     {
       SceneProxy sceneProxy = sceneIt->second;
       sceneProxy.DestroyProc(sceneProxy.InstanceScene);
@@ -95,5 +96,25 @@ namespace rsh
   #error "Platform not supported!"
 #endif
     return 0;
+  }
+
+  void World::DestroyActor(World* world, Actor* actor)
+  {
+
+  }
+
+  U32 World::CreateShader(std::string const& shaderName, std::string const& shaderFile)
+  {
+    return 0;
+  }
+
+  U32 World::DestroyShader(std::string const& shaderName)
+  {
+    return 0;
+  }
+
+  Handle<U32>& World::GetShaderHandle(std::string const& shaderName)
+  {
+    return sWorld.mShaders[shaderName];
   }
 }
