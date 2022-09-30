@@ -72,7 +72,7 @@ namespace rsh
 
     for (auto const& file : mShaderWatchdog.FilesDeleted())
     {
-      U32& shader{ World::GetShader(file.filename().string()) };
+      U32& shader{ World::GetShader(file.stem().string()) };
       if (shader)
       {
         Shader::Destroy(shader);
@@ -86,7 +86,7 @@ namespace rsh
       std::string fragmentShader{};
       if (Shader::ExtractShaderStages(file.string(), vertexShader, fragmentShader))
       {
-        U32& shader{ World::GetShader(file.filename().string()) };
+        U32& shader{ World::GetShader(file.stem().string()) };
         if (shader)
         {
           Shader::Destroy(shader);
@@ -101,7 +101,7 @@ namespace rsh
       std::string fragmentShader{};
       if (Shader::ExtractShaderStages(file.string(), vertexShader, fragmentShader))
       {
-        U32& shader{ World::GetShader(file.filename().string()) };
+        U32& shader{ World::GetShader(file.stem().string()) };
         shader = Shader::Create(vertexShader, fragmentShader);
       }
     }
