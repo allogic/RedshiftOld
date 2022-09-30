@@ -7,7 +7,6 @@
 #include <Redshift/Types.h>
 #include <Redshift/Scene.h>
 #include <Redshift/Actor.h>
-#include <Redshift/Handle.h>
 
 namespace rsh
 {
@@ -27,14 +26,14 @@ namespace rsh
     static U32 DestroyShader(std::string const& shaderName);
 
   public:
-    static Handle<U32>& GetShaderHandle(std::string const& shaderName);
+    static U32& GetShader(std::string const& shaderName);
 
   private:
     std::map<std::string, SceneProxy> mScenes{};
     std::map<std::string, Actor*> mActors{};
 
   private:
-    std::map<std::string, Handle<U32>> mShaders{};
+    std::map<std::string, U32> mShaders{};
   };
 
   template<typename A>

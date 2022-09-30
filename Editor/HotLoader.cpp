@@ -1,4 +1,5 @@
 #include <Redshift/World.h>
+#include <Redshift/Shader.h>
 
 #include <Editor/HotLoader.h>
 
@@ -69,19 +70,40 @@ namespace rsh
   {
     mShaderWatchdog.Update();
 
-    for (auto const& file : mSceneWatchdog.FilesDeleted())
+    for (auto const& file : mShaderWatchdog.FilesDeleted())
     {
-      
+      U32& shader{ World::GetShader(file.filename().string()) };
+      if (shader)
+      {
+        Shader::Destroy(shader);
+        shader = 0;
+      }
     }
     
-    for (auto const& file : mSceneWatchdog.FilesModified())
+    for (auto const& file : mShaderWatchdog.FilesModified())
     {
-      
+      std::string vertexShader{};
+      std::string fragmentShader{};
+      if (Shader::ExtractShaderStages(file.string(), vertexShader, fragmentShader))
+      {
+        U32& shader{ World::GetShader(file.filename().string()) };
+        if (shader)
+        {
+          Shader::Destroy(shader);
+          shader = Shader::Create(vertexShader, fragmentShader);
+        }
+      }
     }
     
-    for (auto const& file : mSceneWatchdog.FilesCreated())
+    for (auto const& file : mShaderWatchdog.FilesCreated())
     {
-      
+      std::string vertexShader{};
+      std::string fragmentShader{};
+      if (Shader::ExtractShaderStages(file.string(), vertexShader, fragmentShader))
+      {
+        U32& shader{ World::GetShader(file.filename().string()) };
+        shader = Shader::Create(vertexShader, fragmentShader);
+      }
     }
   }
 }

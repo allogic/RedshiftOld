@@ -1,6 +1,6 @@
 #include <Redshift/World.h>
 #include <Redshift/Platform.h>
-#include <Redshift/ShaderFactory.h>
+#include <Redshift/Shader.h>
 
 #if defined(OS_WINDOWS)
   #include <windows.h>
@@ -113,7 +113,7 @@ namespace rsh
     return 0;
   }
 
-  Handle<U32>& World::GetShaderHandle(std::string const& shaderName)
+  U32& World::GetShader(std::string const& shaderName)
   {
     return sWorld.mShaders[shaderName];
   }

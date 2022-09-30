@@ -15,10 +15,17 @@ namespace rsh
   Gizmos::Gizmos(U32 vertexBufferSize, U32 elementBufferSize)
     : mVertexBufferSize{ vertexBufferSize }
     , mElementBufferSize{ elementBufferSize }
+    , mBufferVertices{ new VertexGizmos[mVertexBufferSize] }
+    , mBufferElements{ new U32[mElementBufferSize] }
+    , mShader{ World::GetShader("Gizmos") }
   {
 
   }
 
+  void Gizmos::Initialize()
+  {
+    mVao = Vao::Create<VertexGizmos, U32>(mVertexBufferSize, mBufferVertices, mElementBufferSize, mBufferElements);
+  }
   void Gizmos::Render()
   {
 

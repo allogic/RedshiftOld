@@ -2,7 +2,6 @@
 #define RSH_GIZMOS_H
 
 #include <Redshift/Types.h>
-#include <Redshift/Handle.h>
 #include <Redshift/World.h>
 #include <Redshift/Vao.h>
 #include <Redshift/Vertex.h>
@@ -15,6 +14,7 @@ namespace rsh
     Gizmos(U32 vertexBufferSize, U32 elementBufferSize);
 
   public:
+    void Initialize();
     void Render();
 
   public:
@@ -25,11 +25,11 @@ namespace rsh
     U32 mVertexBufferSize{};
     U32 mElementBufferSize{};
 
-    VertexGizmos* mBufferVertices{ new VertexGizmos[mVertexBufferSize] };
-    U32* mBufferElements{ new U32[mElementBufferSize] };
+    VertexGizmos* mBufferVertices{};
+    U32* mBufferElements{};
 
-    U32 mVao{ Vao::Create<VertexGizmos, U32>(mVertexBufferSize, mBufferVertices, mElementBufferSize, mBufferElements) };
-    Handle<U32>& mShader{ World::GetShaderHandle("Gizmos") };
+    U32 mVao{};
+    U32& mShader;
 
     U32 mOffsetVertex{};
     U32 mOffsetElement{};

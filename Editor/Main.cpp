@@ -91,6 +91,8 @@ rsh::I32 main()
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(GlDebugCallback, 0);
 
+        sGizmos.Initialize();
+
         glfwSwapInterval(0);
 
         while (!glfwWindowShouldClose(window))
