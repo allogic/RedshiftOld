@@ -19,14 +19,21 @@
 
 #include <Editor/Watchdog.h>
 
+///////////////////////////////////////////////////////////
+// HotLoader definition
+///////////////////////////////////////////////////////////
+
 namespace rsh
 {
+  class World;
+
   class HotLoader
   {
   public:
     HotLoader(
+      World* world,
       std::filesystem::path const& scenePath, std::string const& sceneExt, std::filesystem::path const& sceneStreamingPath,
-      std::filesystem::path const& shaderPath, std::string const& shaderExt
+      std::filesystem::path const& shaderPath, std::string const& shaderExt, std::filesystem::path const& shaderStreamingPath
     );
 
   public:
@@ -37,12 +44,15 @@ namespace rsh
     void UpdateShaders();
 
   private:
+    World* mWorld{};
+
     std::filesystem::path mScenePath{};
     std::string mSceneExt{};
     std::filesystem::path mSceneStreamingPath{};
 
     std::filesystem::path mShaderPath{};
     std::string mShaderExt{};
+    std::filesystem::path mShaderStreamingPath{};
 
     Watchdog mSceneWatchdog{ mScenePath, mSceneExt };
     Watchdog mShaderWatchdog{ mShaderPath, mShaderExt };

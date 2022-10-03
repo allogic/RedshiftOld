@@ -8,8 +8,71 @@
 
 #include <Vendor/Glad/glad.h>
 
+///////////////////////////////////////////////////////////
+// Shader implementation
+///////////////////////////////////////////////////////////
+
 namespace rsh
 {
+  U32 Shader::Create(std::string const& vertexShader, std::string const& fragmentShader)
+  {
+    mProgram = glCreateProgram();
+
+    U32 vid{ glCreateShader(GL_VERTEX_SHADER) };
+    U32 fid{ glCreateShader(GL_FRAGMENT_SHADER) };
+
+    char const* vs{ &vertexShader[0] };
+    glShaderSource(vid, 1, &vs, nullptr);
+    glCompileShader(vid);
+    U32 vsCompileStatus{ CheckCompileStatus(vid) };
+
+    char const* fs{ &fragmentShader[0] };
+    glShaderSource(fid, 1, &fs, nullptr);
+    glCompileShader(fid);
+    U32 fsCompileStatus{ CheckCompileStatus(fid) };
+
+    U32 shaderLinkStatus{};
+    if (vsCompileStatus && fsCompileStatus)
+    {
+      glAttachShader(mProgram, vid);
+      glAttachShader(mProgram, fid);
+      glLinkProgram(mProgram);
+      shaderLinkStatus = CheckLinkStatus(mProgram);
+    }
+
+    glDeleteShader(vid);
+    glDeleteShader(fid);
+
+    if (!shaderLinkStatus)
+    {
+      glDeleteProgram(mProgram);
+      mProgram = 0;
+    }
+
+    return mProgram;
+  }
+
+  U32 Shader::Valid()
+  {
+    return mProgram;
+  }
+
+  void Shader::Bind()
+  {
+    glUseProgram(mProgram);
+  }
+
+  void Shader::UnBind()
+  {
+    glUseProgram(0);
+  }
+
+  void Shader::Destroy()
+  {
+    glDeleteProgram(mProgram);
+    mProgram = 0;
+  }
+
   U32 Shader::ExtractShaderStages(std::string const& shaderFile, std::string& vertexShader, std::string& fragmentShader)
   {
     std::ifstream stream{ shaderFile, std::ios::ate };
@@ -49,54 +112,11 @@ namespace rsh
     return vertexShader.size() && fragmentShader.size();
   }
 
-  U32 Shader::Create(std::string const& vertexShader, std::string const& fragmentShader)
-  {
-    U32 shader{ glCreateProgram() };
-
-    U32 vid{ glCreateShader(GL_VERTEX_SHADER) };
-    U32 fid{ glCreateShader(GL_FRAGMENT_SHADER) };
-
-    char const* vs{ &vertexShader[0] };
-    glShaderSource(vid, 1, &vs, nullptr);
-    glCompileShader(vid);
-    U32 vsCompileStatus{ CheckCompileStatus(vid) };
-
-    char const* fs{ &fragmentShader[0] };
-    glShaderSource(fid, 1, &fs, nullptr);
-    glCompileShader(fid);
-    U32 fsCompileStatus{ CheckCompileStatus(fid) };
-
-    U32 shaderLinkStatus{};
-    if (vsCompileStatus && fsCompileStatus)
-    {
-      glAttachShader(shader, vid);
-      glAttachShader(shader, fid);
-      glLinkProgram(shader);
-      shaderLinkStatus = CheckLinkStatus(shader);
-    }
-
-    glDeleteShader(vid);
-    glDeleteShader(fid);
-
-    if (!shaderLinkStatus)
-    {
-      glDeleteShader(shader);
-      shader = 0;
-    }
-
-    return shader;
-  }
-
-  void Shader::Destroy(U32 shader)
-  {
-    glDeleteShader(shader);
-  }
-
   U32 Shader::CheckCompileStatus(U32 sid)
   {
     I32 compileStatus{};
     I32 infoLogLength{};
-    
+
     std::string log{};
 
     glGetShaderiv(sid, GL_COMPILE_STATUS, &compileStatus);
@@ -142,5 +162,23 @@ namespace rsh
     }
 
     return 1;
+  }
+
+  void Shader::SetUniformR32(std::string const& name, R32 value)
+  {
+    glUniform1f(
+      glGetUniformLocation(mProgram, name.c_str()),
+      value
+    );
+  }
+
+  void Shader::SetUniformR32M4(std::string const& name, R32M4 value)
+  {
+    glUniformMatrix4fv(
+      glGetUniformLocation(mProgram, name.c_str()),
+      1,
+      0,
+      &value[0][0]
+    );
   }
 }

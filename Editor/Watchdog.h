@@ -19,6 +19,10 @@
   #error "Platform not supported!"
 #endif
 
+///////////////////////////////////////////////////////////
+// Watchdog definition
+///////////////////////////////////////////////////////////
+
 namespace rsh
 {
   class Watchdog
@@ -30,9 +34,9 @@ namespace rsh
     void Update();
 
   public:
-    inline auto const& FilesCreated() const { return mFilesCreated; }
-    inline auto const& FilesDeleted() const { return mFilesDeleted; }
-    inline auto const& FilesModified() const { return mFilesModified; }
+    inline std::set<std::filesystem::path> const& GetFilesCreated() const { return mFilesCreated; }
+    inline std::set<std::filesystem::path> const& GetFilesDeleted() const { return mFilesDeleted; }
+    inline std::set<std::filesystem::path> const& GetFilesModified() const { return mFilesModified; }
 
   private:
     void CheckFilesDeleted();

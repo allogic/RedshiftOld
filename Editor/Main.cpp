@@ -3,7 +3,6 @@
 #include <Redshift/Types.h>
 #include <Redshift/Debug.h>
 #include <Redshift/World.h>
-#include <Redshift/Gizmos.h>
 
 #include <Editor/HotLoader.h>
 
@@ -12,18 +11,13 @@
 #include <Vendor/Glfw/glfw3.h>
 
 ///////////////////////////////////////////////////////////
-// Globals
-///////////////////////////////////////////////////////////
-
-rsh::World sWorld{};
-rsh::Gizmos sGizmos{ 65535, 65535 * 2 };
-
-///////////////////////////////////////////////////////////
 // Locals
 ///////////////////////////////////////////////////////////
 
-static rsh::U32 sWindowWidth{ 1366 };
-static rsh::U32 sWindowHeight{ 768 };
+static rsh::U32 const sEditorWidth{ 1280 };
+static rsh::U32 const sEditorHeight{ 720 };
+
+static GLFWwindow* sWindow{};
 
 static rsh::U32 sFps{};
 static rsh::U32 sRenderFps{ 60 };
@@ -38,11 +32,6 @@ static rsh::R32 sTimeFpsPrev{};
 static rsh::R32 sTimeRenderPrev{};
 static rsh::R32 sTimePhysicPrev{};
 static rsh::R32 sTimeHotLoadPrev{};
-
-static rsh::HotLoader sHotLoader{
-  SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR,
-  SHADER_DIR, SHADER_EXT,
-};
 
 ///////////////////////////////////////////////////////////
 // Debug callbacks
@@ -65,6 +54,30 @@ static void GlDebugCallback(rsh::U32 source, rsh::U32 type, rsh::U32 id, rsh::U3
 }
 
 ///////////////////////////////////////////////////////////
+// Main loop abstraction
+///////////////////////////////////////////////////////////
+
+static void UpdateFps()
+{
+  sFps++;
+  if ((sTime - sTimeFpsPrev) > 1.0f)
+  {
+    sTimeFpsPrev = sTime;
+    glfwSetWindowTitle(sWindow, std::string{ std::string{ "Editor Fps:" } + std::to_string(sFps) }.c_str());
+    sFps = 0;
+  }
+}
+
+static void UpdateHotLoader(rsh::HotLoader& hotLoader)
+{
+  if ((sTime - sTimeHotLoadPrev) > (1.0f / sHotLoadFps))
+  {
+    sTimeHotLoadPrev = sTime;
+    hotLoader.Update();
+  }
+}
+
+///////////////////////////////////////////////////////////
 // Entry point
 ///////////////////////////////////////////////////////////
 
@@ -80,47 +93,46 @@ rsh::I32 main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window{ glfwCreateWindow(sWindowWidth, sWindowHeight, "", nullptr, nullptr) };
+    sWindow = glfwCreateWindow(sEditorWidth, sEditorHeight, "", nullptr, nullptr);
 
-    if (window)
+    if (sWindow)
     {
-      glfwMakeContextCurrent(window);
+      glfwMakeContextCurrent(sWindow);
 
       if (gladLoadGL())
       {
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(GlDebugCallback, 0);
 
-        sGizmos.Initialize();
-
         glfwSwapInterval(0);
 
-        while (!glfwWindowShouldClose(window))
+        rsh::World world{ sEditorWidth, sEditorHeight };
+        rsh::HotLoader hotLoader{
+          &world,
+          SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR,
+          SHADER_DIR, SHADER_EXT, SHADER_STREAMING_DIR,
+        };
+
+        while (!glfwWindowShouldClose(sWindow))
         {
           sTime = (rsh::R32)glfwGetTime();
           sTimeDelta = sTime - sTimePrev;
           sTimePrev = sTime;
 
-          sFps++;
+          UpdateFps();
+          UpdateHotLoader(hotLoader);
+          
+          world.Update(sTimeDelta);
 
-          if ((sTime - sTimeFpsPrev) > 1.0f)
-          {
-            sTimeFpsPrev = sTime;
-            glfwSetWindowTitle(window, std::string{ std::string{ "Editor Fps:" } + std::to_string(sFps) }.c_str());
-            sFps = 0;
-          }
+          glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+          glClear(GL_COLOR_BUFFER_BIT);
+          glViewport(0, 0, world.GetEditorWidth(), world.GetEditorHeight());
 
-          if ((sTime - sTimeHotLoadPrev) > (1.0f / sHotLoadFps))
-          {
-            sTimeHotLoadPrev = sTime;
-            sHotLoader.Update();
-          }
-
-          sGizmos.Render();
+          world.DebugRender();
 
           glfwPollEvents();
 
-          glfwSwapBuffers(window);
+          glfwSwapBuffers(sWindow);
         }
       }
       else
@@ -128,7 +140,7 @@ rsh::I32 main()
         RSH_LOG("Failed initializing GL\n");
       }
 
-      glfwDestroyWindow(window);
+      glfwDestroyWindow(sWindow);
 
       glfwTerminate();
     }

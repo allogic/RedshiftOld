@@ -4,6 +4,10 @@
 #include <Redshift/Types.h>
 #include <Redshift/Platform.h>
 
+///////////////////////////////////////////////////////////
+// Scene definition
+///////////////////////////////////////////////////////////
+
 namespace rsh
 {
   class World;
@@ -14,8 +18,8 @@ namespace rsh
     Scene(World* world);
     virtual ~Scene();
 
-  protected:
-    virtual U32 Tick(R32 deltaTime) = 0;
+  public:
+    virtual void Update(R32 timeDelta);
 
   protected:
     World* mWorld{};
@@ -32,6 +36,10 @@ namespace rsh
     SceneDestroyProc DestroyProc{};
   };
 }
+
+///////////////////////////////////////////////////////////
+// Scene interface
+///////////////////////////////////////////////////////////
 
 extern "C"
 {

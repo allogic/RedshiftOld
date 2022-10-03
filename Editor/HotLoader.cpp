@@ -1,5 +1,6 @@
 #include <Redshift/World.h>
 #include <Redshift/Shader.h>
+#include <Redshift/Debug.h>
 
 #include <Editor/HotLoader.h>
 
@@ -10,16 +11,20 @@
 namespace rsh
 {
   HotLoader::HotLoader(
+    World* world,
     std::filesystem::path const& scenePath, std::string const& sceneExt, std::filesystem::path const& sceneStreamingPath,
-    std::filesystem::path const& shaderPath, std::string const& shaderExt
+    std::filesystem::path const& shaderPath, std::string const& shaderExt, std::filesystem::path const& shaderStreamingPath
   )
-    : mScenePath{ scenePath }
+    : mWorld{ world }
+    , mScenePath{ scenePath }
     , mSceneExt{ sceneExt }
     , mSceneStreamingPath{ sceneStreamingPath }
     , mShaderPath{ shaderPath }
     , mShaderExt{ shaderExt }
+    , mShaderStreamingPath{ shaderStreamingPath }
   {
     std::filesystem::create_directory(mSceneStreamingPath);
+    std::filesystem::create_directory(mShaderStreamingPath);
   }
 
   void HotLoader::Update()
@@ -32,36 +37,54 @@ namespace rsh
   {
     mSceneWatchdog.Update();
     
-    for (auto const& file : mSceneWatchdog.FilesDeleted())
+    for (auto const& file : mSceneWatchdog.GetFilesDeleted())
     {
-      std::filesystem::path tempFilePath{ mSceneStreamingPath / file.filename().string() };
-      if (World::DestroyScene(file.stem().string()))
+      std::filesystem::path tempFile{ mSceneStreamingPath / file.filename().string() };
+
+      if (mWorld->SceneDestroy(file.stem().string()))
       {
-        std::filesystem::remove(tempFilePath);
+        std::filesystem::remove(tempFile);
+
+        RSH_LOG("Scene %s deleted\n", file.stem().string().c_str());
       }
     }
     
-    for (auto const& file : mSceneWatchdog.FilesModified())
+    for (auto const& file : mSceneWatchdog.GetFilesModified())
     {
-      std::filesystem::path tempFilePath{ mSceneStreamingPath / file.filename().string() };
-      if (World::DestroyScene(file.stem().string()))
+      std::filesystem::path tempFile{ mSceneStreamingPath / file.filename().string() };
+
+      if (mWorld->SceneDestroy(file.stem().string()))
       {
-        std::filesystem::remove(tempFilePath);
-        std::filesystem::copy(file, tempFilePath, std::filesystem::copy_options::overwrite_existing);
-        if (World::CreateScene(file.stem().string(), tempFilePath.string()))
-        {
-    
-        }
+        std::filesystem::remove(tempFile);
+
+        RSH_LOG("Scene %s deleted\n", file.stem().string().c_str());
+      }
+
+      std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+
+      if (mWorld->SceneCreate(file.stem().string(), tempFile.string()))
+      {
+        RSH_LOG("Scene %s created\n", file.stem().string().c_str());
+      }
+      else
+      {
+        std::filesystem::remove(tempFile);
       }
     }
     
-    for (auto const& file : mSceneWatchdog.FilesCreated())
+    for (auto const& file : mSceneWatchdog.GetFilesCreated())
     {
-      std::filesystem::path tempFilePath{ mSceneStreamingPath / file.filename().string() };
-      std::filesystem::copy(file, tempFilePath, std::filesystem::copy_options::overwrite_existing);
-      if (World::CreateScene(file.stem().string(), tempFilePath.string()))
+      std::filesystem::path tempFile{ mSceneStreamingPath / file.filename().string() };
+
+      std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+
+      if (mWorld->SceneCreate(file.stem().string(), tempFile.string()))
       {
-    
+        RSH_LOG("Scene %s created\n", file.stem().string().c_str());
+      }
+      else
+      {
+        std::filesystem::remove(tempFile);
       }
     }
   }
@@ -70,39 +93,54 @@ namespace rsh
   {
     mShaderWatchdog.Update();
 
-    for (auto const& file : mShaderWatchdog.FilesDeleted())
+    for (auto const& file : mShaderWatchdog.GetFilesDeleted())
     {
-      U32& shader{ World::GetShader(file.stem().string()) };
-      if (shader)
+      std::filesystem::path tempFile{ mShaderStreamingPath / file.filename().string() };
+
+      if (mWorld->ShaderDestroy(file.stem().string()))
       {
-        Shader::Destroy(shader);
-        shader = 0;
+        std::filesystem::remove(tempFile);
+
+        RSH_LOG("Shader %s deleted\n", file.stem().string().c_str());
       }
     }
     
-    for (auto const& file : mShaderWatchdog.FilesModified())
+    for (auto const& file : mShaderWatchdog.GetFilesModified())
     {
-      std::string vertexShader{};
-      std::string fragmentShader{};
-      if (Shader::ExtractShaderStages(file.string(), vertexShader, fragmentShader))
+      std::filesystem::path tempFile{ mShaderStreamingPath / file.filename().string() };
+
+      if (mWorld->ShaderDestroy(file.stem().string()))
       {
-        U32& shader{ World::GetShader(file.stem().string()) };
-        if (shader)
-        {
-          Shader::Destroy(shader);
-          shader = Shader::Create(vertexShader, fragmentShader);
-        }
+        std::filesystem::remove(tempFile);
+
+        RSH_LOG("Shader %s deleted\n", file.stem().string().c_str());
+      }
+
+      std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+
+      if (mWorld->ShaderCreate(file.stem().string(), tempFile.string()))
+      {
+        RSH_LOG("Shader %s created\n", file.stem().string().c_str());
+      }
+      else
+      {
+        std::filesystem::remove(tempFile);
       }
     }
     
-    for (auto const& file : mShaderWatchdog.FilesCreated())
+    for (auto const& file : mShaderWatchdog.GetFilesCreated())
     {
-      std::string vertexShader{};
-      std::string fragmentShader{};
-      if (Shader::ExtractShaderStages(file.string(), vertexShader, fragmentShader))
+      std::filesystem::path tempFile{ mShaderStreamingPath / file.filename().string() };
+
+      std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+
+      if (mWorld->ShaderCreate(file.stem().string(), tempFile.string()))
       {
-        U32& shader{ World::GetShader(file.stem().string()) };
-        shader = Shader::Create(vertexShader, fragmentShader);
+        RSH_LOG("Shader %s created\n", file.stem().string().c_str());
+      }
+      else
+      {
+        std::filesystem::remove(tempFile);
       }
     }
   }

@@ -1,3 +1,5 @@
+#include <Redshift/Types.h>
+
 #include <Editor/Watchdog.h>
 
 ///////////////////////////////////////////////////////////
@@ -23,7 +25,7 @@ namespace rsh
   void Watchdog::CheckFilesCreated()
   {
     mFilesCreated.clear();
-    for (const auto& file : std::filesystem::directory_iterator{ mScanPath })
+    for (auto const& file : std::filesystem::directory_iterator{ mScanPath })
     {
       if (file.path().extension() != mFileExt) continue;
       if (mFileInfos.find(file.path()) != mFileInfos.cend()) continue;
@@ -35,10 +37,10 @@ namespace rsh
   void Watchdog::CheckFilesDeleted()
   {
     mFilesDeleted.clear();
-    std::erase_if(mFileInfos, [&](const auto& fileInfo)
+    std::erase_if(mFileInfos, [&](auto const& fileInfo)
       {
-        const auto& file{ fileInfo.first };
-        const auto exists{ std::filesystem::exists(file) };
+        std::filesystem::path const& file{ fileInfo.first };
+        U32 exists{ (U32)std::filesystem::exists(file) };
         if (!exists) mFilesDeleted.emplace(file);
         return !exists;
       });
@@ -49,7 +51,7 @@ namespace rsh
     mFilesModified.clear();
     for (auto& [file, prevTime] : mFileInfos)
     {
-      auto const time{ std::filesystem::last_write_time(file) };
+      std::filesystem::file_time_type time{ std::filesystem::last_write_time(file) };
       if (time > prevTime)
       {
         prevTime = time;

@@ -3,17 +3,21 @@
 
 #include <Redshift/Types.h>
 
+///////////////////////////////////////////////////////////
+// Vertex definition
+///////////////////////////////////////////////////////////
+
 namespace rsh
 {
   enum VertexType
   {
-    eVertexTypeGizmos,
+    eVertexTypeDebug,
     eVertexTypePbr,
   };
 
-  struct VertexGizmos
+  struct VertexDebug
   {
-    static constexpr VertexType Type{ eVertexTypeGizmos };
+    static constexpr VertexType Type{ eVertexTypeDebug };
 
     R32V3 Position{};
     R32V4 Color{};

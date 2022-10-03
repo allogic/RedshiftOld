@@ -1,66 +1,120 @@
+#include <vector>
+
 #include <Redshift/World.h>
 #include <Redshift/Scene.h>
 #include <Redshift/Debug.h>
 #include <Redshift/Actor.h>
-#include <Redshift/Vertex.h>
 
 #include <Redshift/Components/Transform.h>
 #include <Redshift/Components/Camera.h>
+
+using namespace rsh;
 
 ///////////////////////////////////////////////////////////
 // Custom actors
 ///////////////////////////////////////////////////////////
 
-class Player : public rsh::Actor
+class Box : public Actor
 {
 public:
-  Player(std::string const& name) : rsh::Actor{ name }
+  Box(World* world, std::string const& name) : Actor{ world, name }
   {
 
+  }
+
+public:
+  void Update(R32 timeDelta) override
+  {
+    //mWorld->DebugPushMatrix();
+    mWorld->DebugBox(mTransform->GetPosition(), mTransform->GetScale(), R32V4{1.0f, 0.0f, 0.0f, 1.0f});
+    //mWorld->DebugPopMatrix();
   }
 };
 
-class Camera : public rsh::Actor
+class Player : public Actor
 {
 public:
-  Camera(std::string const& name) : rsh::Actor{ name }
+  Player(World* world, std::string const& name) : Actor{ world, name }
   {
 
   }
+
+public:
+  void Update(R32 timeDelta) override
+  {
+    mTransform->SetRotation(R32V3{ 0.0f, 0.0f, 0.0f });
+
+    R32V3 p{ mTransform->GetPosition() };
+    R32Q r{ mTransform->GetRotation() };
+
+    p = r * p;
+
+    //mTransform->AddRotation(R32V3{ 0.0f, 0.00001f, 0.0f });
+    //mTransform->SetPosition(p);
+  }
+
+private:
+  Camera* mCamera{ ComponentAttach<Camera>() };
 };
 
 ///////////////////////////////////////////////////////////
 // Sandbox implementation
 ///////////////////////////////////////////////////////////
 
-class Sandbox : public rsh::Scene
+class Sandbox : public Scene
 {
 public:
-  Sandbox(rsh::World* world) : rsh::Scene{ world }
+  Sandbox(World* world) : Scene{ world }
   {
-    RSH_LOG("Created\n");
+    mPlayer = mWorld->ActorCreate<Player>("Player");
+    mPlayer->GetComponent<Transform>()->SetPosition(R32V3{ 0.0f, 0.0f, -10.0f });
 
-    mPlayer = rsh::World::CreateActor<Player>(mWorld, "Player");
-    mPlayer->AttachComponent<rsh::Transform>(rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 1.0f, 1.0f, 1.0f });
+    {
+      Box* boxPrev{};
+      for (U32 i{}; i < 8; i++)
+      {
+        Box* box{ mWorld->ActorCreate<Box>(std::string{ "BoxLeft" } + std::to_string(i), boxPrev) };
+        box->GetComponent<Transform>()->SetPosition(R32V3{ -5.0f, i * 2, 20.0f });
+        mBoxes.emplace_back(box);
+        boxPrev = box;
+      }
+    }
 
-    mCamera = rsh::World::CreateActor<Camera>(mWorld, "Camera", mPlayer);
-    mCamera->AttachComponent<rsh::Transform>(rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 0.0f, 0.0f, 0.0f }, rsh::R32V3{ 1.0f, 1.0f, 1.0f });
-    mCamera->AttachComponent<rsh::Camera>(45.0f, 0.001f, 1000.0f);
+    {
+      Box* boxPrev{};
+      for (U32 i{}; i < 8; i++)
+      {
+        Box* box{ mWorld->ActorCreate<Box>(std::string{ "BoxRight" } + std::to_string(i), boxPrev) };
+        box->GetComponent<Transform>()->SetPosition(R32V3{ 5.0f, i * 2, 20.0f });
+        mBoxes.emplace_back(box);
+        boxPrev = box;
+      }
+    }
+
+    mBoxes[0]->GetComponent<Transform>()->SetRotation(R32V3{ 0.0f, 45.0f, 0.0f });
+    mBoxes[8]->GetComponent<Transform>()->SetRotation(R32V3{ 45.0f, 0.0f, 0.0f });
+
+    mWorld->SetMainActor(mPlayer);
   }
   virtual ~Sandbox()
   {
-    RSH_LOG("Destroyed\n");
+
   }
 
 protected:
-  rsh::U32 Tick(rsh::R32 deltaTime) override
+  void Update(R32 timeDelta) override
   {
-    return 0;
+    Scene::Update(timeDelta);
+
+    mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 1.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
+    mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
+    mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
   }
 
 private:
   Player* mPlayer{};
-  Camera* mCamera{};
+
+  std::vector<Box*> mBoxes{};
 };
 
 DECLARE_SCENE_IMPL(Sandbox);

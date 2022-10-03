@@ -1,12 +1,14 @@
 #include <Redshift/Scene.h>
 
+#include <Vendor/Glad/glad.h>
+
 ///////////////////////////////////////////////////////////
 // Scene implementation
 ///////////////////////////////////////////////////////////
 
 namespace rsh
 {
-  Scene::Scene(World* world)
+  Scene::Scene(class World* world)
     : mWorld{ world }
   {
 
@@ -15,5 +17,10 @@ namespace rsh
   Scene::~Scene()
   {
 
+  }
+
+  void Scene::Update(R32 timeDelta)
+  {
+    gladLoadGL();
   }
 }

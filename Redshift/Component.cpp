@@ -1,8 +1,13 @@
 #include <Redshift/Component.h>
 
+///////////////////////////////////////////////////////////
+// Component implementation
+///////////////////////////////////////////////////////////
+
 namespace rsh
 {
-  Component::Component()
+  Component::Component(World* world)
+    : mWorld{ world }
   {
 
   }
