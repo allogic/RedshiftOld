@@ -2,6 +2,7 @@
 #define RSH_ACTOR_H
 
 #include <string>
+#include <vector>
 #include <map>
 #include <typeinfo>
 
@@ -59,6 +60,7 @@ namespace rsh
 
   private:
     Actor* mParent{};
+    std::vector<Actor*> mChildren{};
 
     /*
     * Components
@@ -93,7 +95,7 @@ C* rsh::Actor::ComponentAttach(Args &&... args)
   auto const findIt{ mComponents.find(hash) };
   if (findIt == mComponents.end())
   {
-    auto const [emplaceIt, inserted] { mComponents.emplace(hash, new C{ mWorld, std::forward<Args>(args) ... }) };
+    auto const [emplaceIt, inserted] { mComponents.emplace(hash, new C{ mWorld, this, std::forward<Args>(args) ... }) };
     return (C*)emplaceIt->second;
   }
   return (C*)findIt->second;

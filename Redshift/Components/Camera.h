@@ -11,18 +11,23 @@
 namespace rsh
 {
   class World;
+  class Actor;
   class Transform;
 
   class Camera : public Component
   {
   public:
-    Camera(World* world);
-    Camera(World* world, R32 fov, R32 near, R32 far);
+    Camera(World* world, Actor* actor);
 
   public:
     inline R32 const& GetFov() const { return mFov; }
     inline R32 const& GetNear() const { return mNear; }
     inline R32 const& GetFar() const { return mFar; }
+
+  public:
+    inline void SetFov(R32 fov) { mFov = fov; }
+    inline void SetNear(R32 near) { mNear = near; }
+    inline void SetFar(R32 far) { mFar = far; }
 
   public:
     R32M4 GetProjectionMatrix();

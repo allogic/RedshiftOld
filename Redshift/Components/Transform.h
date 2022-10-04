@@ -11,35 +11,53 @@
 namespace rsh
 {
   class World;
+  class Actor;
 
   class Transform : public Component
   {
   public:
-    Transform(World* world);
-    Transform(World* world, R32V3 position, R32V3 rotation, R32V3 scale);
+    Transform(World* world, Actor* actor);
 
   public:
-    inline R32V3 const& GetPosition() const { return mPosition; }
-    inline R32V3 const& GetRotation() const { return mRotation; }
-    inline R32V3 const& GetScale() const { return mScale; }
+    inline R32V3 const& GetLocalRight() const { return mLocalRight; }
+    inline R32V3 const& GetLocalUp() const { return mLocalUp; }
+    inline R32V3 const& GetLocalFront() const { return mLocalFront; }
 
   public:
-    inline void SetPosition(R32V3 position) { mPosition = position; }
-    inline void SetRotation(R32V3 rotation) { mRotation = glm::radians(rotation); }
-    inline void SetScale(R32V3 scale) { mScale = scale; }
+    R32V3 GetWorldPosition() const;
+    R32V3 GetWorldRotation() const;
+    R32V3 GetWorldScale() const;
+
+    R32V3 GetLocalPosition() const;
+    R32V3 GetLocalRotation() const;
+    R32V3 GetLocalScale() const;
 
   public:
-    inline void AddPosition(R32V3 position) { mPosition += position; }
-    inline void AddRotation(R32V3 rotation) { mRotation += glm::radians(rotation); }
-    inline void AddScale(R32V3 scale) { mScale += scale; }
+    void SetWorldPosition(R32V3 position);
+    void SetWorldRotation(R32V3 rotation);
+    void SetWorldScale(R32V3 scale);
+
+    void SetLocalPosition(R32V3 position);
+    void SetLocalRotation(R32V3 rotation);
+    void SetLocalScale(R32V3 scale);
 
   public:
     R32M4 GetModelMatrix();
 
   private:
-    R32V3 mPosition{ 0.0f, 0.0f, 0.0f };
-    R32V3 mRotation{ 0.0f, 0.0f, 0.0f };
-    R32V3 mScale{ 1.0f, 1.0f, 1.0f };
+    U32 mDirty{};
+
+    R32V3 mLocalRight{ 1.0f, 0.0f, 0.0f };
+    R32V3 mLocalUp{ 0.0f, 1.0f, 0.0f };
+    R32V3 mLocalFront{ 0.0f, 0.0f, 1.0f };
+
+    R32V3 mWorldPosition{ 0.0f, 0.0f, 0.0f };
+    R32V3 mWorldRotation{ 0.0f, 0.0f, 0.0f };
+    R32V3 mWorldScale{ 1.0f, 1.0f, 1.0f };
+
+    R32V3 mLocalPosition{ 0.0f, 0.0f, 0.0f };
+    R32V3 mLocalRotation{ 0.0f, 0.0f, 0.0f };
+    R32V3 mLocalScale{ 1.0f, 1.0f, 1.0f };
   };
 }
 

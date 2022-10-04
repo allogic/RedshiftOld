@@ -30,25 +30,26 @@ namespace rsh
 
   R32V3 Actor::GetWorldCoordinates()
   {
-    R32V3 p{ mTransform->GetPosition() };
-    R32Q r{ mTransform->GetRotation() };
-    R32V3 s{ mTransform->GetScale() };
+    R32V3 p{ mTransform->GetLocalPosition() };
 
-    p = r * p;
-    p = p * s;
-
-    Actor* next{ GetParent() };
-    while (next)
-    {
-      p = next->mTransform->GetPosition();
-      r = next->mTransform->GetRotation();
-      s = next->mTransform->GetScale();
-
-      p = r * p;
-      p = p * s;
-
-      next = next->GetParent();
-    }
+    //R32Q r{ mTransform->GetRotation() };
+    //R32V3 s{ mTransform->GetScale() };
+    //
+    //p = r * p;
+    //p = p * s;
+    //
+    //Actor* next{ GetParent() };
+    //while (next)
+    //{
+    //  p = next->mTransform->GetPosition();
+    //  r = next->mTransform->GetRotation();
+    //  s = next->mTransform->GetScale();
+    //
+    //  p = r * p;
+    //  p = p * s;
+    //
+    //  next = next->GetParent();
+    //}
 
     return p;
   }

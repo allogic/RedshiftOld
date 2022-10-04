@@ -4,6 +4,7 @@
 #include <Redshift/Scene.h>
 #include <Redshift/Debug.h>
 #include <Redshift/Actor.h>
+#include <Redshift/Event.h>
 
 #include <Redshift/Components/Transform.h>
 #include <Redshift/Components/Camera.h>
@@ -25,9 +26,11 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    //mWorld->DebugPushMatrix();
-    mWorld->DebugBox(mTransform->GetPosition(), mTransform->GetScale(), R32V4{1.0f, 0.0f, 0.0f, 1.0f});
-    //mWorld->DebugPopMatrix();
+    mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 1.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
+    mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
+    mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+    mWorld->DebugBox(mTransform->GetWorldPosition(), mTransform->GetWorldScale(), R32V4{ 1.0f, 1.0f, 0.0f, 1.0f }, mTransform->GetLocalRotation());
   }
 };
 
@@ -42,15 +45,7 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    mTransform->SetRotation(R32V3{ 0.0f, 0.0f, 0.0f });
-
-    R32V3 p{ mTransform->GetPosition() };
-    R32Q r{ mTransform->GetRotation() };
-
-    p = r * p;
-
-    //mTransform->AddRotation(R32V3{ 0.0f, 0.00001f, 0.0f });
-    //mTransform->SetPosition(p);
+    
   }
 
 private:
@@ -67,32 +62,21 @@ public:
   Sandbox(World* world) : Scene{ world }
   {
     mPlayer = mWorld->ActorCreate<Player>("Player");
-    mPlayer->GetComponent<Transform>()->SetPosition(R32V3{ 0.0f, 0.0f, -10.0f });
+    mPlayer->GetComponent<Transform>()->SetLocalPosition(R32V3{ 0.0f, 0.0f, -10.0f });
 
-    {
-      Box* boxPrev{};
-      for (U32 i{}; i < 8; i++)
-      {
-        Box* box{ mWorld->ActorCreate<Box>(std::string{ "BoxLeft" } + std::to_string(i), boxPrev) };
-        box->GetComponent<Transform>()->SetPosition(R32V3{ -5.0f, i * 2, 20.0f });
-        mBoxes.emplace_back(box);
-        boxPrev = box;
-      }
-    }
+    mRoot = mWorld->ActorCreate<Box>("Root");
+    mRoot->GetComponent<Transform>()->SetLocalRotation(R32V3{ 0.0f, 0.0f, 45.0f });
+    mRoot->GetComponent<Transform>()->SetLocalScale(R32V3{ 1.0f, 0.5f, 1.0f });
 
-    {
-      Box* boxPrev{};
-      for (U32 i{}; i < 8; i++)
-      {
-        Box* box{ mWorld->ActorCreate<Box>(std::string{ "BoxRight" } + std::to_string(i), boxPrev) };
-        box->GetComponent<Transform>()->SetPosition(R32V3{ 5.0f, i * 2, 20.0f });
-        mBoxes.emplace_back(box);
-        boxPrev = box;
-      }
-    }
+    mChildLeft = mWorld->ActorCreate<Box>("ChildLeft", mRoot);
+    mChildLeft->GetComponent<Transform>()->SetLocalPosition(R32V3{ -5.0f, 3.0f, 5.0f });
+    mChildLeft->GetComponent<Transform>()->SetLocalRotation(R32V3{ 0.0f, 0.0f, 45.0f });
+    mChildLeft->GetComponent<Transform>()->SetLocalScale(R32V3{ 3.0f, 3.0f, 3.0f });
 
-    mBoxes[0]->GetComponent<Transform>()->SetRotation(R32V3{ 0.0f, 45.0f, 0.0f });
-    mBoxes[8]->GetComponent<Transform>()->SetRotation(R32V3{ 45.0f, 0.0f, 0.0f });
+    mChildRight = mWorld->ActorCreate<Box>("ChildRight", mRoot);
+    mChildRight->GetComponent<Transform>()->SetLocalPosition(R32V3{ 5.0f, 3.0f, 5.0f });
+    mChildRight->GetComponent<Transform>()->SetLocalRotation(R32V3{ 0.0f, 0.0f, -45.0f });
+    mChildRight->GetComponent<Transform>()->SetLocalScale(R32V3{ 3.0f, 3.0f, 3.0f });
 
     mWorld->SetMainActor(mPlayer);
   }
@@ -109,12 +93,18 @@ protected:
     mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 1.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
     mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
     mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+    static R32 x{};
+    static R32 y{};
+    mRoot->GetComponent<Transform>()->SetLocalPosition(R32V3{ glm::sin(x += 0.001f), glm::cos(y += 0.001f), 5.0f });
   }
 
 private:
   Player* mPlayer{};
 
-  std::vector<Box*> mBoxes{};
+  Box* mRoot{};
+  Box* mChildLeft{};
+  Box* mChildRight{};
 };
 
 DECLARE_SCENE_IMPL(Sandbox);

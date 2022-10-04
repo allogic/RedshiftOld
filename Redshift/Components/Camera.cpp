@@ -1,4 +1,5 @@
 #include <Redshift/World.h>
+#include <Redshift/Actor.h>
 
 #include <Redshift/Components/Camera.h>
 #include <Redshift/Components/Transform.h>
@@ -11,17 +12,8 @@
 
 namespace rsh
 {
-  Camera::Camera(World* world)
-    : Component{ world }
-  {
-
-  }
-
-  Camera::Camera(World* world, R32 fov, R32 near, R32 far)
-    : Component{ world }
-    , mFov{ fov }
-    , mNear{ near }
-    , mFar{ far }
+  Camera::Camera(World* world, Actor* actor)
+    : Component{ world, actor }
   {
 
   }
@@ -36,8 +28,8 @@ namespace rsh
   {
     R32V3 u{ 0.0f, 1.0f, 0.0f };
     R32V3 f{ 0.0f, 0.0f, 1.0f };
-    R32V3 p{ transform->GetPosition() };
-    R32Q r{ transform->GetRotation() };
+    R32V3 p{ transform->GetLocalPosition() };
+    R32Q r{ transform->GetLocalRotation() };
 
     f = r * f;
     p = r * p;

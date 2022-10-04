@@ -27,13 +27,30 @@ namespace rsh
     World(U32 editorWidth, U32 editorHeight);
     virtual ~World();
 
+    /*
+    * Global specific
+    */
+
   public:
     inline U32 GetEditorWidth() { return mEditorWidth; }
     inline U32 GetEditorHeight() { return mEditorHeight; }
 
+    inline R32V2 GetMousePosition() { return mMousePosition; }
+
+  public:
+    inline void SetEditorWidth(U32 width) { mEditorWidth = width; }
+    inline void SetEditorHeight(U32 height) { mEditorHeight = height; }
+
+    inline void SetMousePosition(R32V2 position) { mMousePosition = position; }
+
+  public:
+    void Update(R32 timeDelta);
+
   private:
     U32 mEditorWidth{};
     U32 mEditorHeight{};
+
+    R32V2 mMousePosition{};
 
     /*
     * Scene specific
@@ -48,13 +65,6 @@ namespace rsh
 
   private:
     std::map<std::string, SceneProxy> mScenes{};
-
-    /*
-    * Editor specific
-    */
-
-  public:
-    void Update(R32 timeDelta);
 
     /*
     * Actor specific
@@ -103,7 +113,7 @@ namespace rsh
 
   public:
     void DebugLine(R32V3 p0, R32V3 p1, R32V4 c);
-    void DebugBox(R32V3 p, R32V3 s, R32V4 c);
+    void DebugBox(R32V3 p, R32V3 s, R32V4 c, R32Q r = R32Q{});
     void DebugRender();
 
   private:

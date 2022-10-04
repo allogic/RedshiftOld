@@ -3,6 +3,7 @@
 #include <Redshift/Types.h>
 #include <Redshift/Debug.h>
 #include <Redshift/World.h>
+#include <Redshift/Event.h>
 
 #include <Editor/HotLoader.h>
 
@@ -10,39 +11,61 @@
 
 #include <Vendor/Glfw/glfw3.h>
 
+using namespace rsh;
+
 ///////////////////////////////////////////////////////////
 // Locals
 ///////////////////////////////////////////////////////////
 
-static rsh::U32 const sEditorWidth{ 1280 };
-static rsh::U32 const sEditorHeight{ 720 };
+static U32 const sEditorWidth{ 1280 };
+static U32 const sEditorHeight{ 720 };
 
 static GLFWwindow* sWindow{};
+static World* sWorld{};
 
-static rsh::U32 sFps{};
-static rsh::U32 sRenderFps{ 60 };
-static rsh::U32 sPhysicFps{ 60 };
-static rsh::U32 sHotLoadFps{ 1 };
+static U32 sFps{};
+static U32 sRenderFps{ 60 };
+static U32 sPhysicFps{ 60 };
+static U32 sHotLoadFps{ 1 };
 
-static rsh::R32 sTime{};
-static rsh::R32 sTimePrev{};
-static rsh::R32 sTimeDelta{};
+static R32 sTime{};
+static R32 sTimePrev{};
+static R32 sTimeDelta{};
 
-static rsh::R32 sTimeFpsPrev{};
-static rsh::R32 sTimeRenderPrev{};
-static rsh::R32 sTimePhysicPrev{};
-static rsh::R32 sTimeHotLoadPrev{};
+static R32 sTimeFpsPrev{};
+static R32 sTimeRenderPrev{};
+static R32 sTimePhysicPrev{};
+static R32 sTimeHotLoadPrev{};
 
 ///////////////////////////////////////////////////////////
-// Debug callbacks
+// Glfw callbacks
 ///////////////////////////////////////////////////////////
 
-static void GlfwDebugCallback(rsh::I32 error, char const* message)
+static void GlfwDebugProc(I32 error, char const* message)
 {
   RSH_LOG("%s\n", message);
 }
+static void GlfwResizeProc(GLFWwindow* window, I32 width, I32 height)
+{
+  if (sWorld)
+  {
+    sWorld->SetEditorWidth((U32)width);
+    sWorld->SetEditorHeight((U32)height);
+  }
+}
+static void GlfwMouseProc(GLFWwindow* window, R64 x, R64 y)
+{
+  if (sWorld)
+  {
+    sWorld->SetMousePosition(R32V2{ x, y });
+  }
+}
 
-static void GlDebugCallback(rsh::U32 source, rsh::U32 type, rsh::U32 id, rsh::U32 severity, rsh::I32 length, char const* msg, void const* userParam)
+///////////////////////////////////////////////////////////
+// Gl callbacks
+///////////////////////////////////////////////////////////
+
+static void GlDebugCallback(U32 source, U32 type, U32 id, U32 severity, I32 length, char const* msg, void const* userParam)
 {
   switch (severity)
   {
@@ -68,7 +91,7 @@ static void UpdateFps()
   }
 }
 
-static void UpdateHotLoader(rsh::HotLoader& hotLoader)
+static void UpdateHotLoader(HotLoader& hotLoader)
 {
   if ((sTime - sTimeHotLoadPrev) > (1.0f / sHotLoadFps))
   {
@@ -81,9 +104,9 @@ static void UpdateHotLoader(rsh::HotLoader& hotLoader)
 // Entry point
 ///////////////////////////////////////////////////////////
 
-rsh::I32 main()
+I32 main()
 {
-  glfwSetErrorCallback(GlfwDebugCallback);
+  glfwSetErrorCallback(GlfwDebugProc);
 
   if (glfwInit())
   {
@@ -97,6 +120,9 @@ rsh::I32 main()
 
     if (sWindow)
     {
+      glfwSetWindowSizeCallback(sWindow, GlfwResizeProc);
+      glfwSetCursorPosCallback(sWindow, GlfwMouseProc);
+
       glfwMakeContextCurrent(sWindow);
 
       if (gladLoadGL())
@@ -106,16 +132,17 @@ rsh::I32 main()
 
         glfwSwapInterval(0);
 
-        rsh::World world{ sEditorWidth, sEditorHeight };
-        rsh::HotLoader hotLoader{
+        World world{ sEditorWidth, sEditorHeight };
+        HotLoader hotLoader{
           &world,
           SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR,
           SHADER_DIR, SHADER_EXT, SHADER_STREAMING_DIR,
         };
 
+        sWorld = &world;
         while (!glfwWindowShouldClose(sWindow))
         {
-          sTime = (rsh::R32)glfwGetTime();
+          sTime = (R32)glfwGetTime();
           sTimeDelta = sTime - sTimePrev;
           sTimePrev = sTime;
 
@@ -130,10 +157,11 @@ rsh::I32 main()
 
           world.DebugRender();
 
-          glfwPollEvents();
+          Event::Poll(sWindow);
 
           glfwSwapBuffers(sWindow);
         }
+        sWorld = nullptr;
       }
       else
       {
@@ -141,7 +169,6 @@ rsh::I32 main()
       }
 
       glfwDestroyWindow(sWindow);
-
       glfwTerminate();
     }
     else

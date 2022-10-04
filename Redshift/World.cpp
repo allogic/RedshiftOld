@@ -119,7 +119,7 @@ return 0;
       FreeLibrary((HMODULE)proxy.InstanceModule);
 #elif defined(OS_LINUX)
       proxy.DestroyProc(proxy.InstanceScene);
-      dlClose(proxy.InstanceModule);
+      dlclose(proxy.InstanceModule);
 #else
   #error "Platform not supported!"
 #endif
@@ -200,17 +200,17 @@ return 0;
     mDebugElementOffset += 2;
   }
 
-  void World::DebugBox(R32V3 p, R32V3 s, R32V4 c)
+  void World::DebugBox(R32V3 p, R32V3 s, R32V4 c, R32Q r)
   {
-    mDebugVertexBuffer[mDebugVertexOffset + 0].Position = p + R32V3{ 0.0f, 0.0f, 0.0f };
-    mDebugVertexBuffer[mDebugVertexOffset + 1].Position = p + R32V3{ s.x, 0.0f, 0.0f };
-    mDebugVertexBuffer[mDebugVertexOffset + 2].Position = p + R32V3{ 0.0f, s.y, 0.0f };
-    mDebugVertexBuffer[mDebugVertexOffset + 3].Position = p + R32V3{ s.x, s.y, 0.0f };
+    mDebugVertexBuffer[mDebugVertexOffset + 0].Position = p + r * R32V3{ 0.0f, 0.0f, 0.0f };
+    mDebugVertexBuffer[mDebugVertexOffset + 1].Position = p + r * R32V3{ s.x, 0.0f, 0.0f };
+    mDebugVertexBuffer[mDebugVertexOffset + 2].Position = p + r * R32V3{ 0.0f, s.y, 0.0f };
+    mDebugVertexBuffer[mDebugVertexOffset + 3].Position = p + r * R32V3{ s.x, s.y, 0.0f };
 
-    mDebugVertexBuffer[mDebugVertexOffset + 4].Position = p + R32V3{ 0.0f, 0.0f, s.z };
-    mDebugVertexBuffer[mDebugVertexOffset + 5].Position = p + R32V3{ s.x, 0.0f, s.z };
-    mDebugVertexBuffer[mDebugVertexOffset + 6].Position = p + R32V3{ 0.0f, s.y, s.z };
-    mDebugVertexBuffer[mDebugVertexOffset + 7].Position = p + R32V3{ s.x, s.y, s.z };
+    mDebugVertexBuffer[mDebugVertexOffset + 4].Position = p + r * R32V3{ 0.0f, 0.0f, s.z };
+    mDebugVertexBuffer[mDebugVertexOffset + 5].Position = p + r * R32V3{ s.x, 0.0f, s.z };
+    mDebugVertexBuffer[mDebugVertexOffset + 6].Position = p + r * R32V3{ 0.0f, s.y, s.z };
+    mDebugVertexBuffer[mDebugVertexOffset + 7].Position = p + r * R32V3{ s.x, s.y, s.z };
 
     mDebugVertexBuffer[mDebugVertexOffset + 0].Color = c;
     mDebugVertexBuffer[mDebugVertexOffset + 1].Color = c;

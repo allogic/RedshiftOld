@@ -17,6 +17,7 @@ namespace rsh
   using U64 = unsigned long long;
 
   using R32 = float;
+  using R64 = double;
 
   using R32V2 = glm::fvec2;
   using R32V3 = glm::fvec3;
