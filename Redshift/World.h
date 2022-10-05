@@ -145,8 +145,14 @@ A* rsh::World::ActorCreate(std::string const& actorName, Actor* parent)
     auto const [emplaceIt, inserted] { mActors.emplace(actorName, new A{ this, actorName }) };
     if (parent)
     {
-      emplaceIt->second->SetParent(parent);
-      parent->AddChild(emplaceIt->second);
+      Actor* actor{ emplaceIt->second };
+
+      // Link actors
+      actor->SetParent(parent);
+      parent->AddChild(actor);
+
+      // Apply parent transform
+      actor->GetTransform()->ApplyTransform(parent->GetTransform());
     }
     return (A*)emplaceIt->second;
   }

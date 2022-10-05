@@ -14,12 +14,28 @@ namespace rsh
 
   }
 
+  void Transform::ApplyTransform(Transform* other)
+  {
+    SetLocalPosition(other->GetLocalPosition());
+    SetLocalRotation(other->GetLocalRotation());
+    SetLocalScale(other->GetLocalScale());
+
+    SetWorldPosition(other->GetWorldPosition());
+    SetWorldRotation(other->GetWorldRotation());
+    SetWorldScale(other->GetWorldScale());
+  }
+
   R32V3 Transform::GetWorldPosition() const
   {
     return mWorldPosition;
   }
 
   R32V3 Transform::GetWorldRotation() const
+  {
+    return mWorldRotation;
+  }
+
+  R32Q Transform::GetWorldQuaternion() const
   {
     return mWorldRotation;
   }
@@ -39,6 +55,11 @@ namespace rsh
     return mLocalRotation;
   }
 
+  R32Q Transform::GetLocalQuaternion() const
+  {
+    return mLocalRotation;
+  }
+
   R32V3 Transform::GetLocalScale() const
   {
     return mLocalScale;
@@ -46,21 +67,22 @@ namespace rsh
 
   void Transform::SetWorldPosition(R32V3 worldPosition)
   {
-    mWorldPosition = worldPosition + mLocalPosition;
+    mWorldPosition = worldPosition + mLocalPosition; // Remove localPosition if possible
+
     for (Actor* child : mActor->GetChildren())
     {
       child->GetTransform()->SetWorldPosition(mWorldPosition);
     }
   }
 
-  void Transform::SetWorldRotation(R32V3 rotation)
+  void Transform::SetWorldRotation(R32V3 worldRotation)
   {
-    mWorldRotation = glm::radians(rotation);
+    mWorldRotation = glm::radians(worldRotation);
   }
 
-  void Transform::SetWorldScale(R32V3 scale)
+  void Transform::SetWorldScale(R32V3 worldScale)
   {
-    mWorldScale = scale;
+    mWorldScale = worldScale;
   }
 
   void Transform::SetLocalPosition(R32V3 localPosition)
@@ -68,14 +90,14 @@ namespace rsh
     mLocalPosition = localPosition;
   }
 
-  void Transform::SetLocalRotation(R32V3 rotation)
+  void Transform::SetLocalRotation(R32V3 localRotation)
   {
-    mLocalRotation = glm::radians(rotation);
+    mLocalRotation = glm::radians(localRotation);
   }
 
-  void Transform::SetLocalScale(R32V3 scale)
+  void Transform::SetLocalScale(R32V3 localScale)
   {
-    mLocalScale = scale;
+    mLocalScale = localScale;
   }
 
   R32M4 Transform::GetModelMatrix()

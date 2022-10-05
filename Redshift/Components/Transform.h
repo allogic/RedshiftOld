@@ -19,6 +19,9 @@ namespace rsh
     Transform(World* world, Actor* actor);
 
   public:
+    void ApplyTransform(Transform* other);
+
+  public:
     inline R32V3 const& GetLocalRight() const { return mLocalRight; }
     inline R32V3 const& GetLocalUp() const { return mLocalUp; }
     inline R32V3 const& GetLocalFront() const { return mLocalFront; }
@@ -26,20 +29,22 @@ namespace rsh
   public:
     R32V3 GetWorldPosition() const;
     R32V3 GetWorldRotation() const;
+    R32Q GetWorldQuaternion() const;
     R32V3 GetWorldScale() const;
 
     R32V3 GetLocalPosition() const;
     R32V3 GetLocalRotation() const;
+    R32Q GetLocalQuaternion() const;
     R32V3 GetLocalScale() const;
 
   public:
     void SetWorldPosition(R32V3 worldPosition);
-    void SetWorldRotation(R32V3 rotation);
-    void SetWorldScale(R32V3 scale);
+    void SetWorldRotation(R32V3 worldRotation);
+    void SetWorldScale(R32V3 worldScale);
 
     void SetLocalPosition(R32V3 localPosition);
-    void SetLocalRotation(R32V3 rotation);
-    void SetLocalScale(R32V3 scale);
+    void SetLocalRotation(R32V3 localRotation);
+    void SetLocalScale(R32V3 localScale);
 
   public:
     R32M4 GetModelMatrix();

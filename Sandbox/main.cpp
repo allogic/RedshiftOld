@@ -27,16 +27,16 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 1.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
-    mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
-    mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
+    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + R32V3{1.0f, 0.0f, 0.0f}, R32V4{1.0f, 0.0f, 0.0f, 1.0f});
+    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
     if (GetParent())
     {
-      mWorld->DebugLine(mTransform->GetWorldPosition(), GetParent()->GetTransform()->GetWorldPosition(), R32V4{ 1.0f, 1.0f, 1.0f, 1.0f });
+      GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetParent()->GetTransform()->GetWorldPosition(), R32V4{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 
-    mWorld->DebugBox(mTransform->GetWorldPosition(), mTransform->GetWorldScale(), R32V4{ 1.0f, 1.0f, 0.0f, 1.0f }, mTransform->GetWorldRotation());
+    GetWorld()->DebugBox(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldScale(), R32V4{ 1.0f, 1.0f, 0.0f, 1.0f }, GetTransform()->GetLocalQuaternion());
   }
 };
 
@@ -51,7 +51,11 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    
+    static R32 yaw{};
+    yaw += timeDelta * 5.0f;
+
+    GetTransform()->SetLocalRotation(R32V3{ 0.0f, yaw, 0.0f });
+    GetTransform()->SetWorldPosition(GetTransform()->GetLocalQuaternion() * R32V3 { 0.0f, 15.0f, -15.0f });
   }
 
 private:
@@ -67,13 +71,19 @@ class Sandbox : public Scene
 public:
   Sandbox(World* world) : Scene{ world }
   {
-    mPlayer = mWorld->ActorCreate<Player>("Player");
-    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -25.0f });
+    mPlayer = GetWorld()->ActorCreate<Player>("Player");
+    //mPlayer->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 15.0f, -15.0f });
 
-    Box* boxPrev{};
-    for (U32 i{}; i < 8; i++)
+    Box* root{ GetWorld()->ActorCreate<Box>("Root") };
+    root->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 0.0f, 0.0f });
+    root->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 45.0f, 0.0f });
+    root->GetTransform()->SetLocalScale(R32V3{ 1.0f, 1.0f, 1.0f });
+    mBoxes.emplace_back(root);
+
+    Box* boxPrev{ root };
+    for (U32 i{}; i < 7; i++)
     {
-      Box* box{ mWorld->ActorCreate<Box>(std::string{ "Box" } + std::to_string(i), boxPrev) };
+      Box* box{ GetWorld()->ActorCreate<Box>(std::string{ "Box" } + std::to_string(i), boxPrev) };
       box->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 1.0f, 0.0f });
       box->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 0.0f, 0.0f });
       box->GetTransform()->SetLocalScale(R32V3{ 1.0f, 1.0f, 1.0f }); 
@@ -81,7 +91,7 @@ public:
       boxPrev = box;
     }
 
-    mWorld->SetMainActor(mPlayer);
+    GetWorld()->SetMainActor(mPlayer);
   }
   virtual ~Sandbox()
   {
@@ -93,13 +103,19 @@ protected:
   {
     Scene::Update(timeDelta);
 
-    mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 1.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
-    mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
-    mWorld->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 1.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
     static R32 x{};
-    static R32 y{};
-    mBoxes[0]->GetTransform()->SetWorldPosition(R32V3{ glm::sin((x += timeDelta) * 10.0f), -4.0f + glm::cos((y += timeDelta) * 10.0f), 5.0f });
+    x += timeDelta;
+
+    for (U32 i{}; i < 7; i++)
+    {
+      mBoxes[i + 1]->GetTransform()->SetLocalPosition(R32V3{ glm::sin(x), 1.0f, 0.0f });
+    }
+
+    mBoxes[0]->GetTransform()->SetWorldPosition(R32V3{ glm::sin(x), 0.0f, 0.0f });
   }
 
 private:

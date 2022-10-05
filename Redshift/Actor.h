@@ -29,11 +29,11 @@ namespace rsh
     virtual ~Actor();
 
   public:
+    inline World* GetWorld() const { return mWorld; }
     inline std::string const& GetName() const { return mName; }
 
-  protected:
+  private:
     World* mWorld{};
-
     std::string const mName{};
 
     /*
@@ -79,7 +79,7 @@ namespace rsh
   public:
     inline Transform* GetTransform() const { return mTransform; }
 
-  protected:
+  private:
     Transform* mTransform{};
   };
 }

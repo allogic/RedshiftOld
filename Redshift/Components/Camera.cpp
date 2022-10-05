@@ -29,11 +29,11 @@ namespace rsh
     R32V3 u{ 0.0f, 1.0f, 0.0f };
     R32V3 f{ 0.0f, 0.0f, 1.0f };
     R32V3 p{ mActor->GetTransform()->GetWorldPosition() };
-    R32Q r{ mActor->GetTransform()->GetWorldRotation() };
+    R32Q r{ mActor->GetTransform()->GetWorldQuaternion() };
 
-    f = r * f;
-    p = r * p;
+    //f = r * f;
+    //p = r * p;
 
-    return glm::lookAt(p, p + f, u);
+    return glm::lookAt(p, R32V3{ 0.0f, 0.0f, 0.0f }, u);
   }
 }

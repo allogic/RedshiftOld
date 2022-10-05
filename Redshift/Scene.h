@@ -21,7 +21,10 @@ namespace rsh
   public:
     virtual void Update(R32 timeDelta);
 
-  protected:
+  public:
+    inline World* GetWorld() const { return mWorld; }
+
+  private:
     World* mWorld{};
   };
 
