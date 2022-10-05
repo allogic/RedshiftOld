@@ -1,3 +1,4 @@
+#include <string>
 #include <vector>
 
 #include <Redshift/World.h>
@@ -30,7 +31,12 @@ public:
     mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 0.0f, 1.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
     mWorld->DebugLine(mTransform->GetWorldPosition(), mTransform->GetWorldPosition() + R32V3{ 0.0f, 0.0f, 1.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
-    mWorld->DebugBox(mTransform->GetWorldPosition(), mTransform->GetWorldScale(), R32V4{ 1.0f, 1.0f, 0.0f, 1.0f }, mTransform->GetLocalRotation());
+    if (GetParent())
+    {
+      mWorld->DebugLine(mTransform->GetWorldPosition(), GetParent()->GetTransform()->GetWorldPosition(), R32V4{ 1.0f, 1.0f, 1.0f, 1.0f });
+    }
+
+    mWorld->DebugBox(mTransform->GetWorldPosition(), mTransform->GetWorldScale(), R32V4{ 1.0f, 1.0f, 0.0f, 1.0f }, mTransform->GetWorldRotation());
   }
 };
 
@@ -62,21 +68,18 @@ public:
   Sandbox(World* world) : Scene{ world }
   {
     mPlayer = mWorld->ActorCreate<Player>("Player");
-    mPlayer->GetComponent<Transform>()->SetLocalPosition(R32V3{ 0.0f, 0.0f, -10.0f });
+    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -25.0f });
 
-    mRoot = mWorld->ActorCreate<Box>("Root");
-    mRoot->GetComponent<Transform>()->SetLocalRotation(R32V3{ 0.0f, 0.0f, 45.0f });
-    mRoot->GetComponent<Transform>()->SetLocalScale(R32V3{ 1.0f, 0.5f, 1.0f });
-
-    mChildLeft = mWorld->ActorCreate<Box>("ChildLeft", mRoot);
-    mChildLeft->GetComponent<Transform>()->SetLocalPosition(R32V3{ -5.0f, 3.0f, 5.0f });
-    mChildLeft->GetComponent<Transform>()->SetLocalRotation(R32V3{ 0.0f, 0.0f, 45.0f });
-    mChildLeft->GetComponent<Transform>()->SetLocalScale(R32V3{ 3.0f, 3.0f, 3.0f });
-
-    mChildRight = mWorld->ActorCreate<Box>("ChildRight", mRoot);
-    mChildRight->GetComponent<Transform>()->SetLocalPosition(R32V3{ 5.0f, 3.0f, 5.0f });
-    mChildRight->GetComponent<Transform>()->SetLocalRotation(R32V3{ 0.0f, 0.0f, -45.0f });
-    mChildRight->GetComponent<Transform>()->SetLocalScale(R32V3{ 3.0f, 3.0f, 3.0f });
+    Box* boxPrev{};
+    for (U32 i{}; i < 8; i++)
+    {
+      Box* box{ mWorld->ActorCreate<Box>(std::string{ "Box" } + std::to_string(i), boxPrev) };
+      box->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 1.0f, 0.0f });
+      box->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 0.0f, 0.0f });
+      box->GetTransform()->SetLocalScale(R32V3{ 1.0f, 1.0f, 1.0f }); 
+      mBoxes.emplace_back(box);
+      boxPrev = box;
+    }
 
     mWorld->SetMainActor(mPlayer);
   }
@@ -96,15 +99,13 @@ protected:
 
     static R32 x{};
     static R32 y{};
-    mRoot->GetComponent<Transform>()->SetLocalPosition(R32V3{ glm::sin(x += 0.001f), glm::cos(y += 0.001f), 5.0f });
+    mBoxes[0]->GetTransform()->SetWorldPosition(R32V3{ glm::sin((x += timeDelta) * 10.0f), -4.0f + glm::cos((y += timeDelta) * 10.0f), 5.0f });
   }
 
 private:
   Player* mPlayer{};
 
-  Box* mRoot{};
-  Box* mChildLeft{};
-  Box* mChildRight{};
+  std::vector<Box*> mBoxes{};
 };
 
 DECLARE_SCENE_IMPL(Sandbox);

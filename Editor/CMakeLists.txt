@@ -42,3 +42,8 @@ target_compile_definitions(${TARGET_NAME}
   PUBLIC SHADER_EXT="${SHADER_EXT}"
   PUBLIC SHADER_STREAMING_DIR="${SHADER_STREAMING_DIR}"
 )
+
+#target_compile_options(${TARGET_NAME}
+#  PUBLIC "$<$<CONFIG:Debug>:-O0 -g>"
+#  PUBLIC "$<$<CONFIG:Release>:-Ofast>"
+#)

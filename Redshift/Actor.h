@@ -44,19 +44,16 @@ namespace rsh
     virtual void Update(R32 timeDelta);
 
     /*
-    * Transformations
-    */
-
-  public:
-    R32V3 GetWorldCoordinates();
-
-    /*
     * Parenting
     */
 
   public:
     inline Actor* GetParent() const { return mParent; }
     inline void SetParent(Actor* parent) { mParent = parent; }
+
+    inline std::vector<Actor*> const& GetChildren() const { return mChildren; }
+    inline void AddChild(Actor* child) { mChildren.emplace_back(child); }
+    inline void RemoveChild(Actor* child) { mChildren.erase(std::find(mChildren.begin(), mChildren.end(), child)); }
 
   private:
     Actor* mParent{};
@@ -78,6 +75,9 @@ namespace rsh
     /*
     * Default components
     */
+
+  public:
+    inline Transform* GetTransform() const { return mTransform; }
 
   protected:
     Transform* mTransform{};

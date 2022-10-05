@@ -33,11 +33,11 @@ namespace rsh
     R32V3 GetLocalScale() const;
 
   public:
-    void SetWorldPosition(R32V3 position);
+    void SetWorldPosition(R32V3 worldPosition);
     void SetWorldRotation(R32V3 rotation);
     void SetWorldScale(R32V3 scale);
 
-    void SetLocalPosition(R32V3 position);
+    void SetLocalPosition(R32V3 localPosition);
     void SetLocalRotation(R32V3 rotation);
     void SetLocalScale(R32V3 scale);
 

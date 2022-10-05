@@ -264,11 +264,11 @@ return 0;
       {
         mDebugShader.Bind();
 
-        Transform* transform{ mainActor->GetComponent<Transform>() };
+        Transform* transform{ mainActor->GetTransform() };
         Camera* camera{ mainActor->GetComponent<Camera>() };
 
         mDebugShader.SetUniformR32M4("UniformProjectionMatrix", camera->GetProjectionMatrix());
-        mDebugShader.SetUniformR32M4("UniformViewMatrix", camera->GetViewMatrix(transform));
+        mDebugShader.SetUniformR32M4("UniformViewMatrix", camera->GetViewMatrix());
 
         mDebugMesh.Bind();
 

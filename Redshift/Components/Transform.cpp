@@ -16,14 +16,7 @@ namespace rsh
 
   R32V3 Transform::GetWorldPosition() const
   {
-    R32V3 p{ mLocalPosition };
-    Actor* next{ mActor->GetParent() };
-    while (next)
-    {
-      p += next->GetComponent<Transform>()->GetLocalPosition();
-      next = next->GetParent();
-    }
-    return p;
+    return mWorldPosition;
   }
 
   R32V3 Transform::GetWorldRotation() const
@@ -33,14 +26,7 @@ namespace rsh
 
   R32V3 Transform::GetWorldScale() const
   {
-    R32V3 s{ mLocalScale };
-    Actor* next{ mActor->GetParent() };
-    while (next)
-    {
-      s *= next->GetComponent<Transform>()->GetLocalScale();
-      next = next->GetParent();
-    }
-    return s;
+    return mWorldScale;
   }
 
   R32V3 Transform::GetLocalPosition() const
@@ -58,9 +44,13 @@ namespace rsh
     return mLocalScale;
   }
 
-  void Transform::SetWorldPosition(R32V3 position)
+  void Transform::SetWorldPosition(R32V3 worldPosition)
   {
-    mWorldPosition = position;
+    mWorldPosition = worldPosition + mLocalPosition;
+    for (Actor* child : mActor->GetChildren())
+    {
+      child->GetTransform()->SetWorldPosition(mWorldPosition);
+    }
   }
 
   void Transform::SetWorldRotation(R32V3 rotation)
@@ -73,9 +63,9 @@ namespace rsh
     mWorldScale = scale;
   }
 
-  void Transform::SetLocalPosition(R32V3 position)
+  void Transform::SetLocalPosition(R32V3 localPosition)
   {
-    mLocalPosition = position;
+    mLocalPosition = localPosition;
   }
 
   void Transform::SetLocalRotation(R32V3 rotation)

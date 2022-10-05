@@ -81,6 +81,7 @@ namespace rsh
 
   private:
     std::map<std::string, Actor*> mActors{};
+
     Actor* mMainActor{};
 
     /*
@@ -117,7 +118,7 @@ namespace rsh
     void DebugRender();
 
   private:
-    U32 mDebugVertexBufferSize{ 65535 };
+    U32 mDebugVertexBufferSize{ 65535 * 3 };
     U32 mDebugElementBufferSize{ mDebugVertexBufferSize * 2 };
 
     VertexDebug* mDebugVertexBuffer{ new VertexDebug[mDebugVertexBufferSize] };
@@ -145,6 +146,7 @@ A* rsh::World::ActorCreate(std::string const& actorName, Actor* parent)
     if (parent)
     {
       emplaceIt->second->SetParent(parent);
+      parent->AddChild(emplaceIt->second);
     }
     return (A*)emplaceIt->second;
   }

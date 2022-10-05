@@ -31,7 +31,7 @@ namespace rsh
 
   public:
     R32M4 GetProjectionMatrix();
-    R32M4 GetViewMatrix(Transform* transform);
+    R32M4 GetViewMatrix();
 
   private:
     R32 mFov{ 45.0f };

@@ -24,12 +24,12 @@ namespace rsh
     return glm::perspective(glm::radians(mFov), aspect, mNear, mFar);
   }
 
-  R32M4 Camera::GetViewMatrix(Transform* transform)
+  R32M4 Camera::GetViewMatrix()
   {
     R32V3 u{ 0.0f, 1.0f, 0.0f };
     R32V3 f{ 0.0f, 0.0f, 1.0f };
-    R32V3 p{ transform->GetLocalPosition() };
-    R32Q r{ transform->GetLocalRotation() };
+    R32V3 p{ mActor->GetTransform()->GetWorldPosition() };
+    R32Q r{ mActor->GetTransform()->GetWorldRotation() };
 
     f = r * f;
     p = r * p;
