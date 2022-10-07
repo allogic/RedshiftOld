@@ -48,9 +48,12 @@ namespace rsh
 
   public:
     R32M4 GetModelMatrix();
+    void ReEvaluateTransform();
 
   private:
-    U32 mDirty{};
+    U32 mDirtyPosition{};
+    U32 mDirtyRotation{};
+    U32 mDirtyScale{};
 
     R32V3 mLocalRight{ 1.0f, 0.0f, 0.0f };
     R32V3 mLocalUp{ 0.0f, 1.0f, 0.0f };

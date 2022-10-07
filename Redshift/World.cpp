@@ -135,6 +135,7 @@ return 0;
 
     for (auto const& [name, actor] : mActors)
     {
+      actor->GetTransform()->ReEvaluateTransform();
       actor->Update(timeDelta);
     }
   }
