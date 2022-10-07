@@ -5,7 +5,7 @@
 #include <map>
 
 #include <Redshift/Types.h>
-#include <Redshift/Scene.h>
+#include <Redshift/Module.h>
 #include <Redshift/Actor.h>
 #include <Redshift/Vertex.h>
 #include <Redshift/Shader.h>
@@ -53,18 +53,18 @@ namespace rsh
     R32V2 mMousePosition{};
 
     /*
-    * Scene specific
+    * Module specific
     */
 
   public:
-    U32 SceneCreate(std::string const& sceneName, std::string const& sceneFile);
-    U32 SceneDestroy(std::string const& sceneName);
+    U32 ModuleCreate(std::string const& moduleName, std::string const& moduleFile);
+    U32 ModuleDestroy(std::string const& moduleName);
 
   private:
-    void SceneUnloadAll();
+    void ModuleUnloadAll();
 
   private:
-    std::map<std::string, SceneProxy> mScenes{};
+    std::map<std::string, ModuleProxy> mModules{};
 
     /*
     * Actor specific

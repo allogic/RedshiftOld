@@ -2,7 +2,7 @@
 #include <vector>
 
 #include <Redshift/World.h>
-#include <Redshift/Scene.h>
+#include <Redshift/Module.h>
 #include <Redshift/Debug.h>
 #include <Redshift/Actor.h>
 #include <Redshift/Event.h>
@@ -55,8 +55,8 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    static R32 yaw{};
-    yaw += timeDelta * 5.0f;
+    //static R32 yaw{};
+    //yaw += timeDelta * 5.0f;
 
     //GetTransform()->SetWorldRotation(R32V3{ 0.0f, yaw, 0.0f });
     //GetTransform()->SetWorldPosition(GetTransform()->GetLocalQuaternion() * GetTransform()->GetLocalPosition());
@@ -72,10 +72,10 @@ private:
 // Sandbox implementation
 ///////////////////////////////////////////////////////////
 
-class Sandbox : public Scene
+class Sandbox : public Module
 {
 public:
-  Sandbox(World* world) : Scene{ world }
+  Sandbox(World* world) : Module{ world }
   {
     mPlayer = GetWorld()->ActorCreate<Player>("Player");
     mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 15.0f, -15.0f });
@@ -113,7 +113,7 @@ public:
 protected:
   void Update(R32 timeDelta) override
   {
-    Scene::Update(timeDelta);
+    Module::Update(timeDelta);
 
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 2.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
@@ -136,4 +136,4 @@ private:
   std::vector<Box*> mBoxes{};
 };
 
-DECLARE_SCENE_IMPL(Sandbox);
+DECLARE_MODULE_IMPL(Sandbox);

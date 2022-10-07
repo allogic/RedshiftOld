@@ -32,7 +32,7 @@ namespace rsh
   public:
     HotLoader(
       World* world,
-      std::filesystem::path const& scenePath, std::string const& sceneExt, std::filesystem::path const& sceneStreamingPath,
+      std::filesystem::path const& modulePath, std::string const& moduleExt, std::filesystem::path const& moduleStreamingPath,
       std::filesystem::path const& shaderPath, std::string const& shaderExt, std::filesystem::path const& shaderStreamingPath
     );
 
@@ -40,21 +40,22 @@ namespace rsh
     void Update();
 
   private:
-    void UpdateScenes();
+    void UpdateModules();
     void UpdateShaders();
 
   private:
     World* mWorld{};
 
-    std::filesystem::path mScenePath{};
-    std::string mSceneExt{};
-    std::filesystem::path mSceneStreamingPath{};
-
+    std::filesystem::path mModulePath{};
     std::filesystem::path mShaderPath{};
+
+    std::string mModuleExt{};
     std::string mShaderExt{};
+
+    std::filesystem::path mModuleStreamingPath{};
     std::filesystem::path mShaderStreamingPath{};
 
-    Watchdog mSceneWatchdog{ mScenePath, mSceneExt };
+    Watchdog mModuleWatchdog{ mModulePath, mModuleExt };
     Watchdog mShaderWatchdog{ mShaderPath, mShaderExt };
   };
 }

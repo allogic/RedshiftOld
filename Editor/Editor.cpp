@@ -135,7 +135,7 @@ I32 main()
         World world{ sEditorWidth, sEditorHeight };
         HotLoader hotLoader{
           &world,
-          SCENE_DIR, SCENE_EXT, SCENE_STREAMING_DIR,
+          MODULE_DIR, MODULE_EXT, MODULE_STREAMING_DIR,
           SHADER_DIR, SHADER_EXT, SHADER_STREAMING_DIR,
         };
 

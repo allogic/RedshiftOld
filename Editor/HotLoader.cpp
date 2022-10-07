@@ -12,59 +12,59 @@ namespace rsh
 {
   HotLoader::HotLoader(
     World* world,
-    std::filesystem::path const& scenePath, std::string const& sceneExt, std::filesystem::path const& sceneStreamingPath,
+    std::filesystem::path const& modulePath, std::string const& moduleExt, std::filesystem::path const& moduleStreamingPath,
     std::filesystem::path const& shaderPath, std::string const& shaderExt, std::filesystem::path const& shaderStreamingPath
   )
     : mWorld{ world }
-    , mScenePath{ scenePath }
-    , mSceneExt{ sceneExt }
-    , mSceneStreamingPath{ sceneStreamingPath }
+    , mModulePath{ modulePath }
+    , mModuleExt{ moduleExt }
+    , mModuleStreamingPath{ moduleStreamingPath }
     , mShaderPath{ shaderPath }
     , mShaderExt{ shaderExt }
     , mShaderStreamingPath{ shaderStreamingPath }
   {
-    std::filesystem::create_directory(mSceneStreamingPath);
+    std::filesystem::create_directory(mModuleStreamingPath);
     std::filesystem::create_directory(mShaderStreamingPath);
   }
 
   void HotLoader::Update()
   {
-    UpdateScenes();
+    UpdateModules();
     UpdateShaders();
   }
 
-  void HotLoader::UpdateScenes()
+  void HotLoader::UpdateModules()
   {
-    mSceneWatchdog.Update();
+    mModuleWatchdog.Update();
     
-    for (auto const& file : mSceneWatchdog.GetFilesDeleted())
+    for (auto const& file : mModuleWatchdog.GetFilesDeleted())
     {
-      std::filesystem::path tempFile{ mSceneStreamingPath / file.filename().string() };
+      std::filesystem::path tempFile{ mModuleStreamingPath / file.filename().string() };
 
-      if (mWorld->SceneDestroy(file.stem().string()))
+      if (mWorld->ModuleDestroy(file.stem().string()))
       {
         std::filesystem::remove(tempFile);
 
-        RSH_LOG("Scene %s deleted\n", file.stem().string().c_str());
+        RSH_LOG("Module %s deleted\n", file.stem().string().c_str());
       }
     }
     
-    for (auto const& file : mSceneWatchdog.GetFilesModified())
+    for (auto const& file : mModuleWatchdog.GetFilesModified())
     {
-      std::filesystem::path tempFile{ mSceneStreamingPath / file.filename().string() };
+      std::filesystem::path tempFile{ mModuleStreamingPath / file.filename().string() };
 
-      if (mWorld->SceneDestroy(file.stem().string()))
+      if (mWorld->ModuleDestroy(file.stem().string()))
       {
         std::filesystem::remove(tempFile);
 
-        RSH_LOG("Scene %s deleted\n", file.stem().string().c_str());
+        RSH_LOG("Module %s deleted\n", file.stem().string().c_str());
       }
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
 
-      if (mWorld->SceneCreate(file.stem().string(), tempFile.string()))
+      if (mWorld->ModuleCreate(file.stem().string(), tempFile.string()))
       {
-        RSH_LOG("Scene %s created\n", file.stem().string().c_str());
+        RSH_LOG("Module %s created\n", file.stem().string().c_str());
       }
       else
       {
@@ -72,15 +72,15 @@ namespace rsh
       }
     }
     
-    for (auto const& file : mSceneWatchdog.GetFilesCreated())
+    for (auto const& file : mModuleWatchdog.GetFilesCreated())
     {
-      std::filesystem::path tempFile{ mSceneStreamingPath / file.filename().string() };
+      std::filesystem::path tempFile{ mModuleStreamingPath / file.filename().string() };
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
 
-      if (mWorld->SceneCreate(file.stem().string(), tempFile.string()))
+      if (mWorld->ModuleCreate(file.stem().string(), tempFile.string()))
       {
-        RSH_LOG("Scene %s created\n", file.stem().string().c_str());
+        RSH_LOG("Module %s created\n", file.stem().string().c_str());
       }
       else
       {

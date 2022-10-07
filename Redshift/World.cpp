@@ -31,46 +31,46 @@ namespace rsh
 
   World::~World()
   {
-    SceneUnloadAll();
+    ModuleUnloadAll();
   }
 
-  U32 World::SceneCreate(std::string const& sceneName, std::string const& sceneFile)
+  U32 World::ModuleCreate(std::string const& moduleName, std::string const& moduleFile)
   {
 #if defined(OS_WINDOWS)
-    auto const sceneIt{ mScenes.find(sceneName) };
-    if (sceneIt == mScenes.end())
+    auto const moduleIt{ mModules.find(moduleName) };
+    if (moduleIt == mModules.end())
     {
-      HINSTANCE instanceModule{ LoadLibraryA(sceneFile.c_str()) };
-      if (instanceModule)
+      HINSTANCE instanceNative{ LoadLibraryA(moduleFile.c_str()) };
+      if (instanceNative)
       {
-        SceneCreateProc sceneCreateProc{ (SceneCreateProc)GetProcAddress(instanceModule, "CreateScene") };
-        SceneDestroyProc sceneDestroyProc{ (SceneDestroyProc)GetProcAddress(instanceModule, "DestroyScene") };
-        if (sceneCreateProc && sceneDestroyProc)
+        ModuleCreateProc moduleCreateProc{ (ModuleCreateProc)GetProcAddress(instanceNative, "CreateModule") };
+        ModuleDestroyProc moduleDestroyProc{ (ModuleDestroyProc)GetProcAddress(instanceNative, "DestroyModule") };
+        if (moduleCreateProc && moduleDestroyProc)
         {
-          Scene* instanceScene{ sceneCreateProc(this) };
-          if (instanceScene)
+          Module* instanceModule{ moduleCreateProc(this) };
+          if (instanceModule)
           {
-            auto const [emplaceIt, inserted] { mScenes.emplace(sceneName, SceneProxy{ instanceModule, instanceScene, sceneCreateProc, sceneDestroyProc }) };
+            auto const [emplaceIt, inserted] { mModules.emplace(moduleName, ModuleProxy{ instanceNative, instanceModule, moduleCreateProc, moduleDestroyProc }) };
             return inserted;
           }
         }
       }
     }
 #elif defined(OS_LINUX)
-    auto const sceneIt{ mScenes.find(sceneName) };
-    if (sceneIt == mScenes.end())
+    auto const moduleIt{ mModules.find(moduleName) };
+    if (moduleIt == mModules.end())
     {
-      void* instanceModule{ dlopen(sceneFile.c_str(), RTLD_LAZY) };
-      if (instanceModule)
+      void* instanceNative{ dlopen(moduleFile.c_str(), RTLD_LAZY) };
+      if (instanceNative)
       {
-        SceneCreateProc sceneCreateProc{ (SceneCreateProc)dlsym(instanceModule, "CreateScene") };
-        SceneDestroyProc sceneDestroyProc{ (SceneDestroyProc)dlsym(instanceModule, "DestroyScene") };
-        if (sceneCreateProc && sceneDestroyProc)
+        ModuleCreateProc moduleCreateProc{ (ModuleCreateProc)dlsym(instanceNative, "CreateModule") };
+        ModuleDestroyProc moduleDestroyProc{ (ModuleDestroyProc)dlsym(instanceNative, "DestroyModule") };
+        if (moduleCreateProc && moduleDestroyProc)
         {
-          Scene* instanceScene{ sceneCreateProc(this) };
-          if (instanceScene)
+          Module* instanceModule{ moduleCreateProc(this) };
+          if (instanceModule)
           {
-            auto const [emplaceIt, inserted] { mScenes.emplace(sceneName, SceneProxy{ instanceModule, instanceScene, sceneCreateProc, sceneDestroyProc }) };
+            auto const [emplaceIt, inserted] { mModules.emplace(moduleName, ModuleProxy{ instanceNative, instanceModule, moduleCreateProc, moduleDestroyProc }) };
             return inserted;
           }
         }
@@ -82,26 +82,26 @@ namespace rsh
 return 0;
   }
 
-  U32 World::SceneDestroy(std::string const& sceneName)
+  U32 World::ModuleDestroy(std::string const& moduleName)
   {
 #if defined(OS_WINDOWS)
-    auto const sceneIt = mScenes.find(sceneName);
-    if (sceneIt != mScenes.end())
+    auto const moduleIt = mModules.find(moduleName);
+    if (moduleIt != mModules.end())
     {
-      SceneProxy sceneProxy = sceneIt->second;
-      sceneProxy.DestroyProc(sceneProxy.InstanceScene);
-      FreeLibrary((HMODULE)sceneProxy.InstanceModule);
-      mScenes.erase(sceneIt);
+      ModuleProxy moduleProxy = moduleIt->second;
+      moduleProxy.DestroyProc(moduleProxy.InstanceModule);
+      FreeLibrary((HMODULE)moduleProxy.InstanceNative);
+      mModules.erase(moduleIt);
       return 1;
     }
 #elif defined(OS_LINUX)
-    auto const sceneIt = mScenes.find(sceneName);
-    if (sceneIt != mScenes.end())
+    auto const moduleIt = mModules.find(moduleName);
+    if (moduleIt != mModules.end())
     {
-      SceneProxy sceneProxy = sceneIt->second;
-      sceneProxy.DestroyProc(sceneProxy.InstanceScene);
-      dlclose(sceneProxy.InstanceModule);
-      mScenes.erase(sceneIt);
+      ModuleProxy moduleProxy = moduleIt->second;
+      moduleProxy.DestroyProc(moduleProxy.InstanceModule);
+      dlclose(moduleProxy.InstanceNative);
+      mModules.erase(moduleIt);
       return 1;
     }
 #else
@@ -110,16 +110,16 @@ return 0;
     return 0;
   }
 
-  void World::SceneUnloadAll()
+  void World::ModuleUnloadAll()
   {
-    for (auto const& [name, proxy] : mScenes)
+    for (auto const& [name, proxy] : mModules)
     {
 #if defined(OS_WINDOWS)
-      proxy.DestroyProc(proxy.InstanceScene);
-      FreeLibrary((HMODULE)proxy.InstanceModule);
+      proxy.DestroyProc(proxy.InstanceModule);
+      FreeLibrary((HMODULE)proxy.InstanceNative);
 #elif defined(OS_LINUX)
-      proxy.DestroyProc(proxy.InstanceScene);
-      dlclose(proxy.InstanceModule);
+      proxy.DestroyProc(proxy.InstanceModule);
+      dlclose(proxy.InstanceNative);
 #else
   #error "Platform not supported!"
 #endif
@@ -128,9 +128,9 @@ return 0;
 
   void World::Update(R32 timeDelta)
   {
-    for (auto const& [name, proxy] : mScenes)
+    for (auto const& [name, proxy] : mModules)
     {
-      proxy.InstanceScene->Update(timeDelta);
+      proxy.InstanceModule->Update(timeDelta);
     }
 
     for (auto const& [name, actor] : mActors)

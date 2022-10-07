@@ -1,25 +1,25 @@
-#include <Redshift/Scene.h>
+#include <Redshift/Module.h>
 
 #include <Vendor/Glad/glad.h>
 
 ///////////////////////////////////////////////////////////
-// Scene implementation
+// Module implementation
 ///////////////////////////////////////////////////////////
 
 namespace rsh
 {
-  Scene::Scene(class World* world)
+  Module::Module(class World* world)
     : mWorld{ world }
   {
 
   }
 
-  Scene::~Scene()
+  Module::~Module()
   {
 
   }
 
-  void Scene::Update(R32 timeDelta)
+  void Module::Update(R32 timeDelta)
   {
     gladLoadGL();
   }
