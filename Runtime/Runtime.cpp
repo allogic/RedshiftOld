@@ -3,9 +3,8 @@
 #include <Redshift/Types.h>
 #include <Redshift/Debug.h>
 #include <Redshift/World.h>
-#include <Redshift/Event.h>
 
-#include <Editor/HotLoader.h>
+#include <Runtime/HotLoader.h>
 
 #include <Vendor/Glad/glad.h>
 
@@ -21,8 +20,8 @@ using namespace rsh;
 // Locals
 ///////////////////////////////////////////////////////////
 
-static U32 const sEditorWidth{ 1280 };
-static U32 const sEditorHeight{ 720 };
+static U32 const sWindowWidth{ 1280 };
+static U32 const sWindowHeight{ 720 };
 
 static World* sWorld{};
 
@@ -52,8 +51,8 @@ static void GlfwResizeProc(GLFWwindow* context, I32 width, I32 height)
 {
   if (sWorld)
   {
-    sWorld->SetEditorWidth((U32)width);
-    sWorld->SetEditorHeight((U32)height);
+    sWorld->SetWindowWidth((U32)width);
+    sWorld->SetWindowHeight((U32)height);
   }
 }
 static void GlfwMouseProc(GLFWwindow* context, R64 x, R64 y)
@@ -89,7 +88,7 @@ static void UpdateFps(GLFWwindow* context)
   if ((sTime - sTimeFpsPrev) > 1.0f)
   {
     sTimeFpsPrev = sTime;
-    glfwSetWindowTitle(context, std::string{ std::string{ "Editor Fps:" } + std::to_string(sFps) }.c_str());
+    glfwSetWindowTitle(context, std::string{ std::string{ "Redshift Fps:" } + std::to_string(sFps) }.c_str());
     sFps = 0;
   }
 }
@@ -118,7 +117,7 @@ I32 main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* glfwContext = glfwCreateWindow(sEditorWidth, sEditorHeight, "", nullptr, nullptr);
+    GLFWwindow* glfwContext = glfwCreateWindow(sWindowWidth, sWindowHeight, "", nullptr, nullptr);
 
     if (glfwContext)
     {
@@ -149,7 +148,7 @@ I32 main()
         ImGui_ImplGlfw_InitForOpenGL(glfwContext, 1);
         ImGui_ImplOpenGL3_Init("#version 450 core");
 
-        World world{ sEditorWidth, sEditorHeight };
+        World world{ sWindowWidth, sWindowHeight };
         HotLoader hotLoader{
           &world,
           MODULE_DIR, MODULE_EXT, MODULE_STREAMING_DIR,
@@ -165,7 +164,7 @@ I32 main()
 
           glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
           glClear(GL_COLOR_BUFFER_BIT);
-          glViewport(0, 0, world.GetEditorWidth(), world.GetEditorHeight());
+          glViewport(0, 0, world.GetWindowWidth(), world.GetWindowHeight());
 
           UpdateFps(glfwContext);
           UpdateHotLoader(hotLoader);
@@ -176,6 +175,7 @@ I32 main()
           ImGui::NewFrame();
           ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
+          world.PollEvents();
           world.Update(sTimeDelta);
           world.DebugRender();
 
@@ -185,8 +185,6 @@ I32 main()
 
           ImGui::UpdatePlatformWindows();
           ImGui::RenderPlatformWindowsDefault();
-
-          Event::Poll(glfwContext);
 
           glfwMakeContextCurrent(glfwContext);
           glfwSwapBuffers(glfwContext);

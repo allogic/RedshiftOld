@@ -1,6 +1,6 @@
 #include <Redshift/Types.h>
 
-#include <Editor/Watchdog.h>
+#include <Runtime/Watchdog.h>
 
 ///////////////////////////////////////////////////////////
 // Watchdog implementation

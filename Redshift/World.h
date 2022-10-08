@@ -20,6 +20,8 @@ struct ImGuiContext;
 
 namespace rsh
 {
+  class Camera;
+
   class World
   {
     /*
@@ -27,7 +29,7 @@ namespace rsh
     */
 
   public:
-    World(U32 editorWidth, U32 editorHeight);
+    World(U32 windowWidth, U32 windowHeight);
     virtual ~World();
 
     /*
@@ -38,14 +40,14 @@ namespace rsh
     inline GLFWwindow* GetGlfwContext() const { return mGlfwContext; }
     inline ImGuiContext* GetImGuiContext() const { return mImGuiContext; }
 
-    inline U32 GetEditorWidth() { return mEditorWidth; }
-    inline U32 GetEditorHeight() { return mEditorHeight; }
+    inline U32 GetWindowWidth() { return mWindowWidth; }
+    inline U32 GetWindowHeight() { return mWindowHeight; }
 
     inline R32V2 GetMousePosition() { return mMousePosition; }
 
   public:
-    inline void SetEditorWidth(U32 width) { mEditorWidth = width; }
-    inline void SetEditorHeight(U32 height) { mEditorHeight = height; }
+    inline void SetWindowWidth(U32 width) { mWindowWidth = width; }
+    inline void SetWindowHeight(U32 height) { mWindowHeight = height; }
 
     inline void SetMousePosition(R32V2 position) { mMousePosition = position; }
 
@@ -56,8 +58,8 @@ namespace rsh
     GLFWwindow* mGlfwContext{};
     ImGuiContext* mImGuiContext{};
 
-    U32 mEditorWidth{};
-    U32 mEditorHeight{};
+    U32 mWindowWidth{};
+    U32 mWindowHeight{};
 
     R32V2 mMousePosition{};
 
@@ -82,16 +84,31 @@ namespace rsh
   public:
     template<typename A>
     A* ActorCreate(std::string const& actorName, Actor* parent = nullptr);
-    inline Actor* GetActor(std::string const& actorName) { return mActors[actorName]; }
-    inline void SetMainActor(Actor* actor) { mMainActor = actor; }
-    inline Actor* GetMainActor() { return mMainActor; }
     void ActorDestroy(Actor* actor);
     void ActorDestroy(std::string const& actorName);
+
+  public:
+    inline std::map<std::string, Actor*> const& GetActors() const { return mActors; }
+    inline Actor* GetActor(std::string const& actorName) { return mActors[actorName]; }
+    inline Actor* GetMainEditorActor() const { return mMainEditorActor; }
+    inline Actor* GetMainGameActor() const { return mMainGameActor; }
+
+  public:
+    inline void SetMainEditorActor(Actor* actor) { mMainEditorActor = actor; }
+    inline void SetMainGameActor(Actor* actor) { mMainGameActor = actor; }
 
   private:
     std::map<std::string, Actor*> mActors{};
 
-    Actor* mMainActor{};
+    Actor* mMainEditorActor{};
+    Actor* mMainGameActor{};
+
+    /*
+    * Component specific
+    */
+
+  public:
+    Camera* GetMainCamera() const;
 
     /*
     * Shader specific
@@ -116,6 +133,73 @@ namespace rsh
 
   private:
     std::map<std::string, Mesh> mMeshes{};
+
+    /*
+    * Event specific
+    */
+
+  public:
+    enum KeyCode
+    {
+      eKeyCodeA = 65,
+      eKeyCodeB = 66,
+      eKeyCodeC = 67,
+      eKeyCodeD = 68,
+      eKeyCodeE = 69,
+      eKeyCodeF = 70,
+      eKeyCodeG = 71,
+      eKeyCodeH = 72,
+      eKeyCodeI = 73,
+      eKeyCodeJ = 74,
+      eKeyCodeK = 75,
+      eKeyCodeL = 76,
+      eKeyCodeM = 77,
+      eKeyCodeN = 78,
+      eKeyCodeO = 79,
+      eKeyCodeP = 80,
+      eKeyCodeQ = 81,
+      eKeyCodeR = 82,
+      eKeyCodeS = 83,
+      eKeyCodeT = 84,
+      eKeyCodeU = 85,
+      eKeyCodeV = 86,
+      eKeyCodeW = 87,
+      eKeyCodeX = 88,
+      eKeyCodeY = 89,
+      eKeyCodeZ = 90,
+    };
+
+  private:
+    enum EventState
+    {
+      eEventStateNone,
+      eEventStateDown,
+      eEventStateHeld,
+      eEventStateUp,
+    };
+
+    struct EventRecord
+    {
+      EventState Curr;
+      EventState Prev;
+    };
+
+  public:
+    void PollEvents();
+
+  private:
+    EventRecord mKeyboardKeys[348];
+    EventRecord mMouseKeys[7];
+
+  public:
+    inline U32 KeyDown(U32 key) const { return mKeyboardKeys[key].Curr == eEventStateDown; }
+    inline U32 KeyHeld(U32 key) const { return mKeyboardKeys[key].Curr == eEventStateHeld; }
+    inline U32 KeyUp(U32 key) const { return mKeyboardKeys[key].Curr == eEventStateUp; }
+
+  public:
+    inline U32 MouseDown(U32 key) const { return mMouseKeys[key].Curr == eEventStateDown; }
+    inline U32 MouseHeld(U32 key) const { return mMouseKeys[key].Curr == eEventStateHeld; }
+    inline U32 MouseUp(U32 key) const { return mMouseKeys[key].Curr == eEventStateUp; }
 
     /*
     * Debug specific

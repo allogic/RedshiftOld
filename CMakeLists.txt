@@ -23,8 +23,8 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL Linux)
 endif()
 
 add_subdirectory(Redshift)
-add_subdirectory(Editor)
+add_subdirectory(Runtime)
 
-add_subdirectory(${MODULE_DIR}Sandbox)
+add_subdirectory(${MODULE_DIR}Editor)
 add_subdirectory(${MODULE_DIR}Okami)
-add_subdirectory(${MODULE_DIR}Interface)
+add_subdirectory(${MODULE_DIR}Sandbox)

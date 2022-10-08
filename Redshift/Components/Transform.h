@@ -47,6 +47,15 @@ namespace rsh
     void SetLocalScale(R32V3 localScale);
 
   public:
+    void AddWorldPosition(R32V3 worldPosition);
+    void AddWorldRotation(R32V3 worldRotation);
+    void AddWorldScale(R32V3 worldScale);
+
+    void AddLocalPosition(R32V3 localPosition);
+    void AddLocalRotation(R32V3 localRotation);
+    void AddLocalScale(R32V3 localScale);
+
+  public:
     R32M4 GetModelMatrix();
     void ReEvaluateTransform();
 

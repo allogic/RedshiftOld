@@ -12,7 +12,6 @@ namespace rsh
 {
   class World;
   class Actor;
-  class Transform;
 
   class Camera : public Component
   {

@@ -5,7 +5,6 @@
 #include <Redshift/World.h>
 #include <Redshift/Debug.h>
 #include <Redshift/Actor.h>
-#include <Redshift/Event.h>
 
 #include <Redshift/Components/Transform.h>
 #include <Redshift/Components/Camera.h>
@@ -57,13 +56,7 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    static R32 yaw{};
-    yaw += timeDelta * 10.0f;
-
-    GetTransform()->SetWorldRotation(R32V3{ 0.0f, yaw, 0.0f });
-    GetTransform()->SetWorldPosition(GetTransform()->GetWorldQuaternion() * R32V3{ 0.0f, 15.0f, -15.0f });
-
-    //RSH_LOG("%f, %f, %f\n", GetTransform()->GetLocalPosition().x, GetTransform()->GetLocalPosition().y, GetTransform()->GetLocalPosition().z);
+    
   }
 
 private:
@@ -79,9 +72,9 @@ class Sandbox : public Module
 public:
   Sandbox(World* world) : Module{ world }
   {
-    mPlayer = GetWorld()->ActorCreate<Player>("Player");
+    mPlayer = GetWorld()->ActorCreate<Player>("GamePlayer");
 
-    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 15.0f, -15.0f });
+    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 3.0f, -15.0f });
 
     Box* root{ GetWorld()->ActorCreate<Box>("Root") };
 
@@ -124,12 +117,19 @@ public:
       );
     }
 
-    GetWorld()->SetMainActor(mPlayer);
+    GetWorld()->SetMainGameActor(mPlayer);
   }
 
   virtual ~Sandbox()
   {
+    GetWorld()->SetMainGameActor(nullptr);
 
+    for (Box* box : mBoxes)
+    {
+      GetWorld()->ActorDestroy(box);
+    }
+
+    GetWorld()->ActorDestroy(mPlayer);
   }
 
 protected:

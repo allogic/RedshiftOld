@@ -26,9 +26,9 @@
 
 namespace rsh
 {
-  World::World(U32 editorWidth, U32 editorHeight)
-    : mEditorWidth{ editorWidth }
-    , mEditorHeight{ editorHeight }
+  World::World(U32 windowWidth, U32 windowHeight)
+    : mWindowWidth{ windowWidth }
+    , mWindowHeight{ windowHeight }
     , mGlfwContext{ glfwGetCurrentContext() }
     , mImGuiContext{ ImGui::GetCurrentContext() }
   {
@@ -159,6 +159,20 @@ return 0;
     mActors.erase(actorName);
   }
 
+  Camera* World::GetMainCamera() const
+  {
+    Actor* actor{ GetMainEditorActor() };
+    if (!actor)
+    {
+      actor = GetMainGameActor();
+    }
+    if (actor)
+    {
+      return actor->GetComponent<Camera>();
+    }
+    return nullptr;
+  }
+
   U32 World::ShaderCreate(std::string const& shaderName, std::string const& shaderFile)
   {
     std::string vertexShader{};
@@ -190,6 +204,73 @@ return 0;
   U32 World::MeshDestroy(std::string const& meshName)
   {
     return 0;
+  }
+
+  void World::PollEvents()
+  {
+    glfwPollEvents();
+
+    for (U32 i{ GLFW_KEY_SPACE }; i < GLFW_KEY_LAST; i++)
+    {
+      I32 action{ glfwGetKey(mGlfwContext, i) };
+
+      mKeyboardKeys[i].Prev = mKeyboardKeys[i].Curr;
+
+      if (action == GLFW_PRESS)
+      {
+        if (mKeyboardKeys[i].Curr != eEventStateDown && mKeyboardKeys[i].Prev != eEventStateHeld)
+        {
+          mKeyboardKeys[i].Curr = eEventStateDown;
+        }
+        else
+        {
+          mKeyboardKeys[i].Curr = eEventStateHeld;
+        }
+      }
+
+      if (action == GLFW_RELEASE)
+      {
+        if (mKeyboardKeys[i].Curr != eEventStateUp && mKeyboardKeys[i].Prev == eEventStateHeld)
+        {
+          mKeyboardKeys[i].Curr = eEventStateUp;
+        }
+        else
+        {
+          mKeyboardKeys[i].Curr = eEventStateNone;
+        }
+      }
+    }
+
+    for (U32 i{}; i < GLFW_MOUSE_BUTTON_LAST; i++)
+    {
+      I32 action{ glfwGetMouseButton(mGlfwContext, i) };
+
+      mMouseKeys[i].Prev = mMouseKeys[i].Curr;
+
+      if (action == GLFW_PRESS)
+      {
+        if (mMouseKeys[i].Curr != eEventStateDown && mMouseKeys[i].Prev != eEventStateHeld)
+        {
+          mMouseKeys[i].Curr = eEventStateDown;
+        }
+        else
+        {
+          mMouseKeys[i].Curr = eEventStateHeld;
+        }
+      }
+
+      if (action == GLFW_RELEASE)
+      {
+        if (mMouseKeys[i].Curr != eEventStateUp && mMouseKeys[i].Prev == eEventStateHeld)
+        {
+          mMouseKeys[i].Curr = eEventStateUp;
+        }
+        else
+        {
+          mMouseKeys[i].Curr = eEventStateNone;
+        }
+      }
+    }
   }
 
   void World::DebugLine(R32V3 p0, R32V3 p1, R32V4 c)
@@ -263,15 +344,13 @@ return 0;
 
   void World::DebugRender()
   {
-    Actor* mainActor{ GetMainActor() };
+    Camera* camera{ GetMainCamera() };
 
-    if (mainActor)
+    if (camera)
     {
       if (mDebugShader.Valid())
       {
         mDebugShader.Bind();
-
-        Camera* camera{ mainActor->GetComponent<Camera>() };
 
         mDebugShader.SetUniformR32M4("UniformProjectionMatrix", camera->GetProjectionMatrix());
         mDebugShader.SetUniformR32M4("UniformViewMatrix", camera->GetViewMatrix());

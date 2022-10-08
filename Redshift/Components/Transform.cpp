@@ -106,6 +106,45 @@ namespace rsh
     mDirtyScale = 1;
   }
 
+  void Transform::AddWorldPosition(R32V3 worldPosition)
+  {
+    mWorldPosition += worldPosition;
+    mDirtyPosition = 1;
+  }
+
+  void Transform::AddWorldRotation(R32V3 worldRotation)
+  {
+    mWorldRotation += glm::radians(worldRotation);
+    mDirtyRotation = 1;
+  }
+
+  void Transform::AddWorldScale(R32V3 worldScale)
+  {
+    mWorldScale += worldScale;
+    mDirtyScale = 1;
+  }
+
+  void Transform::AddLocalPosition(R32V3 localPosition)
+  {
+    mLocalPosition += localPosition;
+    mDirtyPosition = 1;
+  }
+
+  void Transform::AddLocalRotation(R32V3 localRotation)
+  {
+    mLocalRotation += glm::radians(localRotation);
+    mLocalRight = GetLocalQuaternion() * mLocalRight;
+    mLocalUp = GetLocalQuaternion() * mLocalUp;
+    mLocalFront = GetLocalQuaternion() * mLocalFront;
+    mDirtyRotation = 1;
+  }
+
+  void Transform::AddLocalScale(R32V3 localScale)
+  {
+    mLocalScale += localScale;
+    mDirtyScale = 1;
+  }
+
   R32M4 Transform::GetModelMatrix()
   {
     return {};

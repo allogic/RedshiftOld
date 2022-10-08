@@ -2,7 +2,7 @@
 #include <Redshift/Shader.h>
 #include <Redshift/Debug.h>
 
-#include <Editor/HotLoader.h>
+#include <Runtime/HotLoader.h>
 
 ///////////////////////////////////////////////////////////
 // HotLoader implementation

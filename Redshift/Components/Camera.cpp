@@ -20,20 +20,17 @@ namespace rsh
 
   R32M4 Camera::GetProjectionMatrix()
   {
-    R32 aspect{ (R32)mWorld->GetEditorWidth() / mWorld->GetEditorHeight() };
+    R32 aspect{ (R32)mWorld->GetWindowWidth() / mWorld->GetWindowHeight() };
+
     return glm::perspective(glm::radians(mFov), aspect, mNear, mFar);
   }
 
   R32M4 Camera::GetViewMatrix()
   {
-    R32V3 u{ 0.0f, 1.0f, 0.0f };
-    R32V3 f{ 0.0f, 0.0f, 1.0f };
-    R32V3 p{ mActor->GetTransform()->GetWorldPosition() };
-    R32Q r{ mActor->GetTransform()->GetWorldQuaternion() };
+    R32V3 position{ mActor->GetTransform()->GetWorldPosition() };
+    R32V3 up{ mActor->GetTransform()->GetLocalUp() };
+    R32V3 front{ mActor->GetTransform()->GetLocalFront() };
 
-    //f = r * f;
-    //p = r * p;
-
-    return glm::lookAt(p, R32V3{ 0.0f, 0.0f, 0.0f }, u);
+    return glm::lookAt(position, position + front, up);
   }
 }

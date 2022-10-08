@@ -17,7 +17,7 @@
   #error "Platform not supported!"
 #endif
 
-#include <Editor/Watchdog.h>
+#include <Runtime/Watchdog.h>
 
 ///////////////////////////////////////////////////////////
 // HotLoader definition

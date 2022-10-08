@@ -37,7 +37,7 @@ namespace rsh
     std::string const mName{};
 
     /*
-    * Editor specific
+    * Runtime specific
     */
 
   public:
