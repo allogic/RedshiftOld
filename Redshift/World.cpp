@@ -7,6 +7,10 @@
 #include <Redshift/Components/Transform.h>
 #include <Redshift/Components/Camera.h>
 
+#include <Vendor/Glfw/glfw3.h>
+
+#include <Vendor/ImGui/imgui.h>
+
 #if defined(OS_WINDOWS)
   #undef APIENTRY
   #include <windows.h>
@@ -25,6 +29,8 @@ namespace rsh
   World::World(U32 editorWidth, U32 editorHeight)
     : mEditorWidth{ editorWidth }
     , mEditorHeight{ editorHeight }
+    , mGlfwContext{ glfwGetCurrentContext() }
+    , mImGuiContext{ ImGui::GetCurrentContext() }
   {
 
   }

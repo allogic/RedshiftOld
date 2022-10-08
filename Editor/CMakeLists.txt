@@ -4,9 +4,13 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package(OpenGL REQUIRED)
 
-set(TARGET_NAME "Editor")
+set(TARGET_NAME Editor)
 
-file(GLOB_RECURSE SOURCE "${VENDOR_DIR}/Glad/glad.c" "${CMAKE_CURRENT_SOURCE_DIR}/*.c" "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB_RECURSE SOURCE
+  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+  ${VENDOR_DIR}/ImGui/imgui.cpp ${VENDOR_DIR}/ImGui/imgui_draw.cpp ${VENDOR_DIR}/ImGui/imgui_tables.cpp ${VENDOR_DIR}/ImGui/imgui_widgets.cpp ${VENDOR_DIR}/ImGui/imgui_impl_glfw.cpp ${VENDOR_DIR}/ImGui/imgui_impl_opengl3.cpp
+  ${VENDOR_DIR}/Glad/glad.c
+)
 
 add_executable(${TARGET_NAME}
   ${SOURCE}
@@ -17,8 +21,8 @@ set_target_properties(${TARGET_NAME} PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY ${BINARY_DIR}
   RUNTIME_OUTPUT_DIRECTORY ${BINARY_DIR}
   PREFIX ""
-  C_STANDARD "11"
-  CXX_STANDARD "20"
+  C_STANDARD 11
+  CXX_STANDARD 20
 )
 
 target_include_directories(${TARGET_NAME}
@@ -26,16 +30,16 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME}
-  PUBLIC "$<$<PLATFORM_ID:Linux>:stdc++fs>"
-  PUBLIC "$<$<PLATFORM_ID:Linux>:pthread>"
+  PUBLIC $<$<PLATFORM_ID:Linux>:stdc++fs>
+  PUBLIC $<$<PLATFORM_ID:Linux>:pthread>
   PUBLIC ${OPENGL_LIBRARIES}
   PUBLIC ${CMAKE_DL_LIBS}
-  PUBLIC "${BINARY_DIR}/Redshift${STATIC_LIBRARY_EXT}"
-  PUBLIC "${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/glfw3${STATIC_LIBRARY_EXT}"
+  PUBLIC ${BINARY_DIR}/Redshift${STATIC_LIBRARY_EXT}
+  PUBLIC ${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/glfw3${STATIC_LIBRARY_EXT}
 )
 
 target_compile_definitions(${TARGET_NAME}
-  PUBLIC MODULE_DIR="${MODULE_DIR}"
+  PUBLIC MODULE_DIR="${BINARY_DIR}"
   PUBLIC MODULE_EXT="${SHARED_LIBRARY_EXT}"
   PUBLIC MODULE_STREAMING_DIR="${MODULE_STREAMING_DIR}"
   PUBLIC SHADER_DIR="${SHADER_DIR}"
@@ -44,6 +48,6 @@ target_compile_definitions(${TARGET_NAME}
 )
 
 #target_compile_options(${TARGET_NAME}
-#  PUBLIC "$<$<CONFIG:Debug>:-O0 -g>"
-#  PUBLIC "$<$<CONFIG:Release>:-Ofast>"
+#  PUBLIC $<$<CONFIG:Debug>:-O0 -g>
+#  PUBLIC $<$<CONFIG:Release>:-Ofast>
 #)

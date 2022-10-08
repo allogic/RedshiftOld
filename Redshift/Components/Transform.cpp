@@ -16,18 +16,18 @@ namespace rsh
 
   void Transform::ApplyTransform(Transform* other)
   {
-    SetLocalPosition(other->GetLocalPosition());
-    SetLocalRotation(other->GetLocalRotation());
-    SetLocalScale(other->GetLocalScale());
-
     SetWorldPosition(other->GetWorldPosition());
-    SetWorldRotation(other->GetWorldRotation());
+    SetWorldRotation(glm::degrees(other->GetWorldRotation()));
     SetWorldScale(other->GetWorldScale());
+
+    SetLocalPosition(other->GetLocalPosition());
+    SetLocalRotation(glm::degrees(other->GetLocalRotation()));
+    SetLocalScale(other->GetLocalScale());
   }
 
   R32V3 Transform::GetWorldPosition() const
   {
-    return mWorldPosition + mLocalPosition;
+    return mWorldPosition;
   }
 
   R32V3 Transform::GetWorldRotation() const
@@ -67,14 +67,13 @@ namespace rsh
 
   void Transform::SetWorldPosition(R32V3 worldPosition)
   {
-    mWorldPosition = GetWorldQuaternion() * worldPosition;
+    mWorldPosition = GetWorldQuaternion() * worldPosition + mLocalPosition;
     mDirtyPosition = 1;
   }
 
   void Transform::SetWorldRotation(R32V3 worldRotation)
   {
     mWorldRotation = glm::radians(worldRotation);
-    SetWorldPosition(mWorldPosition);
     mDirtyRotation = 1;
   }
 
@@ -86,14 +85,15 @@ namespace rsh
 
   void Transform::SetLocalPosition(R32V3 localPosition)
   {
-    mLocalPosition = GetLocalQuaternion() * localPosition;
+    mLocalPosition = localPosition;
     mDirtyPosition = 1;
   }
 
   void Transform::SetLocalRotation(R32V3 localRotation)
   {
     mLocalRotation = glm::radians(localRotation);
-    SetLocalPosition(mLocalPosition);
+    //R32Q q{ GetLocalQuaternion() };
+    //mLocalRotation = glm::radians(R32V3{ q.x, q.y, q.z });
     mLocalRight = GetLocalQuaternion() * mLocalRight;
     mLocalUp = GetLocalQuaternion() * mLocalUp;
     mLocalFront = GetLocalQuaternion() * mLocalFront;
@@ -112,24 +112,24 @@ namespace rsh
   }
 
   void Transform::ReEvaluateTransform()
-  {
-    if (mDirtyRotation)
-    {
-      mDirtyRotation = 0;
-
-      for (Actor* child : mActor->GetChildren())
-      {
-        child->GetTransform()->SetWorldRotation(mWorldRotation);
-      }
-    }
-
+  {    
     if (mDirtyPosition)
     {
       mDirtyPosition = 0;
-
+    
       for (Actor* child : mActor->GetChildren())
       {
         child->GetTransform()->SetWorldPosition(mWorldPosition);
+      }
+    }
+
+    if (mDirtyRotation)
+    {
+      mDirtyRotation = 0;
+    
+      for (Actor* child : mActor->GetChildren())
+      {
+        child->GetTransform()->SetWorldRotation(mWorldRotation);
       }
     }
   }

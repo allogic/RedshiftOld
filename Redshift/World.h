@@ -15,6 +15,9 @@
 // World definition
 ///////////////////////////////////////////////////////////
 
+struct GLFWwindow;
+struct ImGuiContext;
+
 namespace rsh
 {
   class World
@@ -32,6 +35,9 @@ namespace rsh
     */
 
   public:
+    inline GLFWwindow* GetGlfwContext() const { return mGlfwContext; }
+    inline ImGuiContext* GetImGuiContext() const { return mImGuiContext; }
+
     inline U32 GetEditorWidth() { return mEditorWidth; }
     inline U32 GetEditorHeight() { return mEditorHeight; }
 
@@ -47,6 +53,9 @@ namespace rsh
     void Update(R32 timeDelta);
 
   private:
+    GLFWwindow* mGlfwContext{};
+    ImGuiContext* mImGuiContext{};
+
     U32 mEditorWidth{};
     U32 mEditorHeight{};
 

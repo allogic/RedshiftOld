@@ -7,13 +7,13 @@ namespace rsh
   static Event::EventRecord sKeyboardKeys[GLFW_KEY_LAST];
   static Event::EventRecord sMouseKeys[GLFW_MOUSE_BUTTON_LAST];
 
-  void Event::Poll(GLFWwindow* window)
+  void Event::Poll(GLFWwindow* context)
   {
     glfwPollEvents();
 
     for (U32 i{ GLFW_KEY_SPACE }; i < GLFW_KEY_LAST; i++)
     {
-      I32 action{ glfwGetKey(window, i) };
+      I32 action{ glfwGetKey(context, i) };
 
       sKeyboardKeys[i].Prev = sKeyboardKeys[i].Curr;
 
@@ -44,7 +44,7 @@ namespace rsh
 
     for (U32 i{}; i < GLFW_MOUSE_BUTTON_LAST; i++)
     {
-      I32 action{ glfwGetMouseButton(window, i) };
+      I32 action{ glfwGetMouseButton(context, i) };
 
       sMouseKeys[i].Prev = sMouseKeys[i].Curr;
 

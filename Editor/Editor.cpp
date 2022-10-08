@@ -11,6 +11,10 @@
 
 #include <Vendor/Glfw/glfw3.h>
 
+#include <Vendor/ImGui/imgui.h>
+#include <Vendor/ImGui/imgui_impl_glfw.h>
+#include <Vendor/ImGui/imgui_impl_opengl3.h>
+
 using namespace rsh;
 
 ///////////////////////////////////////////////////////////
@@ -20,7 +24,6 @@ using namespace rsh;
 static U32 const sEditorWidth{ 1280 };
 static U32 const sEditorHeight{ 720 };
 
-static GLFWwindow* sWindow{};
 static World* sWorld{};
 
 static U32 sFps{};
@@ -45,7 +48,7 @@ static void GlfwDebugProc(I32 error, char const* message)
 {
   RSH_LOG("%s\n", message);
 }
-static void GlfwResizeProc(GLFWwindow* window, I32 width, I32 height)
+static void GlfwResizeProc(GLFWwindow* context, I32 width, I32 height)
 {
   if (sWorld)
   {
@@ -53,7 +56,7 @@ static void GlfwResizeProc(GLFWwindow* window, I32 width, I32 height)
     sWorld->SetEditorHeight((U32)height);
   }
 }
-static void GlfwMouseProc(GLFWwindow* window, R64 x, R64 y)
+static void GlfwMouseProc(GLFWwindow* context, R64 x, R64 y)
 {
   if (sWorld)
   {
@@ -80,17 +83,16 @@ static void GlDebugCallback(U32 source, U32 type, U32 id, U32 severity, I32 leng
 // Main loop abstraction
 ///////////////////////////////////////////////////////////
 
-static void UpdateFps()
+static void UpdateFps(GLFWwindow* context)
 {
   sFps++;
   if ((sTime - sTimeFpsPrev) > 1.0f)
   {
     sTimeFpsPrev = sTime;
-    glfwSetWindowTitle(sWindow, std::string{ std::string{ "Editor Fps:" } + std::to_string(sFps) }.c_str());
+    glfwSetWindowTitle(context, std::string{ std::string{ "Editor Fps:" } + std::to_string(sFps) }.c_str());
     sFps = 0;
   }
 }
-
 static void UpdateHotLoader(HotLoader& hotLoader)
 {
   if ((sTime - sTimeHotLoadPrev) > (1.0f / sHotLoadFps))
@@ -116,21 +118,36 @@ I32 main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    sWindow = glfwCreateWindow(sEditorWidth, sEditorHeight, "", nullptr, nullptr);
+    GLFWwindow* glfwContext = glfwCreateWindow(sEditorWidth, sEditorHeight, "", nullptr, nullptr);
 
-    if (sWindow)
+    if (glfwContext)
     {
-      glfwSetWindowSizeCallback(sWindow, GlfwResizeProc);
-      glfwSetCursorPosCallback(sWindow, GlfwMouseProc);
+      glfwSetWindowSizeCallback(glfwContext, GlfwResizeProc);
+      glfwSetCursorPosCallback(glfwContext, GlfwMouseProc);
 
-      glfwMakeContextCurrent(sWindow);
+      glfwMakeContextCurrent(glfwContext);
+      glfwSwapInterval(0);
 
       if (gladLoadGL())
       {
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(GlDebugCallback, 0);
 
-        glfwSwapInterval(0);
+        IMGUI_CHECKVERSION();
+        ImGuiContext* imGuiContext{ ImGui::CreateContext() };
+
+        ImGuiIO& imGuiIo{ ImGui::GetIO() };
+        imGuiIo.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        imGuiIo.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        imGuiIo.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+        ImGuiStyle& imGuiStyle{ ImGui::GetStyle() };
+        imGuiStyle.WindowRounding = 0.0f;
+        imGuiStyle.FrameBorderSize = 0.0f;
+        imGuiStyle.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+        ImGui_ImplGlfw_InitForOpenGL(glfwContext, 1);
+        ImGui_ImplOpenGL3_Init("#version 450 core");
 
         World world{ sEditorWidth, sEditorHeight };
         HotLoader hotLoader{
@@ -140,35 +157,53 @@ I32 main()
         };
 
         sWorld = &world;
-        while (!glfwWindowShouldClose(sWindow))
+        while (!glfwWindowShouldClose(glfwContext))
         {
           sTime = (R32)glfwGetTime();
           sTimeDelta = sTime - sTimePrev;
           sTimePrev = sTime;
 
-          UpdateFps();
-          UpdateHotLoader(hotLoader);
-          
-          world.Update(sTimeDelta);
-
           glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
           glClear(GL_COLOR_BUFFER_BIT);
           glViewport(0, 0, world.GetEditorWidth(), world.GetEditorHeight());
 
+          UpdateFps(glfwContext);
+          UpdateHotLoader(hotLoader);
+          
+          ImGui_ImplGlfw_NewFrame();
+          ImGui_ImplOpenGL3_NewFrame();
+
+          ImGui::NewFrame();
+          ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+
+          world.Update(sTimeDelta);
           world.DebugRender();
 
-          Event::Poll(sWindow);
+          ImGui::Render();
 
-          glfwSwapBuffers(sWindow);
+          ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+          ImGui::UpdatePlatformWindows();
+          ImGui::RenderPlatformWindowsDefault();
+
+          Event::Poll(glfwContext);
+
+          glfwMakeContextCurrent(glfwContext);
+          glfwSwapBuffers(glfwContext);
         }
         sWorld = nullptr;
+
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+
+        ImGui::DestroyContext(imGuiContext);
       }
       else
       {
         RSH_LOG("Failed initializing GL\n");
       }
 
-      glfwDestroyWindow(sWindow);
+      glfwDestroyWindow(glfwContext);
       glfwTerminate();
     }
     else

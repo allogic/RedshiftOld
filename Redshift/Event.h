@@ -26,7 +26,7 @@ namespace rsh
     };
 
   public:
-    static void Poll(GLFWwindow* window);
+    static void Poll(GLFWwindow* context);
 
   public:
     static U32 KeyDown(U32 key);
