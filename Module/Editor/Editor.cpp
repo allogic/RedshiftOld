@@ -43,7 +43,14 @@ public:
     {
       mousePositionStart = GetWorld()->GetMousePosition();
     }
-    if (GetWorld()->MouseHeld(World::eMouseCodeRight))
+    if (GetWorld()->MouseHeld(World::eMouseCodeRight) && GetWorld()->MouseHeld(World::eMouseCodeLeft))
+    {
+      mousePositionDelta = mousePositionStart - GetWorld()->GetMousePosition();
+      R32V3 worldPosition{ GetTransform()->GetWorldPosition() };
+      worldPosition.y += mousePositionDelta.y * mMovementSpeed;
+      GetTransform()->SetWorldPosition(worldPosition);
+    }
+    else if (GetWorld()->MouseHeld(World::eMouseCodeRight))
     {
       mousePositionDelta = mousePositionStart - GetWorld()->GetMousePosition();
       R32V3 localRotation{ GetTransform()->GetLocalRotation() };
@@ -51,9 +58,9 @@ public:
       localRotation.y += mousePositionDelta.x * mRotationSpeed;
       if (localRotation.x < -90.0f) localRotation.x = -90.0f;
       if (localRotation.x > 90.0f) localRotation.x = 90.0f;
-      mousePositionStart -= mousePositionDelta * mRotationDamping;
       GetTransform()->SetLocalRotation(localRotation);
     }
+    mousePositionStart -= mousePositionDelta * mMouseDragDamping;
   }
 
 private:
@@ -62,7 +69,7 @@ private:
   R32 mMovementSpeed{ 0.05f };
   R32 mRotationSpeed{ 0.05f };
 
-  R32 mRotationDamping{ 0.1f };
+  R32 mMouseDragDamping{ 0.1f };
 };
 
 ///////////////////////////////////////////////////////////

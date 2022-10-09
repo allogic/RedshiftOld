@@ -79,11 +79,11 @@ public:
     Box* root{ GetWorld()->ActorCreate<Box>("Root") };
 
     root->GetTransform()->SetWorldPosition(R32V3{ 3.0f, 0.0f, 0.0f });
-    root->GetTransform()->SetWorldRotation(R32V3{ 0.0f, 45.0f, 0.0f });
+    //root->GetTransform()->SetWorldRotation(R32V3{ 0.0f, 45.0f, 0.0f });
     root->GetTransform()->SetWorldScale(R32V3{ 1.0f, 1.0f, 1.0f });
 
     root->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 0.0f, 0.0f });
-    root->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 45.0f, 0.0f });
+    //root->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 45.0f, 0.0f });
     root->GetTransform()->SetLocalScale(R32V3{ 1.0f, 1.0f, 1.0f });
 
     mBoxes.emplace_back(root);
@@ -93,7 +93,7 @@ public:
     {
       Box* box{ GetWorld()->ActorCreate<Box>(std::string{ "Box" } + std::to_string(i), boxPrev) };
 
-      box->GetTransform()->SetLocalPosition(box->GetTransform()->GetLocalRight() * 2.0f);
+      box->GetTransform()->SetLocalPosition(box->GetTransform()->GetLocalFront() * 2.0f);
       //box->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 10.0f, 0.0f });
       //box->GetTransform()->SetLocalScale(R32V3{ 1.0f, 1.0f, 1.0f });
 
@@ -154,6 +154,8 @@ protected:
     //mBoxes[0]->GetTransform()->SetWorldPosition(mBoxes[0]->GetTransform()->GetLocalRight() * glm::sin(x * 10.0f) * 5.0f);
     mBoxes[0]->GetTransform()->SetWorldRotation(R32V3{ 0.0f, yaw, 0.0f });
     mBoxes[0]->GetTransform()->SetLocalRotation(R32V3{ 0.0f, yaw, 0.0f });
+
+    mBoxes[4]->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 0.0f, yaw });
   }
 
 private:

@@ -29,7 +29,7 @@ namespace rsh
   {
     if (mActor->GetParent())
     {
-      return mWorldPosition;
+      return GetWorldQuaternion() * mWorldPosition + GetLocalQuaternion() * mLocalPosition;
     }
     else
     {
@@ -74,7 +74,7 @@ namespace rsh
 
   void Transform::SetWorldPosition(R32V3 worldPosition)
   {
-    mWorldPosition = worldPosition + mLocalPosition;
+    mWorldPosition = worldPosition;
     mDirtyPosition = 1;
   }
 
@@ -122,6 +122,10 @@ namespace rsh
   void Transform::AddWorldRotation(R32V3 worldRotation)
   {
     mWorldRotation += glm::radians(worldRotation);
+    mLocalRight = GetLocalQuaternion() * GetWorldRight();
+    mLocalUp = GetLocalQuaternion() * GetWorldUp();
+    mLocalFront = GetLocalQuaternion() * GetWorldFront();
+    mDirtyPosition = 1;
     mDirtyRotation = 1;
   }
 
@@ -143,6 +147,7 @@ namespace rsh
     mLocalRight = GetLocalQuaternion() * GetWorldRight();
     mLocalUp = GetLocalQuaternion() * GetWorldUp();
     mLocalFront = GetLocalQuaternion() * GetWorldFront();
+    mDirtyPosition = 1;
     mDirtyRotation = 1;
   }
 
@@ -179,6 +184,7 @@ namespace rsh
 
       for (Actor* child : mActor->GetChildren())
       {
+        child->GetTransform()->SetWorldPosition(GetWorldPosition());
         child->GetTransform()->SetLocalRotation(GetLocalRotation());
         child->GetTransform()->EvaluateChildRotations();
       }
