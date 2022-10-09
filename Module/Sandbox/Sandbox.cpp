@@ -79,7 +79,7 @@ public:
     Box* root{ GetWorld()->ActorCreate<Box>("Root") };
 
     root->GetTransform()->SetWorldPosition(R32V3{ 3.0f, 0.0f, 0.0f });
-    //root->GetTransform()->SetWorldRotation(R32V3{ 0.0f, 45.0f, 0.0f });
+    root->GetTransform()->SetWorldRotation(R32V3{ 0.0f, 45.0f, 0.0f });
     root->GetTransform()->SetWorldScale(R32V3{ 1.0f, 1.0f, 1.0f });
 
     root->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 0.0f, 0.0f });
@@ -144,13 +144,16 @@ protected:
     static R32 x{};
     x += timeDelta;
 
-    for (U32 i{}; i < 7; i++)
-    {
-      mBoxes[i + 1]->GetTransform()->SetLocalRotation(R32V3{ 27.5f + glm::sin(x) * 45.0f, 0.0f, 0.0f });
-    }
+    //for (U32 i{}; i < 7; i++)
+    //{
+    //  mBoxes[i + 1]->GetTransform()->SetLocalRotation(R32V3{ glm::sin(x) * 90.0f, 0.0f, 0.0f });
+    //}
 
-    //mBoxes[0]->GetTransform()->SetWorldPosition(mBoxes[0]->GetTransform()->GetLocalRight() * glm::sin(x) * 5.0f);
-    //mBoxes[0]->GetTransform()->SetWorldRotation(R32V3{ 0.0f, x * 10.0f, 0.0f });
+    static R32 yaw{};
+    yaw += timeDelta * 50.0f;
+    //mBoxes[0]->GetTransform()->SetWorldPosition(mBoxes[0]->GetTransform()->GetLocalRight() * glm::sin(x * 10.0f) * 5.0f);
+    mBoxes[0]->GetTransform()->SetWorldRotation(R32V3{ 0.0f, yaw, 0.0f });
+    mBoxes[0]->GetTransform()->SetLocalRotation(R32V3{ 0.0f, yaw, 0.0f });
   }
 
 private:

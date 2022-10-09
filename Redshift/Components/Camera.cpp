@@ -22,7 +22,7 @@ namespace rsh
   {
     R32 aspect{ mWorld->GetAspectRatio() };
 
-    return glm::perspective(mFov, aspect, mNear, mFar);
+    return glm::perspective(glm::radians(mFov), aspect, mNear, mFar);
   }
 
   R32M4 Camera::GetViewMatrix()

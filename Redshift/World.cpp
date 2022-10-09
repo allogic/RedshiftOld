@@ -141,8 +141,14 @@ return 0;
 
     for (auto const& [name, actor] : mActors)
     {
-      actor->GetTransform()->ReEvaluateTransform();
       actor->Update(timeDelta);
+
+      if (!actor->GetParent())
+      {
+        actor->GetTransform()->EvaluateChildScales();
+        actor->GetTransform()->EvaluateChildRotations();
+        actor->GetTransform()->EvaluateChildPositions();
+      }
     }
   }
 

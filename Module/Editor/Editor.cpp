@@ -31,8 +31,8 @@ public:
     if (GetWorld()->KeyHeld(World::eKeyCodeD)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalRight() * mMovementSpeed);
     if (GetWorld()->KeyHeld(World::eKeyCodeA)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalRight() * mMovementSpeed);
 
-    if (GetWorld()->KeyHeld(World::eKeyCodeE)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalUp() * mMovementSpeed);
-    if (GetWorld()->KeyHeld(World::eKeyCodeQ)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalUp() * mMovementSpeed);
+    if (GetWorld()->KeyHeld(World::eKeyCodeE)) GetTransform()->AddWorldPosition(GetTransform()->GetWorldUp() * mMovementSpeed);
+    if (GetWorld()->KeyHeld(World::eKeyCodeQ)) GetTransform()->AddWorldPosition(-GetTransform()->GetWorldUp() * mMovementSpeed);
 
     if (GetWorld()->KeyHeld(World::eKeyCodeW)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalFront() * mMovementSpeed);
     if (GetWorld()->KeyHeld(World::eKeyCodeS)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalFront() * mMovementSpeed);
@@ -94,6 +94,7 @@ public:
     Module::Update(timeDelta);
 
     DebugActors();
+    DebugComponents();
   }
 
 private:
@@ -111,21 +112,103 @@ private:
 
     ImGui::End();
   }
+  void DebugComponents()
+  {
+    ImGui::Begin("Components");
+
+    if (mSelectedActor)
+    {
+      for (auto const& [hash, component] : mSelectedActor->GetComponents())
+      {
+        if (hash == typeid(Transform).hash_code())
+        {
+          Transform* transform{ (Transform*)component };
+
+          if (ImGui::TreeNode("Transform"))
+          {
+            R32V3 worldPosition{ transform->GetWorldPosition() };
+            ImGui::DragFloat3("##World Position", &worldPosition[0], 0.1f);
+            transform->SetWorldPosition(worldPosition);
+
+            R32V3 worldRotation{ transform->GetWorldRotation() };
+            ImGui::DragFloat3("##World Rotation", &worldRotation[0], 0.1f);
+            transform->SetWorldRotation(worldRotation);
+
+            R32V3 worldScale{ transform->GetWorldScale() };
+            ImGui::DragFloat3("##World Scale", &worldScale[0], 0.1f);
+            transform->SetWorldScale(worldScale);
+
+            R32V3 localPosition{ transform->GetLocalPosition() };
+            ImGui::DragFloat3("##Local Position", &localPosition[0], 0.1f);
+            transform->SetLocalPosition(localPosition);
+
+            R32V3 localRotation{ transform->GetLocalRotation() };
+            ImGui::DragFloat3("##Local Rotation", &localRotation[0], 0.1f);
+            transform->SetLocalRotation(localRotation);
+
+            R32V3 localScale{ transform->GetLocalScale() };
+            ImGui::DragFloat3("##Local Scale", &localScale[0], 0.1f);
+            transform->SetLocalScale(localScale);
+
+            ImGui::TreePop();
+          }
+        }
+        else if (hash == typeid(Camera).hash_code())
+        {
+          Camera* camera{ (Camera*)component };
+
+          if (ImGui::TreeNode("Camera"))
+          {
+            R32 fov{ camera->GetFov() };
+            ImGui::DragFloat("##Fov", &fov);
+            camera->SetFov(fov);
+
+            R32 near{ camera->GetNear() };
+            ImGui::DragFloat("##Near", &near);
+            camera->SetNear(near);
+
+            R32 far{ camera->GetFar() };
+            ImGui::DragFloat("##Far", &far);
+            camera->SetFar(far);
+
+            ImGui::TreePop();
+          }
+        }
+        else
+        {
+          if (ImGui::TreeNode("Unknown"))
+          {
+            ImGui::TreePop();
+          }
+        }
+      }
+    }
+
+    ImGui::End();
+  }
 
 private:
   void DebugActor(Actor* actor)
   {
-    if (ImGui::CollapsingHeader(actor->GetName().c_str()))
+    if (ImGui::TreeNode(actor->GetName().c_str()))
     {
+      if (ImGui::Selectable(actor->GetName().c_str(), mSelectedActor == actor))
+      {
+        mSelectedActor = actor;
+      }
+
       for (Actor* child : actor->GetChildren())
       {
         DebugActor(child);
       }
+      ImGui::TreePop();
     }
   }
 
 private:
   Player* mPlayer{};
+
+  Actor* mSelectedActor{};
 };
 
 DECLARE_MODULE_IMPL(Editor);

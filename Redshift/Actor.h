@@ -69,6 +69,9 @@ namespace rsh
     template<typename C>
     C* GetComponent();
 
+  public:
+    inline std::map<U64, Component*> const& GetComponents() const { return mComponents; }
+
   private:
     std::map<U64, Component*> mComponents{};
 

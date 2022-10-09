@@ -61,7 +61,11 @@ namespace rsh
 
   public:
     R32M4 GetModelMatrix();
-    void ReEvaluateTransform();
+
+  public:
+    void EvaluateChildPositions();
+    void EvaluateChildRotations();
+    void EvaluateChildScales();
 
   private:
     U32 mDirtyPosition{};

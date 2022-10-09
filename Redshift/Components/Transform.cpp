@@ -17,7 +17,7 @@ namespace rsh
   void Transform::ApplyTransform(Transform* other)
   {
     SetWorldPosition(other->GetWorldPosition());
-    SetWorldRotation(other->GetWorldRotation());
+    //SetWorldRotation(other->GetWorldRotation());
     SetWorldScale(other->GetWorldScale());
 
     SetLocalPosition(other->GetLocalPosition());
@@ -27,7 +27,14 @@ namespace rsh
 
   R32V3 Transform::GetWorldPosition() const
   {
-    return mWorldPosition;
+    if (mActor->GetParent())
+    {
+      return mWorldPosition;
+    }
+    else
+    {
+      return GetWorldQuaternion() * mWorldPosition;
+    }
   }
 
   R32V3 Transform::GetWorldRotation() const
@@ -67,13 +74,14 @@ namespace rsh
 
   void Transform::SetWorldPosition(R32V3 worldPosition)
   {
-    mWorldPosition = GetWorldQuaternion() * worldPosition + mLocalPosition;
+    mWorldPosition = worldPosition + mLocalPosition;
     mDirtyPosition = 1;
   }
 
   void Transform::SetWorldRotation(R32V3 worldRotation)
   {
     mWorldRotation = glm::radians(worldRotation);
+    mDirtyPosition = 1;
     mDirtyRotation = 1;
   }
 
@@ -95,6 +103,7 @@ namespace rsh
     mLocalRight = GetLocalQuaternion() * GetWorldRight();
     mLocalUp = GetLocalQuaternion() * GetWorldUp();
     mLocalFront = GetLocalQuaternion() * GetWorldFront();
+    mDirtyPosition = 1;
     mDirtyRotation = 1;
   }
 
@@ -148,25 +157,44 @@ namespace rsh
     return {};
   }
 
-  void Transform::ReEvaluateTransform()
-  {    
+  void Transform::EvaluateChildPositions()
+  {
     if (mDirtyPosition)
     {
       mDirtyPosition = 0;
-    
+
       for (Actor* child : mActor->GetChildren())
       {
-        child->GetTransform()->SetWorldPosition(mWorldPosition);
+        child->GetTransform()->SetWorldPosition(GetWorldPosition());
+        child->GetTransform()->EvaluateChildPositions();
       }
     }
+  }
 
+  void Transform::EvaluateChildRotations()
+  {
     if (mDirtyRotation)
     {
       mDirtyRotation = 0;
-    
+
       for (Actor* child : mActor->GetChildren())
       {
-        child->GetTransform()->SetWorldRotation(mWorldRotation);
+        child->GetTransform()->SetLocalRotation(GetLocalRotation());
+        child->GetTransform()->EvaluateChildRotations();
+      }
+    }
+  }
+
+  void Transform::EvaluateChildScales()
+  {
+    if (mDirtyScale)
+    {
+      mDirtyScale = 0;
+
+      for (Actor* child : mActor->GetChildren())
+      {
+        child->GetTransform()->SetWorldScale(GetWorldScale());
+        child->GetTransform()->EvaluateChildScales();
       }
     }
   }
