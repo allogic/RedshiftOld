@@ -28,9 +28,9 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + R32V3{ 2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
-    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + R32V3{ 0.0f, 2.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
-    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + R32V3{ 0.0f, 0.0f, 2.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
+    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + GetTransform()->GetWorldRight() * 2.0f, R32V4{1.0f, 0.0f, 0.0f, 1.0f});
+    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + GetTransform()->GetWorldUp() * 2.0f, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + GetTransform()->GetWorldFront() * 2.0f, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
     GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + GetTransform()->GetLocalRight() * 2.0f, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
     GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldPosition() + GetTransform()->GetLocalUp() * 2.0f, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
@@ -74,7 +74,7 @@ public:
   {
     mPlayer = GetWorld()->ActorCreate<Player>("GamePlayer");
 
-    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 3.0f, -15.0f });
+    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -15.0f });
 
     Box* root{ GetWorld()->ActorCreate<Box>("Root") };
 
@@ -109,10 +109,10 @@ public:
       RSH_LOG("Box:[%u] WP:[%.02f %.02f %.02f] WR:[%.02f %.02f %.02f] WS:[%.02f %.02f %.02f] LP:[%.02f %.02f %.02f] LR:[%.02f %.02f %.02f] LS:[%.02f %.02f %.02f]\n",
         i,
         mBoxes[i]->GetTransform()->GetWorldPosition().x, mBoxes[i]->GetTransform()->GetWorldPosition().y, mBoxes[i]->GetTransform()->GetWorldPosition().z,
-        glm::degrees(mBoxes[i]->GetTransform()->GetWorldRotation().x), glm::degrees(mBoxes[i]->GetTransform()->GetWorldRotation().y), glm::degrees(mBoxes[i]->GetTransform()->GetWorldRotation().z),
+        mBoxes[i]->GetTransform()->GetWorldRotation().x, mBoxes[i]->GetTransform()->GetWorldRotation().y, mBoxes[i]->GetTransform()->GetWorldRotation().z,
         mBoxes[i]->GetTransform()->GetWorldScale().x, mBoxes[i]->GetTransform()->GetWorldScale().y, mBoxes[i]->GetTransform()->GetWorldScale().z,
         mBoxes[i]->GetTransform()->GetLocalPosition().x, mBoxes[i]->GetTransform()->GetLocalPosition().y, mBoxes[i]->GetTransform()->GetLocalPosition().z,
-        glm::degrees(mBoxes[i]->GetTransform()->GetLocalRotation().x), glm::degrees(mBoxes[i]->GetTransform()->GetLocalRotation().y), glm::degrees(mBoxes[i]->GetTransform()->GetLocalRotation().z),
+        mBoxes[i]->GetTransform()->GetLocalRotation().x, mBoxes[i]->GetTransform()->GetLocalRotation().y, mBoxes[i]->GetTransform()->GetLocalRotation().z,
         mBoxes[i]->GetTransform()->GetLocalScale().x, mBoxes[i]->GetTransform()->GetLocalScale().y, mBoxes[i]->GetTransform()->GetLocalScale().z
       );
     }
@@ -137,7 +137,7 @@ protected:
   {
     Module::Update(timeDelta);
 
-    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ -2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 2.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 2.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 

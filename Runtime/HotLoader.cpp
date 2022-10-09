@@ -35,9 +35,9 @@ namespace rsh
 
   void HotLoader::UpdateModules()
   {
-    mModuleWatchdog.Update();
+    mModuleWatchDog.Update();
     
-    for (auto const& file : mModuleWatchdog.GetFilesDeleted())
+    for (auto const& file : mModuleWatchDog.GetFilesDeleted())
     {
       std::filesystem::path tempFile{ mModuleStreamingPath / file.filename().string() };
 
@@ -49,7 +49,7 @@ namespace rsh
       }
     }
     
-    for (auto const& file : mModuleWatchdog.GetFilesModified())
+    for (auto const& file : mModuleWatchDog.GetFilesModified())
     {
       std::filesystem::path tempFile{ mModuleStreamingPath / file.filename().string() };
 
@@ -72,7 +72,7 @@ namespace rsh
       }
     }
     
-    for (auto const& file : mModuleWatchdog.GetFilesCreated())
+    for (auto const& file : mModuleWatchDog.GetFilesCreated())
     {
       std::filesystem::path tempFile{ mModuleStreamingPath / file.filename().string() };
 
@@ -91,9 +91,9 @@ namespace rsh
 
   void HotLoader::UpdateShaders()
   {
-    mShaderWatchdog.Update();
+    mShaderWatchDog.Update();
 
-    for (auto const& file : mShaderWatchdog.GetFilesDeleted())
+    for (auto const& file : mShaderWatchDog.GetFilesDeleted())
     {
       std::filesystem::path tempFile{ mShaderStreamingPath / file.filename().string() };
 
@@ -105,7 +105,7 @@ namespace rsh
       }
     }
     
-    for (auto const& file : mShaderWatchdog.GetFilesModified())
+    for (auto const& file : mShaderWatchDog.GetFilesModified())
     {
       std::filesystem::path tempFile{ mShaderStreamingPath / file.filename().string() };
 
@@ -128,7 +128,7 @@ namespace rsh
       }
     }
     
-    for (auto const& file : mShaderWatchdog.GetFilesCreated())
+    for (auto const& file : mShaderWatchDog.GetFilesCreated())
     {
       std::filesystem::path tempFile{ mShaderStreamingPath / file.filename().string() };
 

@@ -40,8 +40,9 @@ namespace rsh
     inline GLFWwindow* GetGlfwContext() const { return mGlfwContext; }
     inline ImGuiContext* GetImGuiContext() const { return mImGuiContext; }
 
-    inline U32 GetWindowWidth() { return mWindowWidth; }
-    inline U32 GetWindowHeight() { return mWindowHeight; }
+    inline U32 GetWindowWidth() const { return mWindowWidth; }
+    inline U32 GetWindowHeight() const { return mWindowHeight; }
+    inline R32 GetAspectRatio() const { return (R32)mWindowWidth / mWindowHeight; }
 
     inline R32V2 GetMousePosition() { return mMousePosition; }
 
@@ -167,6 +168,21 @@ namespace rsh
       eKeyCodeX = 88,
       eKeyCodeY = 89,
       eKeyCodeZ = 90,
+    };
+
+    enum MouseCode
+    {
+      eMouseCode1      = 0,
+      eMouseCode2      = 1,
+      eMouseCode3      = 2,
+      eMouseCode4      = 3,
+      eMouseCode5      = 4,
+      eMouseCode6      = 5,
+      eMouseCode7      = 6,
+      eMouseCode8      = 7,
+      eMouseCodeLeft   = 0,
+      eMouseCodeRight  = 1,
+      eMouseCodeMiddle = 2,
     };
 
   private:

@@ -33,7 +33,7 @@ namespace rsh
     R32M4 GetViewMatrix();
 
   private:
-    R32 mFov{ 45.0f };
+    R32 mFov{ glm::radians(45.0f) };
     R32 mNear{ 0.001f };
     R32 mFar{ 1000.0f };
   };

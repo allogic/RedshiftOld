@@ -1,6 +1,6 @@
 #include <Redshift/Types.h>
 
-#include <Runtime/Watchdog.h>
+#include <Runtime/WatchDog.h>
 
 ///////////////////////////////////////////////////////////
 // Watchdog implementation
@@ -8,21 +8,21 @@
 
 namespace rsh
 {
-  Watchdog::Watchdog(std::filesystem::path const& scanPath, std::string const& fileExt)
+  WatchDog::WatchDog(std::filesystem::path const& scanPath, std::string const& fileExt)
     : mScanPath{ scanPath }
     , mFileExt{ fileExt }
   {
     std::filesystem::create_directory(mScanPath);
   }
 
-  void Watchdog::Update()
+  void WatchDog::Update()
   {
     CheckFilesDeleted();
     CheckFilesModified();
     CheckFilesCreated();
   }
 
-  void Watchdog::CheckFilesCreated()
+  void WatchDog::CheckFilesCreated()
   {
     mFilesCreated.clear();
     for (auto const& file : std::filesystem::directory_iterator{ mScanPath })
@@ -34,7 +34,7 @@ namespace rsh
     }
   }
 
-  void Watchdog::CheckFilesDeleted()
+  void WatchDog::CheckFilesDeleted()
   {
     mFilesDeleted.clear();
     std::erase_if(mFileInfos, [&](auto const& fileInfo)
@@ -46,7 +46,7 @@ namespace rsh
       });
   }
 
-  void Watchdog::CheckFilesModified()
+  void WatchDog::CheckFilesModified()
   {
     mFilesModified.clear();
     for (auto& [file, prevTime] : mFileInfos)

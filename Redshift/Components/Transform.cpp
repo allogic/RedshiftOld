@@ -17,11 +17,11 @@ namespace rsh
   void Transform::ApplyTransform(Transform* other)
   {
     SetWorldPosition(other->GetWorldPosition());
-    SetWorldRotation(glm::degrees(other->GetWorldRotation()));
+    SetWorldRotation(other->GetWorldRotation());
     SetWorldScale(other->GetWorldScale());
 
     SetLocalPosition(other->GetLocalPosition());
-    SetLocalRotation(glm::degrees(other->GetLocalRotation()));
+    SetLocalRotation(other->GetLocalRotation());
     SetLocalScale(other->GetLocalScale());
   }
 
@@ -32,7 +32,7 @@ namespace rsh
 
   R32V3 Transform::GetWorldRotation() const
   {
-    return mWorldRotation;
+    return glm::degrees(mWorldRotation);
   }
 
   R32Q Transform::GetWorldQuaternion() const
@@ -52,7 +52,7 @@ namespace rsh
 
   R32V3 Transform::GetLocalRotation() const
   {
-    return mLocalRotation;
+    return glm::degrees(mLocalRotation);
   }
 
   R32Q Transform::GetLocalQuaternion() const
@@ -92,11 +92,9 @@ namespace rsh
   void Transform::SetLocalRotation(R32V3 localRotation)
   {
     mLocalRotation = glm::radians(localRotation);
-    //R32Q q{ GetLocalQuaternion() };
-    //mLocalRotation = glm::radians(R32V3{ q.x, q.y, q.z });
-    mLocalRight = GetLocalQuaternion() * mLocalRight;
-    mLocalUp = GetLocalQuaternion() * mLocalUp;
-    mLocalFront = GetLocalQuaternion() * mLocalFront;
+    mLocalRight = GetLocalQuaternion() * GetWorldRight();
+    mLocalUp = GetLocalQuaternion() * GetWorldUp();
+    mLocalFront = GetLocalQuaternion() * GetWorldFront();
     mDirtyRotation = 1;
   }
 
@@ -133,9 +131,9 @@ namespace rsh
   void Transform::AddLocalRotation(R32V3 localRotation)
   {
     mLocalRotation += glm::radians(localRotation);
-    mLocalRight = GetLocalQuaternion() * mLocalRight;
-    mLocalUp = GetLocalQuaternion() * mLocalUp;
-    mLocalFront = GetLocalQuaternion() * mLocalFront;
+    mLocalRight = GetLocalQuaternion() * GetWorldRight();
+    mLocalUp = GetLocalQuaternion() * GetWorldUp();
+    mLocalFront = GetLocalQuaternion() * GetWorldFront();
     mDirtyRotation = 1;
   }
 

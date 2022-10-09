@@ -17,7 +17,7 @@
   #error "Platform not supported!"
 #endif
 
-#include <Runtime/Watchdog.h>
+#include <Runtime/WatchDog.h>
 
 ///////////////////////////////////////////////////////////
 // HotLoader definition
@@ -55,8 +55,8 @@ namespace rsh
     std::filesystem::path mModuleStreamingPath{};
     std::filesystem::path mShaderStreamingPath{};
 
-    Watchdog mModuleWatchdog{ mModulePath, mModuleExt };
-    Watchdog mShaderWatchdog{ mShaderPath, mShaderExt };
+    WatchDog mModuleWatchDog{ mModulePath, mModuleExt };
+    WatchDog mShaderWatchDog{ mShaderPath, mShaderExt };
   };
 }
 

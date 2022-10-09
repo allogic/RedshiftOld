@@ -164,7 +164,7 @@ return 0;
     Actor* actor{ GetMainEditorActor() };
     if (!actor)
     {
-      actor = GetMainGameActor();
+      actor = GetMainGameActor(); 
     }
     if (actor)
     {

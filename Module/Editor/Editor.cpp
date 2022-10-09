@@ -36,12 +36,33 @@ public:
 
     if (GetWorld()->KeyHeld(World::eKeyCodeW)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalFront() * mMovementSpeed);
     if (GetWorld()->KeyHeld(World::eKeyCodeS)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalFront() * mMovementSpeed);
+
+    static R32V2 mousePositionStart{};
+    static R32V2 mousePositionDelta{};
+    if (GetWorld()->MouseDown(World::eMouseCodeRight))
+    {
+      mousePositionStart = GetWorld()->GetMousePosition();
+    }
+    if (GetWorld()->MouseHeld(World::eMouseCodeRight))
+    {
+      mousePositionDelta = mousePositionStart - GetWorld()->GetMousePosition();
+      R32V3 localRotation{ GetTransform()->GetLocalRotation() };
+      localRotation.x -= mousePositionDelta.y * mRotationSpeed;
+      localRotation.y += mousePositionDelta.x * mRotationSpeed;
+      if (localRotation.x < -90.0f) localRotation.x = -90.0f;
+      if (localRotation.x > 90.0f) localRotation.x = 90.0f;
+      mousePositionStart -= mousePositionDelta * mRotationDamping;
+      GetTransform()->SetLocalRotation(localRotation);
+    }
   }
 
 private:
   Camera* mCamera{ ComponentAttach<Camera>() };
 
-  R32 mMovementSpeed{ 0.1f };
+  R32 mMovementSpeed{ 0.05f };
+  R32 mRotationSpeed{ 0.05f };
+
+  R32 mRotationDamping{ 0.1f };
 };
 
 ///////////////////////////////////////////////////////////
@@ -55,7 +76,7 @@ public:
   {
     mPlayer = GetWorld()->ActorCreate<Player>("EditorPlayer");
 
-    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 15.0f, -15.0f });
+    mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -15.0f });
 
     GetWorld()->SetMainEditorActor(mPlayer);
   }

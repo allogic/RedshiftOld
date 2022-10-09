@@ -25,10 +25,10 @@
 
 namespace rsh
 {
-  class Watchdog
+  class WatchDog
   {
   public:
-    Watchdog(std::filesystem::path const& scanPath, std::string const& fileExt);
+    WatchDog(std::filesystem::path const& scanPath, std::string const& fileExt);
 
   public:
     void Update();
