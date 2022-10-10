@@ -31,15 +31,20 @@ namespace rsh
     inline R32V3 const& GetLocalFront() const { return mLocalFront; }
 
   public:
-    R32V3 GetWorldPosition() const;
-    R32V3 GetWorldRotation() const;
-    R32Q GetWorldQuaternion() const;
-    R32V3 GetWorldScale() const;
+    inline R32V3 GetWorldPositionInternal() const { return mWorldPosition; }
+    inline R32V3 GetWorldRotationInternal() const { return glm::degrees(mWorldRotation); }
+    inline R32V3 GetWorldScaleInternal() const { return mWorldScale; }
 
-    R32V3 GetLocalPosition() const;
-    R32V3 GetLocalRotation() const;
-    R32Q GetLocalQuaternion() const;
-    R32V3 GetLocalScale() const;
+  public:
+    inline R32V3 GetWorldPosition() const { return GetWorldQuaternion() * mWorldPosition + GetLocalQuaternion() * mLocalPosition; }
+    inline R32V3 GetWorldRotation() const { return glm::degrees(mWorldRotation); }
+    inline R32Q GetWorldQuaternion() const { return mWorldRotation; }
+    inline R32V3 GetWorldScale() const { return mWorldScale; }
+
+    inline R32V3 GetLocalPosition() const { return mLocalPosition; }
+    inline R32V3 GetLocalRotation() const { return glm::degrees(mLocalRotation); }
+    inline R32Q GetLocalQuaternion() const { return mLocalRotation; }
+    inline R32V3 GetLocalScale() const { return mLocalScale; }
 
   public:
     void SetWorldPosition(R32V3 worldPosition);
@@ -62,16 +67,7 @@ namespace rsh
   public:
     R32M4 GetModelMatrix();
 
-  public:
-    void EvaluateChildPositions();
-    void EvaluateChildRotations();
-    void EvaluateChildScales();
-
   private:
-    U32 mDirtyPosition{};
-    U32 mDirtyRotation{};
-    U32 mDirtyScale{};
-
     R32V3 mWorldRight{ -1.0f, 0.0f, 0.0f };
     R32V3 mWorldUp{ 0.0f, 1.0f, 0.0f };
     R32V3 mWorldFront{ 0.0f, 0.0f, 1.0f };

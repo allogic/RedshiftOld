@@ -41,7 +41,7 @@ public:
       GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetParent()->GetTransform()->GetWorldPosition(), R32V4{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 
-    GetWorld()->DebugBox(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldScale(), R32V4{ 1.0f, 1.0f, 0.0f, 1.0f }, GetTransform()->GetLocalQuaternion());
+    GetWorld()->DebugBox(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldScale(), R32V4{1.0f, 1.0f, 0.0f, 1.0f}, GetTransform()->GetLocalQuaternion());
   }
 };
 
@@ -76,46 +76,47 @@ public:
 
     mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -15.0f });
 
-    Box* root{ GetWorld()->ActorCreate<Box>("Root") };
+    mRoot = GetWorld()->ActorCreate<Box>("Root");
 
-    root->GetTransform()->SetWorldPosition(R32V3{ 3.0f, 0.0f, 0.0f });
-    //root->GetTransform()->SetWorldRotation(R32V3{ 0.0f, 45.0f, 0.0f });
-    root->GetTransform()->SetWorldScale(R32V3{ 1.0f, 1.0f, 1.0f });
+    mBody = GetWorld()->ActorCreate<Box>("Body", mRoot);
+    mBody->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 10.0f, 0.0f });
+    mBody->GetTransform()->SetWorldScale(R32V3{ 3.0f, 5.0f, 1.0f });
 
-    root->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 0.0f, 0.0f });
-    //root->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 45.0f, 0.0f });
-    root->GetTransform()->SetLocalScale(R32V3{ 1.0f, 1.0f, 1.0f });
+    mLeftUpperArm = GetWorld()->ActorCreate<Box>("LeftUpperArm", mBody);
+    mLeftUpperArm->GetTransform()->SetLocalPosition(R32V3{ -2.0f, 2.0f, 0.0f });
+    mLeftUpperArm->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
 
-    mBoxes.emplace_back(root);
+    mRightUpperArm = GetWorld()->ActorCreate<Box>("RightUpperArm", mBody);
+    mRightUpperArm->GetTransform()->SetLocalPosition(R32V3{ 2.0f, 2.0f, 0.0f });
+    mRightUpperArm->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
 
-    Box* boxPrev{ root };
-    for (U32 i{}; i < 7; i++)
-    {
-      Box* box{ GetWorld()->ActorCreate<Box>(std::string{ "Box" } + std::to_string(i), boxPrev) };
+    mLeftUpperLeg = GetWorld()->ActorCreate<Box>("LeftUpperLeg", mBody);
+    mLeftUpperLeg->GetTransform()->SetLocalPosition(R32V3{ -1.0f, -3.0f, 0.0f });
+    mLeftUpperLeg->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
 
-      box->GetTransform()->SetLocalPosition(box->GetTransform()->GetLocalFront() * 2.0f);
-      //box->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 10.0f, 0.0f });
-      //box->GetTransform()->SetLocalScale(R32V3{ 1.0f, 1.0f, 1.0f });
+    mRightUpperLeg = GetWorld()->ActorCreate<Box>("RightUpperLeg", mBody);
+    mRightUpperLeg->GetTransform()->SetLocalPosition(R32V3{ 1.0f, -3.0f, 0.0f });
+    mRightUpperLeg->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
 
-      mBoxes.emplace_back(box);
+    mHead = GetWorld()->ActorCreate<Box>("Head", mBody);
+    mHead->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 3.0f, 0.0f });
+    mHead->GetTransform()->SetWorldScale(R32V3{ 1.0f, 1.0f, 1.0f });
 
-      boxPrev = box;
-    }
+    mLeftLowerArm = GetWorld()->ActorCreate<Box>("LeftLowerArm", mLeftUpperArm);
+    mLeftLowerArm->GetTransform()->SetLocalPosition(R32V3{ 0.0f, -2.0f, 0.0f });
+    mLeftLowerArm->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
 
-    //mBoxes[4]->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 45.0f, 0.0f });
+    mRightLowerArm = GetWorld()->ActorCreate<Box>("RightLowerArm", mRightUpperArm);
+    mRightLowerArm->GetTransform()->SetLocalPosition(R32V3{ 0.0f, -2.0f, 0.0f });
+    mRightLowerArm->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
 
-    for (U32 i{}; i < 8; i++)
-    {
-      RSH_LOG("Box:[%u] WP:[%.02f %.02f %.02f] WR:[%.02f %.02f %.02f] WS:[%.02f %.02f %.02f] LP:[%.02f %.02f %.02f] LR:[%.02f %.02f %.02f] LS:[%.02f %.02f %.02f]\n",
-        i,
-        mBoxes[i]->GetTransform()->GetWorldPosition().x, mBoxes[i]->GetTransform()->GetWorldPosition().y, mBoxes[i]->GetTransform()->GetWorldPosition().z,
-        mBoxes[i]->GetTransform()->GetWorldRotation().x, mBoxes[i]->GetTransform()->GetWorldRotation().y, mBoxes[i]->GetTransform()->GetWorldRotation().z,
-        mBoxes[i]->GetTransform()->GetWorldScale().x, mBoxes[i]->GetTransform()->GetWorldScale().y, mBoxes[i]->GetTransform()->GetWorldScale().z,
-        mBoxes[i]->GetTransform()->GetLocalPosition().x, mBoxes[i]->GetTransform()->GetLocalPosition().y, mBoxes[i]->GetTransform()->GetLocalPosition().z,
-        mBoxes[i]->GetTransform()->GetLocalRotation().x, mBoxes[i]->GetTransform()->GetLocalRotation().y, mBoxes[i]->GetTransform()->GetLocalRotation().z,
-        mBoxes[i]->GetTransform()->GetLocalScale().x, mBoxes[i]->GetTransform()->GetLocalScale().y, mBoxes[i]->GetTransform()->GetLocalScale().z
-      );
-    }
+    mLeftLowerLeg = GetWorld()->ActorCreate<Box>("LeftLowerLeg", mLeftUpperLeg);
+    mLeftLowerLeg->GetTransform()->SetLocalPosition(R32V3{ 0.0f, -2.0f, 0.0f });
+    mLeftLowerLeg->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
+
+    mRightLowerLeg = GetWorld()->ActorCreate<Box>("RightLowerLeg", mRightUpperLeg);
+    mRightLowerLeg->GetTransform()->SetLocalPosition(R32V3{ 0.0f, -2.0f, 0.0f });
+    mRightLowerLeg->GetTransform()->SetWorldScale(R32V3{ 1.0f, 2.5f, 1.0f });
 
     GetWorld()->SetMainGameActor(mPlayer);
   }
@@ -124,12 +125,25 @@ public:
   {
     GetWorld()->SetMainGameActor(nullptr);
 
-    for (Box* box : mBoxes)
-    {
-      GetWorld()->ActorDestroy(box);
-    }
-
     GetWorld()->ActorDestroy(mPlayer);
+
+    GetWorld()->ActorDestroy(mRoot);
+
+    GetWorld()->ActorDestroy(mBody);
+
+    GetWorld()->ActorDestroy(mLeftUpperArm);
+    GetWorld()->ActorDestroy(mRightUpperArm);
+
+    GetWorld()->ActorDestroy(mLeftUpperLeg);
+    GetWorld()->ActorDestroy(mRightUpperLeg);
+
+    GetWorld()->ActorDestroy(mHead);
+
+    GetWorld()->ActorDestroy(mLeftLowerArm);
+    GetWorld()->ActorDestroy(mRightLowerArm);
+
+    GetWorld()->ActorDestroy(mLeftLowerLeg);
+    GetWorld()->ActorDestroy(mRightLowerLeg);
   }
 
 protected:
@@ -141,27 +155,37 @@ protected:
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 2.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 2.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
-    static R32 x{};
-    x += timeDelta;
+    mRoot->GetTransform()->SetWorldPosition(R32V3{ 5.0f, 0.0f, 0.0f });
+    mRoot->GetTransform()->AddWorldRotation(R32V3{ 0.0f, 0.1f, 0.0f });
+    mRoot->GetTransform()->AddLocalRotation(R32V3{ 0.0f, 0.3f, 0.0f });
 
-    //for (U32 i{}; i < 7; i++)
-    //{
-    //  mBoxes[i + 1]->GetTransform()->SetLocalRotation(R32V3{ glm::sin(x) * 90.0f, 0.0f, 0.0f });
-    //}
+    // TODO: Inverse quaternion to current local rotation..
 
-    static R32 yaw{};
-    yaw += timeDelta * 50.0f;
-    //mBoxes[0]->GetTransform()->SetWorldPosition(mBoxes[0]->GetTransform()->GetLocalRight() * glm::sin(x * 10.0f) * 5.0f);
-    mBoxes[0]->GetTransform()->SetWorldRotation(R32V3{ 0.0f, yaw, 0.0f });
-    mBoxes[0]->GetTransform()->SetLocalRotation(R32V3{ 0.0f, yaw, 0.0f });
-
-    mBoxes[4]->GetTransform()->SetLocalRotation(R32V3{ 0.0f, 0.0f, yaw });
+    //static R32 pitch{};
+    //pitch += timeDelta;
+    //mLeftUpperArm->GetTransform()->AddLocalRotation(R32V3{ 0.0f, 0.0f, glm::sin(pitch) * 90.0f });
   }
 
 private:
   Player* mPlayer{};
 
-  std::vector<Box*> mBoxes{};
+  Box* mHead{};
+
+  Box* mLeftLowerArm{};
+  Box* mRightLowerArm{};
+
+  Box* mLeftUpperArm{};
+  Box* mRightUpperArm{};
+
+  Box* mBody{};
+
+  Box* mLeftLowerLeg{};
+  Box* mRightLowerLeg{};
+
+  Box* mLeftUpperLeg{};
+  Box* mRightUpperLeg{};
+
+  Box* mRoot{};
 };
 
 DECLARE_MODULE_IMPL(Sandbox);
