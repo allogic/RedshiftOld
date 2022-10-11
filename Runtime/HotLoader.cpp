@@ -1,3 +1,6 @@
+#include <thread>
+#include <chrono>
+
 #include <Redshift/World.h>
 #include <Redshift/Shader.h>
 #include <Redshift/Debug.h>
@@ -61,6 +64,7 @@ namespace rsh
       }
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
       if (mWorld->ModuleCreate(file.stem().string(), tempFile.string()))
       {
@@ -77,6 +81,7 @@ namespace rsh
       std::filesystem::path tempFile{ mModuleStreamingPath / file.filename().string() };
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
       if (mWorld->ModuleCreate(file.stem().string(), tempFile.string()))
       {
@@ -117,6 +122,7 @@ namespace rsh
       }
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
       if (mWorld->ShaderCreate(file.stem().string(), tempFile.string()))
       {
@@ -133,6 +139,7 @@ namespace rsh
       std::filesystem::path tempFile{ mShaderStreamingPath / file.filename().string() };
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
       if (mWorld->ShaderCreate(file.stem().string(), tempFile.string()))
       {
