@@ -17,11 +17,11 @@ namespace rsh
   void Transform::ApplyTransform(Transform* other)
   {
     SetWorldPosition(other->GetWorldPosition());
-    //SetWorldRotation(other->GetWorldRotation());
+    SetWorldRotation(other->GetWorldRotation());
     //SetWorldScale(other->GetWorldScale());
 
-    //SetLocalPosition(other->GetLocalPosition());
-    //SetLocalRotation(other->GetLocalRotation());
+    SetLocalPosition(other->GetLocalPosition());
+    SetLocalRotation(other->GetLocalRotation());
     //SetLocalScale(other->GetLocalScale());
   }
 
@@ -99,6 +99,7 @@ namespace rsh
     for (Actor* child : mActor->GetChildren())
     {
       child->GetTransform()->SetLocalRotation(GetLocalRotation());
+      child->GetTransform()->SetWorldPosition(GetWorldPosition());
     }
   }
 

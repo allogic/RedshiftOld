@@ -27,10 +27,14 @@ namespace rsh
     mFilesCreated.clear();
     for (auto const& file : std::filesystem::directory_iterator{ mScanPath })
     {
-      if (file.path().extension() != mFileExt) continue;
-      if (mFileInfos.find(file.path()) != mFileInfos.cend()) continue;
-      mFileInfos.emplace(file.path(), std::filesystem::last_write_time(file.path()));
-      mFilesCreated.emplace(file.path());
+      if (file.path().extension() == mFileExt)
+      {
+        if (mFileInfos.find(file.path()) == mFileInfos.cend())
+        {
+          mFileInfos.emplace(file.path(), std::filesystem::last_write_time(file.path()));
+          mFilesCreated.emplace(file.path());
+        }
+      }
     }
   }
 
@@ -41,7 +45,10 @@ namespace rsh
       {
         std::filesystem::path const& file{ fileInfo.first };
         U32 exists{ (U32)std::filesystem::exists(file) };
-        if (!exists) mFilesDeleted.emplace(file);
+        if (!exists)
+        {
+          mFilesDeleted.emplace(file);
+        }
         return !exists;
       });
   }

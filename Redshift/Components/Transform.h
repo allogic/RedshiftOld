@@ -39,7 +39,7 @@ namespace rsh
     inline R32V3 GetWorldPosition() const { return GetWorldQuaternion() * mWorldPosition + GetLocalQuaternion() * mLocalPosition; }
     inline R32V3 GetWorldRotation() const { return glm::degrees(mWorldRotation); }
     inline R32Q GetWorldQuaternion() const { return mWorldRotation; }
-    inline R32V3 GetWorldScale() const { return mWorldScale; }
+    inline R32V3 GetWorldScale() const { return mWorldScale * mLocalScale; }
 
     inline R32V3 GetLocalPosition() const { return mLocalPosition; }
     inline R32V3 GetLocalRotation() const { return glm::degrees(mLocalRotation); }
