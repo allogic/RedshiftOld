@@ -84,7 +84,7 @@ class Editor : public Module
 public:
   Editor(World* world) : Module{ world }
   {
-    mPlayer = GetWorld()->ActorCreate<Player>("EditorPlayer");
+    mPlayer = GetWorld()->ActorCreate<Player>("EditorPlayer", nullptr);
 
     mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -15.0f });
 

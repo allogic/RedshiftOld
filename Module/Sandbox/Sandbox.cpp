@@ -72,11 +72,11 @@ class Sandbox : public Module
 public:
   Sandbox(World* world) : Module{ world }
   {
-    mPlayer = GetWorld()->ActorCreate<Player>("GamePlayer");
+    mPlayer = GetWorld()->ActorCreate<Player>("GamePlayer", nullptr);
 
     mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -15.0f });
 
-    mRoot = GetWorld()->ActorCreate<Box>("Root");
+    mRoot = GetWorld()->ActorCreate<Box>("Root", nullptr);
 
     mBody = GetWorld()->ActorCreate<Box>("Body", mRoot);
     mBody->GetTransform()->SetLocalPosition(R32V3{ 0.0f, 10.0f, 0.0f });
@@ -130,6 +130,9 @@ public:
     mRightLowerLeg->GetTransform()->SetLocalPosition(R32V3{ 0.0f, -3.0f, 0.0f });
     mRightLowerLeg->GetTransform()->SetLocalScale(R32V3{ 1.0f, 3.0f, 1.0f });
 
+    //mRoot->GetTransform()->SetWorldScale(R32V3{ 0.2f, 0.2f, 0.2f });
+    mRoot->GetTransform()->SetLocalScale(R32V3{ 0.2f, 0.2f, 0.2f });
+
     GetWorld()->SetMainGameActor(mPlayer);
   }
 
@@ -169,24 +172,23 @@ protected:
   {
     Module::Update(timeDelta);
 
-    //GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ -2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
-    //GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 2.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
-    //GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 2.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ -2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 2.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 2.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
-    //mRoot->GetTransform()->SetWorldPosition(R32V3{ 5.0f, 0.0f, 0.0f });
-    //mRoot->GetTransform()->AddWorldRotation(R32V3{ 0.0f, 0.1f, 0.0f });
-    //mRoot->GetTransform()->SetWorldScale(R32V3{ 1.0f, 0.2f, 1.0f });
+    mRoot->GetTransform()->SetWorldPosition(R32V3{ 5.0f, 0.0f, 0.0f });
+    mRoot->GetTransform()->AddWorldRotation(R32V3{ 0.0f, 0.1f, 0.0f });
 
-    //mRoot->GetTransform()->AddLocalRotation(R32V3{ 0.0f, 0.2f, 0.0f });
+    mRoot->GetTransform()->AddLocalRotation(R32V3{ 0.0f, 0.2f, 0.0f });
 
     static R32 pitch{};
     pitch += timeDelta;
 
-    //mLeftUpperArm->GetTransform()->SetLocalRotation(R32V3{ glm::sin(pitch) * 90.0f, mLeftUpperArm->GetTransform()->GetLocalRotation().y, mLeftUpperArm->GetTransform()->GetLocalRotation().z });
-    //mRightUpperArm->GetTransform()->SetLocalRotation(R32V3{ -glm::sin(pitch) * 90.0f, mRightUpperArm->GetTransform()->GetLocalRotation().y, mRightUpperArm->GetTransform()->GetLocalRotation().z });
+    mLeftUpperArm->GetTransform()->AddLocalRotation(R32V3{ glm::sin(pitch) * 90.0f, 0.0f, 0.0f });
+    mRightUpperArm->GetTransform()->AddLocalRotation(R32V3{ -glm::sin(pitch) * 90.0f, 0.0f, 0.0f });
 
-    //mLeftUpperLeg->GetTransform()->SetLocalRotation(R32V3{ -glm::sin(pitch) * 45.0f, mLeftUpperLeg->GetTransform()->GetLocalRotation().y, mLeftUpperLeg->GetTransform()->GetLocalRotation().z });
-    //mRightUpperLeg->GetTransform()->SetLocalRotation(R32V3{ glm::sin(pitch) * 45.0f, mRightUpperLeg->GetTransform()->GetLocalRotation().y, mRightUpperLeg->GetTransform()->GetLocalRotation().z });
+    mLeftUpperLeg->GetTransform()->AddLocalRotation(R32V3{ -glm::sin(pitch) * 45.0f, 0.0f, 0.0f });
+    mRightUpperLeg->GetTransform()->AddLocalRotation(R32V3{ glm::sin(pitch) * 45.0f, 0.0f, 0.0f });
   }
 
 private:

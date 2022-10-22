@@ -65,7 +65,7 @@ namespace rsh
 
   public:
     template<typename C, typename ... Args>
-    C* ComponentAttach(Args &&... args);
+    C* ComponentAttach(Args&& ... args);
     template<typename C>
     C* GetComponent();
 
@@ -92,7 +92,7 @@ namespace rsh
 ///////////////////////////////////////////////////////////
 
 template<typename C, typename ... Args>
-C* rsh::Actor::ComponentAttach(Args &&... args)
+C* rsh::Actor::ComponentAttach(Args&& ... args)
 {
   U64 hash{ typeid(C).hash_code() };
   auto const findIt{ mComponents.find(hash) };

@@ -14,24 +14,37 @@ namespace rsh
 
   }
 
-  void Transform::ApplyTransform(Transform* other)
+  R32V3 Transform::GetWorldPosition() const
   {
-    SetWorldPosition(other->GetWorldPosition());
-    SetWorldRotation(other->GetWorldRotation());
-    //SetWorldScale(other->GetWorldScale());
+    Actor* parent{ mActor->GetParent() };
+    if (parent)
+    {
+      return parent->GetTransform()->GetWorldPosition() + GetLocalQuaternion() * (mLocalPosition * mLocalScale);
+    }
+    else
+    {
+      return GetWorldQuaternion() * (mWorldPosition * mWorldScale) + GetLocalQuaternion() * (mLocalPosition * mLocalScale);
+    }
+  }
 
-    SetLocalPosition(other->GetLocalPosition());
-    SetLocalRotation(other->GetLocalRotation());
-    //SetLocalScale(other->GetLocalScale());
+  R32V3 Transform::GetWorldRotation() const
+  {
+    return glm::degrees(mWorldRotation);
+  }
+
+  R32Q Transform::GetWorldQuaternion() const
+  {
+    return mWorldRotation;
+  }
+
+  R32V3 Transform::GetWorldScale() const
+  {
+    return mWorldScale * mLocalScale;
   }
 
   void Transform::SetWorldPosition(R32V3 worldPosition)
   {
     mWorldPosition = worldPosition;
-    for (Actor* child : mActor->GetChildren())
-    {
-      child->GetTransform()->SetWorldPosition(GetWorldPosition());
-    }
   }
 
   void Transform::SetWorldRotation(R32V3 worldRotation)
@@ -58,13 +71,16 @@ namespace rsh
     for (Actor* child : mActor->GetChildren())
     {
       child->GetTransform()->SetLocalRotation(GetLocalRotation());
-      child->GetTransform()->SetWorldPosition(GetWorldPosition());
     }
   }
 
   void Transform::SetLocalScale(R32V3 localScale)
   {
     mLocalScale = localScale;
+    for (Actor* child : mActor->GetChildren())
+    {
+      child->GetTransform()->SetLocalScale(GetLocalScale());
+    }
   }
 
   void Transform::AddWorldPosition(R32V3 worldPosition)
@@ -99,7 +115,6 @@ namespace rsh
     for (Actor* child : mActor->GetChildren())
     {
       child->GetTransform()->SetLocalRotation(GetLocalRotation());
-      child->GetTransform()->SetWorldPosition(GetWorldPosition());
     }
   }
 

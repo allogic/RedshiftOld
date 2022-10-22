@@ -83,8 +83,8 @@ namespace rsh
     */
 
   public:
-    template<typename A>
-    A* ActorCreate(std::string const& actorName, Actor* parent = nullptr);
+    template<typename A, typename ... Args>
+    A* ActorCreate(std::string const& actorName, Actor* parent, Args&& ... args);
     void ActorDestroy(Actor* actor);
     void ActorDestroy(std::string const& actorName);
 
@@ -245,21 +245,17 @@ namespace rsh
 // Inline world implementation
 ///////////////////////////////////////////////////////////
 
-template<typename A>
-A* rsh::World::ActorCreate(std::string const& actorName, Actor* parent)
+template<typename A, typename ... Args>
+A* rsh::World::ActorCreate(std::string const& actorName, Actor* parent, Args&& ... args)
 {
   auto const findIt{ mActors.find(actorName) };
   if (findIt == mActors.end())
   {
-    auto const [emplaceIt, inserted] { mActors.emplace(actorName, new A{ this, actorName }) };
+    auto const [emplaceIt, inserted] { mActors.emplace(actorName, new A{ this, actorName, std::forward<Args>(args) ... }) };
     if (parent)
     {
-      Actor* actor{ emplaceIt->second };
-
-      actor->SetParent(parent);
-      parent->AddChild(actor);
-
-      actor->GetTransform()->ApplyTransform(parent->GetTransform());
+      emplaceIt->second->SetParent(parent);
+      parent->AddChild(emplaceIt->second);
     }
     return (A*)emplaceIt->second;
   }

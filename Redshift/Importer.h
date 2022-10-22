@@ -1,0 +1,17 @@
+#ifndef RSH_IMPORTER_H
+#define RSH_IMPORTER_H
+
+///////////////////////////////////////////////////////////
+// Importer definition
+///////////////////////////////////////////////////////////
+
+namespace rsh
+{
+  class Importer
+  {
+  public:
+    Importer() = delete;
+  };
+}
+
+#endif
