@@ -1,5 +1,5 @@
-#ifndef RSH_WATCHDOG_H
-#define RSH_WATCHDOG_H
+#ifndef RSH_WATCH_DOG_H
+#define RSH_WATCH_DOG_H
 
 #include <string>
 #include <set>
@@ -20,7 +20,7 @@
 #endif
 
 ///////////////////////////////////////////////////////////
-// Watchdog definition
+// WatchDog definition
 ///////////////////////////////////////////////////////////
 
 namespace rsh

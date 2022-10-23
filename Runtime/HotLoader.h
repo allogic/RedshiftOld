@@ -1,5 +1,5 @@
-#ifndef RSH_HOTLOADER_H
-#define RSH_HOTLOADER_H
+#ifndef RSH_HOT_LOADER_H
+#define RSH_HOT_LOADER_H
 
 #include <string>
 

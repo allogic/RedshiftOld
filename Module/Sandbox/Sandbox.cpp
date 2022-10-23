@@ -8,6 +8,7 @@
 
 #include <Redshift/Components/Transform.h>
 #include <Redshift/Components/Camera.h>
+#include <Redshift/Components/Model.h>
 
 #include <Vendor/ImGui/imgui.h>
 
@@ -45,7 +46,7 @@ public:
   }
 
 private:
-
+  Model* mModel{ ComponentAttach<Model>("Rock", ASSET_DIR "Rock/Rock.fbx") };
 };
 
 class Player : public Actor

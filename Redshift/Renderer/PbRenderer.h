@@ -1,0 +1,18 @@
+#ifndef RSH_PB_RENDERER_H
+#define RSH_PB_RENDERER_H
+
+#include <Redshift/Types.h>
+
+///////////////////////////////////////////////////////////
+// PbRenderer definition
+///////////////////////////////////////////////////////////
+
+namespace rsh
+{
+  class PbRenderer
+  {
+
+  };
+}
+
+#endif

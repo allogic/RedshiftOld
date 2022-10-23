@@ -14,7 +14,7 @@ namespace rsh
   Module::Module(class World* world)
     : mWorld{ world }
   {
-
+    gladLoadGL();
   }
 
   Module::~Module()

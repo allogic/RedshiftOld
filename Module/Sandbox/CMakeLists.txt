@@ -6,14 +6,13 @@ find_package(OpenGL REQUIRED)
 
 set(TARGET_NAME Sandbox)
 
-file(GLOB_RECURSE SOURCE
-  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-  ${VENDOR_DIR}/ImGui/imgui.cpp ${VENDOR_DIR}/ImGui/imgui_draw.cpp ${VENDOR_DIR}/ImGui/imgui_tables.cpp ${VENDOR_DIR}/ImGui/imgui_widgets.cpp
-  ${VENDOR_DIR}/Glad/glad.c
-)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 add_library(${TARGET_NAME} SHARED
   ${SOURCE}
+  ${VENDOR_DIR}/ImGui/imgui.cpp ${VENDOR_DIR}/ImGui/imgui_draw.cpp ${VENDOR_DIR}/ImGui/imgui_tables.cpp ${VENDOR_DIR}/ImGui/imgui_widgets.cpp
+  ${VENDOR_DIR}/Glad/glad.c
+  ${VENDOR_DIR}/OpenFbx/ofbx.cpp ${VENDOR_DIR}/OpenFbx/miniz.c
 )
 
 set_target_properties(${TARGET_NAME} PROPERTIES
@@ -33,4 +32,8 @@ target_link_libraries(${TARGET_NAME}
   PUBLIC ${OPENGL_LIBRARIES}
   PUBLIC ${BINARY_DIR}/Redshift${STATIC_LIBRARY_EXT}
   PUBLIC ${LIBRARY_DIR}/${CMAKE_SYSTEM_NAME}/glfw3${STATIC_LIBRARY_EXT}
+)
+
+target_compile_definitions(${TARGET_NAME}
+  PUBLIC ASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/Assets/"
 )

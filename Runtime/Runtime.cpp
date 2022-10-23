@@ -20,8 +20,8 @@ using namespace rsh;
 // Locals
 ///////////////////////////////////////////////////////////
 
-static U32 const sWindowWidth{ 1280 };
-static U32 const sWindowHeight{ 720 };
+static U32 const sWindowWidth{ 1920 };
+static U32 const sWindowHeight{ 1080 };
 
 static World* sWorld{};
 

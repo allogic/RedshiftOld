@@ -6,14 +6,13 @@ find_package(OpenGL REQUIRED)
 
 set(TARGET_NAME Okami)
 
-file(GLOB_RECURSE SOURCE
-  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-  ${VENDOR_DIR}/ImGui/imgui.cpp ${VENDOR_DIR}/ImGui/imgui_draw.cpp ${VENDOR_DIR}/ImGui/imgui_tables.cpp ${VENDOR_DIR}/ImGui/imgui_widgets.cpp
-  ${VENDOR_DIR}/Glad/glad.c
-)
+file(GLOB_RECURSE SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 add_library(${TARGET_NAME} SHARED
   ${SOURCE}
+  ${VENDOR_DIR}/ImGui/imgui.cpp ${VENDOR_DIR}/ImGui/imgui_draw.cpp ${VENDOR_DIR}/ImGui/imgui_tables.cpp ${VENDOR_DIR}/ImGui/imgui_widgets.cpp
+  ${VENDOR_DIR}/Glad/glad.c
+  ${VENDOR_DIR}/OpenFbx/ofbx.cpp ${VENDOR_DIR}/OpenFbx/miniz.c
 )
 
 set_target_properties(${TARGET_NAME} PROPERTIES

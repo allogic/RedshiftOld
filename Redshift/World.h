@@ -233,7 +233,7 @@ namespace rsh
     VertexDebug* mDebugVertexBuffer{ new VertexDebug[mDebugVertexBufferSize] };
     U32* mDebugElementBuffer{ new U32[mDebugElementBufferSize] };
 
-    Mesh& mDebugMesh{ GetMesh("Debug").Create<VertexDebug, U32>(mDebugVertexBufferSize, mDebugVertexBuffer, mDebugElementBufferSize, mDebugElementBuffer) };
+    Mesh& mDebugMesh{ GetMesh("Debug").Create<VertexDebug, U32>(mDebugVertexBuffer, mDebugVertexBufferSize, mDebugElementBuffer, mDebugElementBufferSize) };
     Shader& mDebugShader{ GetShader("Debug") };
 
     U32 mDebugVertexOffset{};
@@ -242,7 +242,7 @@ namespace rsh
 }
 
 ///////////////////////////////////////////////////////////
-// Inline world implementation
+// World implementation
 ///////////////////////////////////////////////////////////
 
 template<typename A, typename ... Args>

@@ -8,6 +8,7 @@
 
 #include <Redshift/Components/Transform.h>
 #include <Redshift/Components/Camera.h>
+#include <Redshift/Components/Model.h>
 
 #include <Vendor/ImGui/imgui.h>
 
@@ -211,6 +212,21 @@ private:
             {
               camera->SetFar(far);
             }
+
+            ImGui::PopItemWidth();
+            ImGui::TreePop();
+          }
+        }
+        else if (hash == typeid(Model).hash_code())
+        {
+          Model* model{ (Model*)component };
+
+          if (ImGui::TreeNodeEx("Model", ImGuiTreeNodeFlags_SpanFullWidth))
+          {
+            ImGui::PushItemWidth(ImGui::GetWindowWidth() - ImGui::GetTreeNodeToLabelSpacing() - 100.0f);
+
+            ImGui::Text(model->GetMeshName().c_str());
+            ImGui::Text(model->GetMeshFile().c_str());
 
             ImGui::PopItemWidth();
             ImGui::TreePop();

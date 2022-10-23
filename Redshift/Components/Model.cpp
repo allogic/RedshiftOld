@@ -8,9 +8,11 @@
 
 namespace rsh
 {
-  Model::Model(World* world, Actor* actor, std::string const& meshName, std::string const& modelFile)
+  Model::Model(World* world, Actor* actor, std::string const& meshName, std::string const& meshFile)
     : Component{ world, actor }
-    , mMesh{ mWorld->GetMesh(meshName) }
+    , mMeshName{ meshName }
+    , mMeshFile{ meshFile }
+    , mMesh{ mWorld->GetMesh(meshName).Create<VertexPb, U32>(meshFile) }
   {
 
   }

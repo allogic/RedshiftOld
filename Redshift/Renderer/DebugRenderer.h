@@ -1,0 +1,18 @@
+#ifndef RSH_DEBUG_RENDERER_H
+#define RSH_DEBUG_RENDERER_H
+
+#include <Redshift/Types.h>
+
+///////////////////////////////////////////////////////////
+// DebugRenderer definition
+///////////////////////////////////////////////////////////
+
+namespace rsh
+{
+  class DebugRenderer
+  {
+
+  };
+}
+
+#endif

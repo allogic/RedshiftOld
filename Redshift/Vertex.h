@@ -12,7 +12,7 @@ namespace rsh
   enum VertexType
   {
     eVertexTypeDebug,
-    eVertexTypePbr,
+    eVertexTypePb,
   };
 
   struct VertexDebug
@@ -23,9 +23,9 @@ namespace rsh
     R32V4 Color{};
   };
 
-  struct VertexPbr
+  struct VertexPb
   {
-    static constexpr VertexType Type{ eVertexTypePbr };
+    static constexpr VertexType Type{ eVertexTypePb };
 
     R32V3 Position{};
     R32V3 Normal{};
