@@ -134,44 +134,55 @@ private:
         {
           Transform* transform{ (Transform*)component };
 
-          if (ImGui::TreeNode("Transform"))
+          if (ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_SpanFullWidth))
           {
+            ImGui::PushItemWidth(ImGui::GetWindowWidth() - ImGui::GetTreeNodeToLabelSpacing() - 100.0f);
+
+            ImGui::Text("World Space");
+            ImGui::PushID("World Space");
+
             R32V3 worldPosition{ transform->GetWorldPositionInternal() };
-            if (ImGui::DragFloat3("World Position", &worldPosition[0], 0.1f))
+            if (ImGui::DragFloat3("Position", &worldPosition[0], 0.1f))
             {
               transform->SetWorldPosition(worldPosition);
             }
 
             R32V3 worldRotation{ transform->GetWorldRotationInternal() };
-            if (ImGui::DragFloat3("World Rotation", &worldRotation[0], 0.1f))
+            if (ImGui::DragFloat3("Rotation", &worldRotation[0], 0.1f))
             {
               transform->SetWorldRotation(worldRotation);
             }
 
             R32V3 worldScale{ transform->GetWorldScaleInternal() };
-            if (ImGui::DragFloat3("World Scale", &worldScale[0], 0.1f))
+            if (ImGui::DragFloat3("Scale", &worldScale[0], 0.1f))
             {
               transform->SetWorldScale(worldScale);
             }
 
+            ImGui::PopID();
+            ImGui::Text("Local Space");
+            ImGui::PushID("Local Space");
+
             R32V3 localPosition{ transform->GetLocalPosition() };
-            if (ImGui::DragFloat3("Local Position", &localPosition[0], 0.1f))
+            if (ImGui::DragFloat3("Position", &localPosition[0], 0.1f))
             {
               transform->SetLocalPosition(localPosition);
             }
 
             R32V3 localRotation{ transform->GetLocalRotation() };
-            if (ImGui::DragFloat3("Local Rotation", &localRotation[0], 0.1f))
+            if (ImGui::DragFloat3("Rotation", &localRotation[0], 0.1f))
             {
               transform->SetLocalRotation(localRotation);
             }
 
             R32V3 localScale{ transform->GetLocalScale() };
-            if (ImGui::DragFloat3("Local Scale", &localScale[0], 0.1f))
+            if (ImGui::DragFloat3("Scale", &localScale[0], 0.1f))
             {
               transform->SetLocalScale(localScale);
             }
 
+            ImGui::PopID();
+            ImGui::PopItemWidth();
             ImGui::TreePop();
           }
         }
@@ -179,8 +190,10 @@ private:
         {
           Camera* camera{ (Camera*)component };
 
-          if (ImGui::TreeNode("Camera"))
+          if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_SpanFullWidth))
           {
+            ImGui::PushItemWidth(ImGui::GetWindowWidth() - ImGui::GetTreeNodeToLabelSpacing() - 100.0f);
+
             R32 fov{ camera->GetFov() };
             if (ImGui::DragFloat("Fov", &fov))
             {
@@ -199,12 +212,13 @@ private:
               camera->SetFar(far);
             }
 
+            ImGui::PopItemWidth();
             ImGui::TreePop();
           }
         }
         else
         {
-          if (ImGui::TreeNode("Unknown"))
+          if (ImGui::TreeNodeEx("Unknown", ImGuiTreeNodeFlags_SpanFullWidth))
           {
             ImGui::TreePop();
           }
@@ -218,18 +232,29 @@ private:
 private:
   void DebugActor(Actor* actor)
   {
-    if (ImGui::TreeNode(actor->GetName().c_str()))
-    {
-      if (ImGui::Selectable(actor->GetName().c_str(), mSelectedActor == actor))
-      {
-        mSelectedActor = actor;
-      }
+    U32 flags{ ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth };
 
+    if (actor == mSelectedActor) flags |= ImGuiTreeNodeFlags_Selected;
+    if (!actor->HasChildren()) flags |= ImGuiTreeNodeFlags_Leaf;
+
+    U8 opened{ ImGui::TreeNodeEx(actor->GetName().c_str(), flags) };
+
+    if (ImGui::IsItemClicked())
+    {
+      mSelectedActor = actor;
+    }
+
+    if (opened)
+    {
       for (Actor* child : actor->GetChildren())
       {
         DebugActor(child);
       }
-      ImGui::TreePop();
+
+      if (opened)
+      {
+        ImGui::TreePop();
+      }
     }
   }
 

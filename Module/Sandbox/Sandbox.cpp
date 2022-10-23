@@ -43,6 +43,9 @@ public:
 
     GetWorld()->DebugBox(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldScale(), R32V4{1.0f, 1.0f, 0.0f, 1.0f}, GetTransform()->GetLocalQuaternion());
   }
+
+private:
+
 };
 
 class Player : public Actor

@@ -52,6 +52,7 @@ namespace rsh
     inline void SetParent(Actor* parent) { mParent = parent; }
 
     inline std::vector<Actor*> const& GetChildren() const { return mChildren; }
+    inline U8 HasChildren() const { return mChildren.size() > 0; }
     inline void AddChild(Actor* child) { mChildren.emplace_back(child); }
     inline void RemoveChild(Actor* child) { mChildren.erase(std::find(mChildren.begin(), mChildren.end(), child)); }
 
