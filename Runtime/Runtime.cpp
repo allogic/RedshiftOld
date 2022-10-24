@@ -162,7 +162,7 @@ I32 main()
           sTimeDelta = sTime - sTimePrev;
           sTimePrev = sTime;
 
-          glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+          glClearColor(0.1f, 0.0f, 0.0f, 1.0f);
           glClear(GL_COLOR_BUFFER_BIT);
           glViewport(0, 0, world.GetWindowWidth(), world.GetWindowHeight());
 
@@ -178,6 +178,7 @@ I32 main()
           world.PollEvents();
           world.Update(sTimeDelta);
           world.DebugRender();
+          world.PbRender();
 
           ImGui::Render();
 

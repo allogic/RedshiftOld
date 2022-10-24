@@ -16,9 +16,9 @@ namespace rsh
     glBindVertexArray(mVao);
   }
 
-  void Mesh::Render(U32 elementCount)
+  void Mesh::Render()
   {
-    glDrawElements(GL_LINES, elementCount, GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_LINES, mElementCount, GL_UNSIGNED_INT, NULL);
   }
 
   void Mesh::UnBind()

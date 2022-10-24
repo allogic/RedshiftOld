@@ -46,7 +46,7 @@ public:
   }
 
 private:
-  Model* mModel{ ComponentAttach<Model>("Rock", ASSET_DIR "Rock/Rock.fbx") };
+  Model* mModel{ ComponentAttach<Model>("Rock", ASSET_DIR "Rock/Rock.fbx", "Pbr")};
 };
 
 class Player : public Actor
@@ -135,7 +135,7 @@ public:
     mRightLowerLeg->GetTransform()->SetLocalScale(R32V3{ 1.0f, 3.0f, 1.0f });
 
     //mRoot->GetTransform()->SetWorldScale(R32V3{ 0.2f, 0.2f, 0.2f });
-    mRoot->GetTransform()->SetLocalScale(R32V3{ 0.2f, 0.2f, 0.2f });
+    mRoot->GetTransform()->SetLocalScale(R32V3{ 10.0f, 10.0f, 10.0f });
 
     GetWorld()->SetMainGameActor(mPlayer);
   }

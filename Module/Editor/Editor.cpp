@@ -29,22 +29,22 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    if (GetWorld()->KeyHeld(World::eKeyCodeD)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
-    if (GetWorld()->KeyHeld(World::eKeyCodeA)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Events::eKeyCodeD)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Events::eKeyCodeA)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
 
-    if (GetWorld()->KeyHeld(World::eKeyCodeE)) GetTransform()->AddWorldPosition(GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
-    if (GetWorld()->KeyHeld(World::eKeyCodeQ)) GetTransform()->AddWorldPosition(-GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Events::eKeyCodeE)) GetTransform()->AddWorldPosition(GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Events::eKeyCodeQ)) GetTransform()->AddWorldPosition(-GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
 
-    if (GetWorld()->KeyHeld(World::eKeyCodeW)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
-    if (GetWorld()->KeyHeld(World::eKeyCodeS)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Events::eKeyCodeW)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Events::eKeyCodeS)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
 
     static R32V2 mousePositionStart{};
     static R32V2 mousePositionDelta{};
-    if (GetWorld()->MouseDown(World::eMouseCodeRight))
+    if (GetWorld()->MouseDown(Events::eMouseCodeRight))
     {
       mousePositionStart = GetWorld()->GetMousePosition();
     }
-    if (GetWorld()->MouseHeld(World::eMouseCodeRight) && GetWorld()->MouseHeld(World::eMouseCodeLeft))
+    if (GetWorld()->MouseHeld(Events::eMouseCodeRight) && GetWorld()->MouseHeld(Events::eMouseCodeLeft))
     {
       mousePositionDelta = mousePositionStart - GetWorld()->GetMousePosition();
       R32V3 worldPosition{ GetTransform()->GetWorldPosition() };
@@ -52,7 +52,7 @@ public:
       worldPosition += GetTransform()->GetWorldUp() * mousePositionDelta.y * mMouseMovementSpeed;
       GetTransform()->SetWorldPosition(worldPosition);
     }
-    else if (GetWorld()->MouseHeld(World::eMouseCodeRight))
+    else if (GetWorld()->MouseHeld(Events::eMouseCodeRight))
     {
       mousePositionDelta = mousePositionStart - GetWorld()->GetMousePosition();
       R32V3 localRotation{ GetTransform()->GetLocalRotation() };
@@ -113,7 +113,7 @@ private:
   {
     ImGui::Begin("Actors");
 
-    for (auto const& [name, actor] : GetWorld()->GetActors())
+    for (auto const& actor : GetWorld()->GetActors())
     {
       if (!actor->GetParent())
       {

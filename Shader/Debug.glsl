@@ -1,7 +1,7 @@
 @vertex
 #version 450 core
 
-layout (location = 0) in vec4 InputPosition;
+layout (location = 0) in vec3 InputPosition;
 layout (location = 1) in vec4 InputColor;
 
 layout (location = 0) out Vertex
@@ -16,7 +16,7 @@ uniform mat4 UniformViewMatrix;
 void main()
 {
   vertex.Color = InputColor;
-  gl_Position = UniformProjectionMatrix * UniformViewMatrix * InputPosition;
+  gl_Position = UniformProjectionMatrix * UniformViewMatrix * vec4(InputPosition, 1.0);
 }
 
 @fragment

@@ -48,7 +48,7 @@ namespace rsh
       {
         std::filesystem::remove(tempFile);
 
-        RSH_LOG("Module %s deleted\n", file.stem().string().c_str());
+        RSH_LOG("Module \"%s\" deleted\n", file.stem().string().c_str());
       }
     }
     
@@ -60,7 +60,7 @@ namespace rsh
       {
         std::filesystem::remove(tempFile);
 
-        RSH_LOG("Module %s deleted\n", file.stem().string().c_str());
+        RSH_LOG("Module \"%s\" deleted\n", file.stem().string().c_str());
       }
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
@@ -68,7 +68,7 @@ namespace rsh
 
       if (mWorld->ModuleCreate(file.stem().string(), tempFile.string()))
       {
-        RSH_LOG("Module %s created\n", file.stem().string().c_str());
+        RSH_LOG("Module \"%s\" created\n", file.stem().string().c_str());
       }
       else
       {
@@ -85,7 +85,7 @@ namespace rsh
 
       if (mWorld->ModuleCreate(file.stem().string(), tempFile.string()))
       {
-        RSH_LOG("Module %s created\n", file.stem().string().c_str());
+        RSH_LOG("Module \"%s\" created\n", file.stem().string().c_str());
       }
       else
       {
@@ -106,7 +106,7 @@ namespace rsh
       {
         std::filesystem::remove(tempFile);
 
-        RSH_LOG("Shader %s deleted\n", file.stem().string().c_str());
+        RSH_LOG("Shader \"%s\" deleted\n", file.stem().string().c_str());
       }
     }
     
@@ -118,7 +118,7 @@ namespace rsh
       {
         std::filesystem::remove(tempFile);
 
-        RSH_LOG("Shader %s deleted\n", file.stem().string().c_str());
+        RSH_LOG("Shader \"%s\" deleted\n", file.stem().string().c_str());
       }
 
       std::filesystem::copy(file, tempFile, std::filesystem::copy_options::overwrite_existing);
@@ -126,7 +126,7 @@ namespace rsh
 
       if (mWorld->ShaderCreate(file.stem().string(), tempFile.string()))
       {
-        RSH_LOG("Shader %s created\n", file.stem().string().c_str());
+        RSH_LOG("Shader \"%s\" created\n", file.stem().string().c_str());
       }
       else
       {
@@ -143,7 +143,7 @@ namespace rsh
 
       if (mWorld->ShaderCreate(file.stem().string(), tempFile.string()))
       {
-        RSH_LOG("Shader %s created\n", file.stem().string().c_str());
+        RSH_LOG("Shader \"%s\" created\n", file.stem().string().c_str());
       }
       else
       {

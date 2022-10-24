@@ -28,6 +28,10 @@ namespace rsh
     Actor(World* world, std::string const& name);
     virtual ~Actor();
 
+    /*
+    * Global specific
+    */
+
   public:
     inline World* GetWorld() const { return mWorld; }
     inline std::string const& GetName() const { return mName; }

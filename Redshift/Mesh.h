@@ -26,7 +26,7 @@ namespace rsh
 
     U32 Valid();
     void Bind();
-    void Render(U32 elementCount);
+    void Render();
     void UnBind();
     void Destroy();
 
@@ -40,6 +40,8 @@ namespace rsh
     U32 mVao{};
     U32 mVbo{};
     U32 mEbo{};
+
+    U32 mElementCount{};
   };
 }
 
@@ -78,8 +80,8 @@ rsh::Mesh& rsh::Mesh::Create(V* vertexBuffer, U32 vertexCount, E* elementBuffer,
       glEnableVertexAttribArray(3);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(0));
       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3)));
-      glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3) + sizeof(R32V3)));
-      glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3) + sizeof(R32V3) + sizeof(R32V2)));
+      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3) + sizeof(R32V3)));
+      glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3) + sizeof(R32V3) + sizeof(R32V2)));
       break;
     }
   }
@@ -105,6 +107,8 @@ rsh::Mesh& rsh::Mesh::Create(std::string const& meshFile)
       if (Importer::LoadFbx(meshFile, vertices, elements))
       {
         Create(&vertices[0], (U32)vertices.size(), &elements[0], (U32)elements.size());
+
+        mElementCount = (U32)elements.size();
       }
     }
   }
@@ -124,6 +128,8 @@ void rsh::Mesh::UploadElements(E* elementBuffer, U32 elementCount)
 {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEbo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementCount * sizeof(E), elementBuffer, GL_STATIC_READ | GL_STATIC_DRAW);
+
+  mElementCount = elementCount;
 }
 
 #endif

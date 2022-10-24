@@ -125,6 +125,11 @@ namespace rsh
 
   R32M4 Transform::GetModelMatrix()
   {
-    return {};
+    R32M4 model{};
+    model[0] = R32V4{ GetWorldPosition(), 1.0f};
+    model[1] = R32V4{ GetWorldRotation(), 1.0f};
+    model[2] = R32V4{ GetWorldScale(), 1.0f};
+    model[3] = R32V4{ 0.0f, 0.0f, 0.0f, 1.0f };
+    return model;
   }
 }
