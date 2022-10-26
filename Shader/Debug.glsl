@@ -15,6 +15,7 @@ uniform mat4 UniformViewMatrix;
 
 void main()
 {
+  vertex.Position = InputPosition;
   vertex.Color = InputColor;
   gl_Position = UniformProjectionMatrix * UniformViewMatrix * vec4(InputPosition, 1.0);
 }

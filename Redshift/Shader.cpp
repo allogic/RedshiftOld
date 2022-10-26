@@ -21,13 +21,13 @@ namespace rsh
     U32 vid{ glCreateShader(GL_VERTEX_SHADER) };
     U32 fid{ glCreateShader(GL_FRAGMENT_SHADER) };
 
-    char const* vs{ &vertexShader[0] };
-    glShaderSource(vid, 1, &vs, nullptr);
+    char const* vertexShaderPtr{ &vertexShader[0] };
+    glShaderSource(vid, 1, &vertexShaderPtr, nullptr);
     glCompileShader(vid);
     U32 vsCompileStatus{ CheckCompileStatus(vid) };
 
-    char const* fs{ &fragmentShader[0] };
-    glShaderSource(fid, 1, &fs, nullptr);
+    char const* fragmentShaderPtr{ &fragmentShader[0] };
+    glShaderSource(fid, 1, &fragmentShaderPtr, nullptr);
     glCompileShader(fid);
     U32 fsCompileStatus{ CheckCompileStatus(fid) };
 
@@ -52,25 +52,25 @@ namespace rsh
     return mProgram;
   }
 
-  U32 Shader::Valid()
-  {
-    return mProgram;
-  }
-
-  void Shader::Bind()
-  {
-    glUseProgram(mProgram);
-  }
-
-  void Shader::UnBind()
-  {
-    glUseProgram(0);
-  }
-
   void Shader::Destroy()
   {
     glDeleteProgram(mProgram);
     mProgram = 0;
+  }
+
+  U32 Shader::Valid() const
+  {
+    return mProgram;
+  }
+
+  void Shader::Bind() const
+  {
+    glUseProgram(mProgram);
+  }
+
+  void Shader::UnBind() const
+  {
+    glUseProgram(0);
   }
 
   U32 Shader::ExtractShaderStages(std::string const& shaderFile, std::string& vertexShader, std::string& fragmentShader)
@@ -164,7 +164,7 @@ namespace rsh
     return 1;
   }
 
-  void Shader::SetUniformR32(std::string const& name, R32 value)
+  void Shader::SetUniformR32(std::string const& name, R32 value) const
   {
     glUniform1f(
       glGetUniformLocation(mProgram, name.c_str()),
@@ -172,7 +172,7 @@ namespace rsh
     );
   }
 
-  void Shader::SetUniformR32M4(std::string const& name, R32M4 value)
+  void Shader::SetUniformR32M4(std::string const& name, R32M4 value) const
   {
     glUniformMatrix4fv(
       glGetUniformLocation(mProgram, name.c_str()),

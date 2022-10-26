@@ -1,5 +1,5 @@
-#ifndef RSH_EVENTS_H
-#define RSH_EVENTS_H
+#ifndef RSH_EVENT_H
+#define RSH_EVENT_H
 
 #include <Redshift/Types.h>
 
@@ -11,7 +11,7 @@ namespace rsh
 {
   class World;
 
-  class Events
+  class Event
   {
   public:
     enum KeyCode
@@ -75,7 +75,7 @@ namespace rsh
     };
 
   public:
-    Events(World* world);
+    Event(World* world);
 
   public:
     void Poll();
@@ -90,11 +90,19 @@ namespace rsh
     inline U32 MouseHeld(U32 key) const { return mMouseKeys[key].Curr == eEventStateHeld; }
     inline U32 MouseUp(U32 key) const { return mMouseKeys[key].Curr == eEventStateUp; }
 
+  public:
+    inline R32V2 const& GetMousePosition() const { return mMousePosition; }
+
+  public:
+    inline void SetMousePosition(R32V2 position) { mMousePosition = position; }
+
   private:
     World* mWorld{};
 
     EventRecord mKeyboardKeys[348];
     EventRecord mMouseKeys[7];
+
+    R32V2 mMousePosition{};
   };
 }
 

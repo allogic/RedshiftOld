@@ -1,0 +1,18 @@
+#ifndef RSH_TEXTURE_H
+#define RSH_TEXTURE_H
+
+#include <Redshift/Types.h>
+
+///////////////////////////////////////////////////////////
+// Texture definition
+///////////////////////////////////////////////////////////
+
+namespace rsh
+{
+  class Texture
+  {
+
+  };
+}
+
+#endif

@@ -10,10 +10,11 @@
 #include <Redshift/Actor.h>
 #include <Redshift/Shader.h>
 #include <Redshift/Mesh.h>
-#include <Redshift/Events.h>
+#include <Redshift/Event.h>
+#include <Redshift/Texture.h>
 
 #include <Redshift/Renderer/DebugRenderer.h>
-#include <Redshift/Renderer/PbRenderer.h>
+#include <Redshift/Renderer/PhysicalBasedRenderer.h>
 
 ///////////////////////////////////////////////////////////
 // World definition
@@ -48,13 +49,9 @@ namespace rsh
     inline U32 GetWindowHeight() const { return mWindowHeight; }
     inline R32 GetAspectRatio() const { return (R32)mWindowWidth / mWindowHeight; }
 
-    inline R32V2 GetMousePosition() { return mMousePosition; }
-
   public:
     inline void SetWindowWidth(U32 width) { mWindowWidth = width; }
     inline void SetWindowHeight(U32 height) { mWindowHeight = height; }
-
-    inline void SetMousePosition(R32V2 position) { mMousePosition = position; }
 
   public:
     void Update(R32 timeDelta);
@@ -65,8 +62,6 @@ namespace rsh
 
     U32 mWindowWidth{};
     U32 mWindowHeight{};
-
-    R32V2 mMousePosition{};
 
     /*
     * Module specific
@@ -136,11 +131,18 @@ namespace rsh
     std::map<std::string, Mesh> mMeshes{};
 
     /*
-    * Debug specific
+    * Texture specific
     */
 
+  public:
+    inline Texture& GetTexture(std::string const& textureName) { return mTextures[textureName]; }
+
   private:
-    DebugRenderer mDebugRenderer{ this };
+    std::map<std::string, Texture> mTextures{};
+
+    /*
+    * Debug renderer specific
+    */
 
   public:
     inline void DebugRender() { mDebugRenderer.Render(); }
@@ -149,35 +151,44 @@ namespace rsh
     inline void DebugLine(R32V3 p0, R32V3 p1, R32V4 c) { mDebugRenderer.DebugLine(p0, p1, c); }
     inline void DebugBox(R32V3 p, R32V3 s, R32V4 c, R32Q r = R32Q{}) { mDebugRenderer.DebugBox(p, s, c, r); }
 
+  private:
+    DebugRenderer mDebugRenderer{ this };
+
     /*
-    * PBR specific
+    * Physical based renderer specific
     */
 
-  private:
-    PbRenderer mPbRenderer{ this };
-
   public:
-    inline void PbRender() { mPbRenderer.Render(); }
+    inline void PbRender() { mPhysicalBasedRenderer.Render(); }
+
+  private:
+    PhysicalBasedRenderer mPhysicalBasedRenderer{ this };
 
     /*
     * Event specific
     */
 
+  public:
+    inline void PollEvents() { mEvent.Poll(); }
+
+  public:
+    inline U32 KeyDown(U32 key) const { return mEvent.KeyDown(key); }
+    inline U32 KeyHeld(U32 key) const { return mEvent.KeyHeld(key); }
+    inline U32 KeyUp(U32 key) const { return mEvent.KeyUp(key); }
+
+  public:
+    inline U32 MouseDown(U32 key) const { return mEvent.MouseDown(key); }
+    inline U32 MouseHeld(U32 key) const { return mEvent.MouseHeld(key); }
+    inline U32 MouseUp(U32 key) const { return mEvent.MouseUp(key); }
+
+  public:
+    inline R32V2 const& GetMousePosition() const { return mEvent.GetMousePosition(); }
+
+  public:
+    inline void SetMousePosition(R32V2 position) { mEvent.SetMousePosition(position); }
+
   private:
-    Events mEvents{ this };
-
-  public:
-    inline void PollEvents() { mEvents.Poll(); }
-
-  public:
-    inline U32 KeyDown(U32 key) const { return mEvents.KeyDown(key); }
-    inline U32 KeyHeld(U32 key) const { return mEvents.KeyHeld(key); }
-    inline U32 KeyUp(U32 key) const { return mEvents.KeyUp(key); }
-
-  public:
-    inline U32 MouseDown(U32 key) const { return mEvents.MouseDown(key); }
-    inline U32 MouseHeld(U32 key) const { return mEvents.MouseHeld(key); }
-    inline U32 MouseUp(U32 key) const { return mEvents.MouseUp(key); }
+    Event mEvent{ this };
   };
 }
 

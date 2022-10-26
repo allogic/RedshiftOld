@@ -18,17 +18,27 @@ namespace rsh
   class Mesh
   {
   public:
+    enum RenderMode
+    {
+      eRenderModeLines = 1,
+      eRenderModeTriangles = 4,
+    };
+
+  public:
     template<typename V, typename E>
     Mesh& Create(V* vertexBuffer, U32 vertexCount, E* elementBuffer, U32 elementCount);
 
     template<typename V, typename E>
     Mesh& Create(std::string const& meshFile);
 
-    U32 Valid();
-    void Bind();
-    void Render();
-    void UnBind();
     void Destroy();
+
+
+  public:
+    U32 Valid() const;
+    void Bind() const;
+    void Render(RenderMode renderMode) const;
+    void UnBind() const;
 
   public:
     template<typename V>
@@ -72,16 +82,18 @@ rsh::Mesh& rsh::Mesh::Create(V* vertexBuffer, U32 vertexCount, E* elementBuffer,
       glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexDebug), (void*)(sizeof(R32V3)));
       break;
     }
-    case VertexType::eVertexTypePb:
+    case VertexType::eVertexTypePhysicalBased:
     {
       glEnableVertexAttribArray(0);
       glEnableVertexAttribArray(1);
       glEnableVertexAttribArray(2);
       glEnableVertexAttribArray(3);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(0));
-      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3)));
-      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3) + sizeof(R32V3)));
-      glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(VertexPb), (void*)(sizeof(R32V3) + sizeof(R32V3) + sizeof(R32V2)));
+      glEnableVertexAttribArray(4);
+      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPhysicalBased), (void*)(0));
+      glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPhysicalBased), (void*)(sizeof(R32V3)));
+      glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexPhysicalBased), (void*)(sizeof(R32V3) + sizeof(R32V3)));
+      glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(VertexPhysicalBased), (void*)(sizeof(R32V3) + sizeof(R32V3) + sizeof(R32V2)));
+      glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPhysicalBased), (void*)(sizeof(R32V3) + sizeof(R32V3) + sizeof(R32V2) + sizeof(R32V4)));
       break;
     }
   }
@@ -102,7 +114,7 @@ rsh::Mesh& rsh::Mesh::Create(std::string const& meshFile)
 
   switch (V::Type)
   {
-    case VertexType::eVertexTypePb:
+    case VertexType::eVertexTypePhysicalBased:
     {
       if (Importer::LoadFbx(meshFile, vertices, elements))
       {

@@ -2,10 +2,13 @@
 #define RSH_MODEL_H
 
 #include <string>
+#include <vector>
 
 #include <Redshift/Types.h>
 #include <Redshift/Component.h>
 #include <Redshift/Mesh.h>
+#include <Redshift/Texture.h>
+#include <Redshift/Material.h>
 #include <Redshift/Shader.h>
 
 ///////////////////////////////////////////////////////////
@@ -25,15 +28,17 @@ namespace rsh
   public:
     inline std::string const& GetMeshName() const { return mMeshName; }
     inline std::string const& GetMeshFile() const { return mMeshFile; }
-    inline Mesh* GetMeshPtr() const { return &mMesh; }
-    inline Shader* GetShaderPtr() const { return &mShader; }
+    inline Mesh const* GetMesh() const { return &mMesh; }
+    inline Shader const* GetShader() const { return &mShader; }
 
   private:
     std::string mMeshName{};
     std::string mMeshFile{};
 
-    Mesh& mMesh;
-    Shader& mShader;
+    std::vector<Mesh&> mMeshes{};
+    std::vector<Material&> mMaterials{};
+    std::vector<Texture&> mTextures{};
+    std::vector<Shader&> mShaders{};
   };
 }
 

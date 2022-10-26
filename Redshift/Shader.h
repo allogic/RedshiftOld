@@ -15,10 +15,12 @@ namespace rsh
   {
   public:
     U32 Create(std::string const& vertexShader, std::string const& fragmentShader);
-    U32 Valid();
-    void Bind();
-    void UnBind();
     void Destroy();
+
+  public:
+    U32 Valid() const;
+    void Bind() const;
+    void UnBind() const;
 
   public:
     static U32 ExtractShaderStages(std::string const& shaderFile, std::string& vertexShader, std::string& fragmentShader);
@@ -26,8 +28,8 @@ namespace rsh
     static U32 CheckLinkStatus(U32 pid);
 
   public:
-    void SetUniformR32(std::string const& name, R32 value);
-    void SetUniformR32M4(std::string const& name, R32M4 value);
+    void SetUniformR32(std::string const& name, R32 value) const;
+    void SetUniformR32M4(std::string const& name, R32M4 value) const;
 
   private:
     U32 mProgram{};

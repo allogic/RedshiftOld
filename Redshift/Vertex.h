@@ -12,9 +12,10 @@ namespace rsh
   enum VertexType
   {
     eVertexTypeDebug,
-    eVertexTypePb,
+    eVertexTypePhysicalBased,
   };
 
+#pragma pack(push, 1)
   struct VertexDebug
   {
     static constexpr VertexType Type{ eVertexTypeDebug };
@@ -22,16 +23,17 @@ namespace rsh
     R32V3 Position{};
     R32V4 Color{};
   };
-
-  struct VertexPb
+  struct VertexPhysicalBased
   {
-    static constexpr VertexType Type{ eVertexTypePb };
+    static constexpr VertexType Type{ eVertexTypePhysicalBased };
 
     R32V3 Position{};
     R32V3 Normal{};
     R32V2 Uv{};
     R32V4 Color{};
+    R32V3 Tangent{};
   };
+#pragma pack(pop)
 }
 
 #endif

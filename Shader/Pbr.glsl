@@ -5,6 +5,7 @@ layout (location = 0) in vec3 InputPosition;
 layout (location = 1) in vec3 InputNormal;
 layout (location = 2) in vec2 InputUv;
 layout (location = 3) in vec4 InputColor;
+layout (location = 4) in vec3 InputTangent;
 
 layout (location = 0) out Vertex
 {
@@ -14,9 +15,9 @@ layout (location = 0) out Vertex
   vec4 Color;
 } vertex;
 
-uniform mat4 UniformProjection;
-uniform mat4 UniformView;
-uniform mat4 UniformModel;
+uniform mat4 UniformProjectionMatrix;
+uniform mat4 UniformViewMatrix;
+uniform mat4 UniformModelMatrix;
 
 void main()
 {
@@ -24,7 +25,8 @@ void main()
   vertex.Normal = InputNormal;
   vertex.Uv = InputUv;
   vertex.Color = InputColor;
-  gl_Position = UniformProjection * UniformView * UniformModel * vec4(InputPosition, 1.0);
+
+  gl_Position = UniformProjectionMatrix * UniformViewMatrix * UniformModelMatrix * vec4(InputPosition, 1.0);
 }
 
 @fragment
@@ -42,5 +44,5 @@ layout (location = 0) out vec4 OutputColor;
 
 void main()
 {
-  OutputColor = vertex.Color;
+  OutputColor = vec4(0.0, 1.0, 0.0, 1.0);
 }

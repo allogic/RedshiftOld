@@ -16,7 +16,7 @@ namespace rsh
   class Importer
   {
   public:
-    static U8 LoadFbx(std::string const& fbxFile, std::vector<VertexPb>& vertices, std::vector<U32>& elements);
+    static U8 LoadFbx(std::string const& fbxFile, std::vector<VertexPhysicalBased>& vertices, std::vector<U32>& elements);
   };
 }
 

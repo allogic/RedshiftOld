@@ -12,7 +12,7 @@
 
 namespace rsh
 {
-  U8 Importer::LoadFbx(std::string const& fbxFile, std::vector<VertexPb>& vertices, std::vector<U32>& elements)
+  U8 Importer::LoadFbx(std::string const& fbxFile, std::vector<VertexPhysicalBased>& vertices, std::vector<U32>& elements)
   {
     std::vector<U8> bytes{};
 
@@ -22,22 +22,27 @@ namespace rsh
       if (scene)
       {
         ofbx::Mesh const* mesh{ scene->getMesh(0) };
+
+        ofbx::Material const* material{ mesh->getMaterial(0) };
+
         ofbx::Geometry const* geometry{ mesh->getGeometry() };
 
         ofbx::Vec3 const* vertexPtr{ geometry->getVertices() };
         ofbx::Vec3 const* normalPtr{ geometry->getNormals() };
         ofbx::Vec2 const* uvPtr{ geometry->getUVs() };
         ofbx::Vec4 const* colorPtr{ geometry->getColors() };
+        ofbx::Vec3 const* tangentPtr{ geometry->getTangents() };
         I32 const* indexPtr{ geometry->getFaceIndices() };
 
         vertices.resize(geometry->getVertexCount());
 
         for (U32 j{}; j < (U32)geometry->getVertexCount(); j++)
         {
-          if (vertexPtr) vertices[j].Position = R32V3{vertexPtr[j].x, vertexPtr[j].y, vertexPtr[j].z};
-          if (normalPtr) vertices[j].Normal = R32V3{ normalPtr[j].x, normalPtr[j].y, normalPtr[j].z };
-          if (uvPtr)     vertices[j].Uv = R32V2{ uvPtr[j].x, uvPtr[j].y };
-          if (colorPtr)  vertices[j].Color = R32V4{ colorPtr[j].x, colorPtr[j].y, colorPtr[j].z, colorPtr[j].w };
+          if (vertexPtr)  vertices[j].Position = R32V3{ vertexPtr[j].x, vertexPtr[j].y, vertexPtr[j].z };
+          if (normalPtr)  vertices[j].Normal   = R32V3{ normalPtr[j].x, normalPtr[j].y, normalPtr[j].z };
+          if (uvPtr)      vertices[j].Uv       = R32V2{ uvPtr[j].x, uvPtr[j].y };
+          if (colorPtr)   vertices[j].Color    = R32V4{ colorPtr[j].x, colorPtr[j].y, colorPtr[j].z, colorPtr[j].w };
+          if (tangentPtr) vertices[j].Tangent  = R32V3{ tangentPtr[j].x, tangentPtr[j].y, tangentPtr[j].z };
         }
 
         elements.resize(geometry->getIndexCount());

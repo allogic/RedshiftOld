@@ -117,7 +117,7 @@ I32 main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* glfwContext = glfwCreateWindow(sWindowWidth, sWindowHeight, "", nullptr, nullptr);
+    GLFWwindow* glfwContext{ glfwCreateWindow(sWindowWidth, sWindowHeight, "", nullptr, nullptr) };
 
     if (glfwContext)
     {

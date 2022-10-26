@@ -36,7 +36,7 @@ namespace rsh
         mMesh.UploadVertices(mVertexBuffer, mVertexBufferSize);
         mMesh.UploadElements(mElementBuffer, mElementBufferSize);
 
-        mMesh.Render();
+        mMesh.Render(Mesh::eRenderModeLines);
 
         mMesh.UnBind();
         mShader.UnBind();

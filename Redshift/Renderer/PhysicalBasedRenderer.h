@@ -1,12 +1,12 @@
-#ifndef RSH_PB_RENDERER_H
-#define RSH_PB_RENDERER_H
+#ifndef RSH_PHYSICAL_BASED_RENDERER_H
+#define RSH_PHYSICAL_BASED_RENDERER_H
 
 #include <queue>
 
 #include <Redshift/Types.h>
 
 ///////////////////////////////////////////////////////////
-// PbRenderer definition
+// PhysicalBasedRenderer definition
 ///////////////////////////////////////////////////////////
 
 namespace rsh
@@ -16,18 +16,18 @@ namespace rsh
   class Mesh;
   class Shader;
 
-  class PbRenderer
+  class PhysicalBasedRenderer
   {
   private:
     struct RenderTask
     {
-      Transform* Transform;
-      Mesh* Mesh;
-      Shader* Shader;
+      Transform const* TransformPtr;
+      Mesh const* MeshPtr;
+      Shader const* ShaderPtr;
     };
 
   public:
-    PbRenderer(World* world);
+    PhysicalBasedRenderer(World* world);
 
   public:
     void Render();

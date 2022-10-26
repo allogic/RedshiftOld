@@ -42,11 +42,44 @@ public:
       GetWorld()->DebugLine(GetTransform()->GetWorldPosition(), GetParent()->GetTransform()->GetWorldPosition(), R32V4{ 1.0f, 1.0f, 1.0f, 1.0f });
     }
 
-    GetWorld()->DebugBox(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldScale(), R32V4{1.0f, 1.0f, 0.0f, 1.0f}, GetTransform()->GetLocalQuaternion());
+    GetWorld()->DebugBox(GetTransform()->GetWorldPosition(), GetTransform()->GetWorldScale(), R32V4{1.0f, 1.0f, 0.0f, 1.0f}, GetTransform()->GetQuaternion());
+  }
+};
+
+class Rock : public Actor
+{
+public:
+  Rock(World* world, std::string const& name) : Actor{ world, name }
+  {
+
+  }
+
+public:
+  void Update(R32 timeDelta) override
+  {
+
   }
 
 private:
-  Model* mModel{ ComponentAttach<Model>("Rock", ASSET_DIR "Rock/Rock.fbx", "Pbr")};
+  Model* mModel{ ComponentAttach<Model>("Rock", ASSET_DIR "Rock/Rock.fbx", "Pbr") };
+};
+
+class Marauder : public Actor
+{
+public:
+  Marauder(World* world, std::string const& name) : Actor{ world, name }
+  {
+
+  }
+
+public:
+  void Update(R32 timeDelta) override
+  {
+
+  }
+
+private:
+  Model* mModel{ ComponentAttach<Model>("Marauder", ASSET_DIR "Marauder/MarauderScaled.fbx", "Pbr") };
 };
 
 class Player : public Actor
@@ -77,6 +110,14 @@ public:
   Sandbox(World* world) : Module{ world }
   {
     mPlayer = GetWorld()->ActorCreate<Player>("GamePlayer", nullptr);
+
+    mRock = GetWorld()->ActorCreate<Rock>("Rock", nullptr);
+    mRock->GetTransform()->SetWorldPosition(R32V3{ 10.0f, 0.0f, 10.0f });
+    mRock->GetTransform()->SetWorldScale(R32V3{ 0.1f, 0.1f, 0.1f });
+
+    mMarauder = GetWorld()->ActorCreate<Marauder>("Marauder", nullptr);
+    mMarauder->GetTransform()->SetWorldPosition(R32V3{ 100.f, 0.0f, 100.0f });
+    mMarauder->GetTransform()->SetWorldScale(R32V3{ 0.1f, 0.1f, 0.1f });
 
     mPlayer->GetTransform()->SetWorldPosition(R32V3{ 0.0f, 0.0f, -15.0f });
 
@@ -146,6 +187,10 @@ public:
 
     GetWorld()->ActorDestroy(mPlayer);
 
+    GetWorld()->ActorDestroy(mRock);
+
+    GetWorld()->ActorDestroy(mMarauder);
+
     GetWorld()->ActorDestroy(mRoot);
 
     GetWorld()->ActorDestroy(mBody);
@@ -176,7 +221,7 @@ protected:
   {
     Module::Update(timeDelta);
 
-    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ -2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
+    GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 2.0f, 0.0f, 0.0f }, R32V4{ 1.0f, 0.0f, 0.0f, 1.0f });
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 2.0f, 0.0f }, R32V4{ 0.0f, 1.0f, 0.0f, 1.0f });
     GetWorld()->DebugLine(R32V3{ 0.0f, 0.0f, 0.0f }, R32V3{ 0.0f, 0.0f, 2.0f }, R32V4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
@@ -188,6 +233,8 @@ protected:
     static R32 pitch{};
     pitch += timeDelta;
 
+    mMarauder->GetTransform()->SetWorldPosition(R32V3{ glm::sin(pitch) * 10.0f, 0.0f, glm::cos(pitch) * 10.0f });
+
     mLeftUpperArm->GetTransform()->AddLocalRotation(R32V3{ glm::sin(pitch) * 90.0f, 0.0f, 0.0f });
     mRightUpperArm->GetTransform()->AddLocalRotation(R32V3{ -glm::sin(pitch) * 90.0f, 0.0f, 0.0f });
 
@@ -197,6 +244,10 @@ protected:
 
 private:
   Player* mPlayer{};
+
+  Rock* mRock{};
+
+  Marauder* mMarauder{};
 
   Box* mRoot{};
 

@@ -12,7 +12,7 @@ namespace rsh
     : Component{ world, actor }
     , mMeshName{ meshName }
     , mMeshFile{ meshFile }
-    , mMesh{ mWorld->GetMesh(meshName).Create<VertexPb, U32>(meshFile) }
+    , mMesh{ mWorld->GetMesh(meshName).Create<VertexPhysicalBased, U32>(meshFile) }
     , mShader{ mWorld->GetShader(shaderName) }
   {
 

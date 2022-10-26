@@ -1,4 +1,4 @@
-#include <Redshift/Events.h>
+#include <Redshift/Event.h>
 #include <Redshift/World.h>
 
 #include <Vendor/Glfw/glfw3.h>
@@ -9,13 +9,13 @@
 
 namespace rsh
 {
-  Events::Events(World* world)
+  Event::Event(World* world)
     : mWorld{ world }
   {
 
   }
 
-  void Events::Poll()
+  void Event::Poll()
   {
     glfwPollEvents();
 

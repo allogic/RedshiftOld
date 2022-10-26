@@ -29,38 +29,38 @@ public:
 public:
   void Update(R32 timeDelta) override
   {
-    if (GetWorld()->KeyHeld(Events::eKeyCodeD)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
-    if (GetWorld()->KeyHeld(Events::eKeyCodeA)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Event::eKeyCodeD)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Event::eKeyCodeA)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalRight() * mKeyboardMovementSpeed);
 
-    if (GetWorld()->KeyHeld(Events::eKeyCodeE)) GetTransform()->AddWorldPosition(GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
-    if (GetWorld()->KeyHeld(Events::eKeyCodeQ)) GetTransform()->AddWorldPosition(-GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Event::eKeyCodeE)) GetTransform()->AddWorldPosition(GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Event::eKeyCodeQ)) GetTransform()->AddWorldPosition(-GetTransform()->GetWorldUp() * mKeyboardMovementSpeed);
 
-    if (GetWorld()->KeyHeld(Events::eKeyCodeW)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
-    if (GetWorld()->KeyHeld(Events::eKeyCodeS)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Event::eKeyCodeW)) GetTransform()->AddWorldPosition(GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
+    if (GetWorld()->KeyHeld(Event::eKeyCodeS)) GetTransform()->AddWorldPosition(-GetTransform()->GetLocalFront() * mKeyboardMovementSpeed);
 
     static R32V2 mousePositionStart{};
     static R32V2 mousePositionDelta{};
-    if (GetWorld()->MouseDown(Events::eMouseCodeRight))
+    if (GetWorld()->MouseDown(Event::eMouseCodeRight))
     {
       mousePositionStart = GetWorld()->GetMousePosition();
     }
-    if (GetWorld()->MouseHeld(Events::eMouseCodeRight) && GetWorld()->MouseHeld(Events::eMouseCodeLeft))
+    if (GetWorld()->MouseHeld(Event::eMouseCodeRight) && GetWorld()->MouseHeld(Event::eMouseCodeLeft))
     {
       mousePositionDelta = mousePositionStart - GetWorld()->GetMousePosition();
       R32V3 worldPosition{ GetTransform()->GetWorldPosition() };
-      worldPosition -= GetTransform()->GetLocalRight() * mousePositionDelta.x * mMouseMovementSpeed;
+      worldPosition += GetTransform()->GetLocalRight() * mousePositionDelta.x * mMouseMovementSpeed;
       worldPosition += GetTransform()->GetWorldUp() * mousePositionDelta.y * mMouseMovementSpeed;
       GetTransform()->SetWorldPosition(worldPosition);
     }
-    else if (GetWorld()->MouseHeld(Events::eMouseCodeRight))
+    else if (GetWorld()->MouseHeld(Event::eMouseCodeRight))
     {
       mousePositionDelta = mousePositionStart - GetWorld()->GetMousePosition();
-      R32V3 localRotation{ GetTransform()->GetLocalRotation() };
-      localRotation.x -= mousePositionDelta.y * mMouseRotationSpeed;
-      localRotation.y += mousePositionDelta.x * mMouseRotationSpeed;
-      if (localRotation.x < -90.0f) localRotation.x = -90.0f;
-      if (localRotation.x > 90.0f) localRotation.x = 90.0f;
-      GetTransform()->SetLocalRotation(localRotation);
+      R32V3 worldRotation{ GetTransform()->GetWorldRotation() };
+      worldRotation.x -= mousePositionDelta.y * mMouseRotationSpeed;
+      worldRotation.y += mousePositionDelta.x * mMouseRotationSpeed;
+      if (worldRotation.x < -90.0f) worldRotation.x = -90.0f;
+      if (worldRotation.x > 90.0f) worldRotation.x = 90.0f;
+      GetTransform()->SetLocalRotation(worldRotation);
     }
     mousePositionStart -= mousePositionDelta * mMouseDragDamping;
   }
@@ -131,7 +131,7 @@ private:
     {
       for (auto const& [hash, component] : mSelectedActor->GetComponents())
       {
-        if (hash == typeid(Transform).hash_code())
+        if (hash == typeid(Transform).hash_code() && component)
         {
           Transform* transform{ (Transform*)component };
 
@@ -142,19 +142,19 @@ private:
             ImGui::Text("World Space");
             ImGui::PushID("World Space");
 
-            R32V3 worldPosition{ transform->GetWorldPositionInternal() };
+            R32V3 worldPosition{ transform->GetPosition() };
             if (ImGui::DragFloat3("Position", &worldPosition[0], 0.1f))
             {
               transform->SetWorldPosition(worldPosition);
             }
 
-            R32V3 worldRotation{ transform->GetWorldRotationInternal() };
+            R32V3 worldRotation{ transform->GetRotation() };
             if (ImGui::DragFloat3("Rotation", &worldRotation[0], 0.1f))
             {
               transform->SetWorldRotation(worldRotation);
             }
 
-            R32V3 worldScale{ transform->GetWorldScaleInternal() };
+            R32V3 worldScale{ transform->GetScale() };
             if (ImGui::DragFloat3("Scale", &worldScale[0], 0.1f))
             {
               transform->SetWorldScale(worldScale);
@@ -164,19 +164,19 @@ private:
             ImGui::Text("Local Space");
             ImGui::PushID("Local Space");
 
-            R32V3 localPosition{ transform->GetLocalPosition() };
+            R32V3 localPosition{ transform->GetPosition() };
             if (ImGui::DragFloat3("Position", &localPosition[0], 0.1f))
             {
               transform->SetLocalPosition(localPosition);
             }
 
-            R32V3 localRotation{ transform->GetLocalRotation() };
+            R32V3 localRotation{ transform->GetRotation() };
             if (ImGui::DragFloat3("Rotation", &localRotation[0], 0.1f))
             {
               transform->SetLocalRotation(localRotation);
             }
 
-            R32V3 localScale{ transform->GetLocalScale() };
+            R32V3 localScale{ transform->GetScale() };
             if (ImGui::DragFloat3("Scale", &localScale[0], 0.1f))
             {
               transform->SetLocalScale(localScale);
@@ -187,7 +187,7 @@ private:
             ImGui::TreePop();
           }
         }
-        else if (hash == typeid(Camera).hash_code())
+        else if (hash == typeid(Camera).hash_code() && component)
         {
           Camera* camera{ (Camera*)component };
 
@@ -217,7 +217,7 @@ private:
             ImGui::TreePop();
           }
         }
-        else if (hash == typeid(Model).hash_code())
+        else if (hash == typeid(Model).hash_code() && component)
         {
           Model* model{ (Model*)component };
 
@@ -232,7 +232,7 @@ private:
             ImGui::TreePop();
           }
         }
-        else
+        else if (component)
         {
           if (ImGui::TreeNodeEx("Unknown", ImGuiTreeNodeFlags_SpanFullWidth))
           {
