@@ -45,28 +45,28 @@ namespace rsh
     while (!mRenderQueue.empty())
     {
       RenderTask& task{ mRenderQueue.front() };
-
-      Camera* camera{ mWorld->GetMainCamera() };
-
-      if (camera)
+      if (task.TransformPtr && task.MeshPtr && task.ShaderPtr)
       {
-        if (task.ShaderPtr->Valid())
+        Camera* camera{ mWorld->GetMainCamera() };
+        if (camera)
         {
-          task.ShaderPtr->Bind();
+          if (task.ShaderPtr->Valid())
+          {
+            task.ShaderPtr->Bind();
           
-          task.ShaderPtr->SetUniformR32M4("UniformProjectionMatrix", camera->GetProjectionMatrix());
-          task.ShaderPtr->SetUniformR32M4("UniformViewMatrix", camera->GetViewMatrix());
-          task.ShaderPtr->SetUniformR32M4("UniformModelMatrix", task.TransformPtr->GetModelMatrix());
+            task.ShaderPtr->SetUniformR32M4("UniformProjectionMatrix", camera->GetProjectionMatrix());
+            task.ShaderPtr->SetUniformR32M4("UniformViewMatrix", camera->GetViewMatrix());
+            task.ShaderPtr->SetUniformR32M4("UniformModelMatrix", task.TransformPtr->GetModelMatrix());
 
-          task.MeshPtr->Bind();
+            task.MeshPtr->Bind();
 
-          task.MeshPtr->Render(Mesh::eRenderModeTriangles);
+            task.MeshPtr->Render(Mesh::eRenderModeTriangles);
 
-          task.MeshPtr->UnBind();
-          task.ShaderPtr->UnBind();
+            task.MeshPtr->UnBind();
+            task.ShaderPtr->UnBind();
+          }
         }
       }
-
       mRenderQueue.pop();
     }
   }

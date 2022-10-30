@@ -61,7 +61,7 @@ public:
   }
 
 private:
-  Model* mModel{ ComponentAttach<Model>("Rock", ASSET_DIR "Rock/Rock.fbx", "Pbr") };
+  Model* mModel{ ComponentAttach<Model>(ASSET_DIR "Rock/Rock.fbx", "Pbr") };
 };
 
 class Marauder : public Actor
@@ -79,7 +79,7 @@ public:
   }
 
 private:
-  Model* mModel{ ComponentAttach<Model>("Marauder", ASSET_DIR "Marauder/MarauderScaled.fbx", "Pbr") };
+  Model* mModel{ ComponentAttach<Model>(ASSET_DIR "Marauder/MarauderScaled.fbx", "Pbr") };
 };
 
 class Player : public Actor

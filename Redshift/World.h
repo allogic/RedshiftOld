@@ -12,6 +12,7 @@
 #include <Redshift/Mesh.h>
 #include <Redshift/Event.h>
 #include <Redshift/Texture.h>
+#include <Redshift/Material.h>
 
 #include <Redshift/Renderer/DebugRenderer.h>
 #include <Redshift/Renderer/PhysicalBasedRenderer.h>
@@ -68,6 +69,9 @@ namespace rsh
     */
 
   public:
+    inline std::map<std::string, ModuleProxy> const& GetModules() const { return mModules; }
+
+  public:
     U32 ModuleCreate(std::string const& moduleName, std::string const& moduleFile);
     U32 ModuleDestroy(std::string const& moduleName);
 
@@ -113,18 +117,33 @@ namespace rsh
     */
 
   public:
-    U32 ShaderCreate(std::string const& shaderName, std::string const& shaderFile);
+    inline std::map<std::string, Shader> const& GetShaders() const { return mShaders; }
     inline Shader& GetShader(std::string const& shaderName) { return mShaders[shaderName]; }
+
+  public:
+    U32 ShaderCreate(std::string const& shaderName, std::string const& shaderFile);
     U32 ShaderDestroy(std::string const& shaderName);
 
   private:
     std::map<std::string, Shader> mShaders{};
 
     /*
+    * Material specific
+    */
+
+  public:
+    inline std::map<std::string, Material> const& GetMaterials() const { return mMaterials; }
+    inline Material& GetMaterial(std::string const& materialName) { return mMaterials[materialName]; }
+
+  private:
+    std::map<std::string, Material> mMaterials{};
+
+    /*
     * Mesh specific
     */
 
   public:
+    inline std::map<std::string, Mesh> const& GetMeshes() const { return mMeshes; }
     inline Mesh& GetMesh(std::string const& meshName) { return mMeshes[meshName]; }
 
   private:
@@ -135,6 +154,7 @@ namespace rsh
     */
 
   public:
+    inline std::map<std::string, Texture> const& GetTextures() const { return mTextures; }
     inline Texture& GetTexture(std::string const& textureName) { return mTextures[textureName]; }
 
   private:

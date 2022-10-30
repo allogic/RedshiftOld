@@ -104,11 +104,60 @@ public:
   {
     Module::Update(timeDelta);
 
+    DebugAssets();
     DebugActors();
     DebugComponents();
   }
 
 private:
+  void DebugAssets()
+  {
+    ImGui::Begin("Assets");
+
+    if (ImGui::BeginTable("Instances", 2, ImGuiTableFlags_Reorderable | ImGuiTableFlags_RowBg | ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_BordersInnerV))
+    {
+      ImGui::TableSetupColumn("Type");
+      ImGui::TableSetupColumn("Name");
+      ImGui::TableSetupScrollFreeze(0, 1);
+      ImGui::TableHeadersRow();
+
+      for (auto const& [name, shader] : GetWorld()->GetShaders())
+      {
+        ImGui::TableNextColumn();
+        ImGui::Text("Shader");
+        ImGui::TableNextColumn();
+        ImGui::Text("%s", name.c_str());
+      }
+
+      for (auto const& [name, material] : GetWorld()->GetMaterials())
+      {
+        ImGui::TableNextColumn();
+        ImGui::Text("Material");
+        ImGui::TableNextColumn();
+        ImGui::Text("%s", name.c_str());
+      }
+
+      for (auto const& [name, mesh] : GetWorld()->GetMeshes())
+      {
+        ImGui::TableNextColumn();
+        ImGui::Text("Mesh");
+        ImGui::TableNextColumn();
+        ImGui::Text("%s", name.c_str());
+      }
+
+      for (auto const& [name, mesh] : GetWorld()->GetTextures())
+      {
+        ImGui::TableNextColumn();
+        ImGui::Text("Texture");
+        ImGui::TableNextColumn();
+        ImGui::Text("%s", name.c_str());
+      }
+
+      ImGui::EndTable();
+    }
+
+    ImGui::End();
+  }
   void DebugActors()
   {
     ImGui::Begin("Actors");

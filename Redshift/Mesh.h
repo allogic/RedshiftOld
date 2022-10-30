@@ -5,7 +5,6 @@
 
 #include <Redshift/Types.h>
 #include <Redshift/Vertex.h>
-#include <Redshift/Importer.h>
 
 #include <Vendor/Glad/glad.h>
 
@@ -27,9 +26,6 @@ namespace rsh
   public:
     template<typename V, typename E>
     Mesh& Create(V* vertexBuffer, U32 vertexCount, E* elementBuffer, U32 elementCount);
-
-    template<typename V, typename E>
-    Mesh& Create(std::string const& meshFile);
 
     void Destroy();
 
@@ -102,28 +98,6 @@ rsh::Mesh& rsh::Mesh::Create(V* vertexBuffer, U32 vertexCount, E* elementBuffer,
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementCount * sizeof(E), elementBuffer, GL_STATIC_READ | GL_STATIC_DRAW);
 
   glBindVertexArray(0);
-
-  return *this;
-}
-
-template<typename V, typename E>
-rsh::Mesh& rsh::Mesh::Create(std::string const& meshFile)
-{
-  std::vector<V> vertices{};
-  std::vector<E> elements{};
-
-  switch (V::Type)
-  {
-    case VertexType::eVertexTypePhysicalBased:
-    {
-      if (Importer::LoadFbx(meshFile, vertices, elements))
-      {
-        Create(&vertices[0], (U32)vertices.size(), &elements[0], (U32)elements.size());
-
-        mElementCount = (U32)elements.size();
-      }
-    }
-  }
 
   return *this;
 }

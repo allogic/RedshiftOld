@@ -6,5 +6,8 @@
 
 namespace rsh
 {
-  
+  void Texture::Destroy()
+  {
+
+  }
 }

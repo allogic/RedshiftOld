@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <Redshift/Types.h>
 #include <Redshift/Component.h>
@@ -23,22 +24,20 @@ namespace rsh
   class Model : public Component
   {
   public:
-    Model(World* world, Actor* actor, std::string const& meshName, std::string const& meshFile, std::string const& shaderName);
+    Model(World* world, Actor* actor, std::string const& modelFile, std::string const& shaderName);
 
   public:
-    inline std::string const& GetMeshName() const { return mMeshName; }
-    inline std::string const& GetMeshFile() const { return mMeshFile; }
-    inline Mesh const* GetMesh() const { return &mMesh; }
-    inline Shader const* GetShader() const { return &mShader; }
+    inline std::string const& GetMeshName() const { return ""; }
+    inline std::string const& GetMeshFile() const { return ""; }
+    inline Mesh const* GetMesh() const { return nullptr; }
+    inline Shader const* GetShader() const { return nullptr; }
 
   private:
-    std::string mMeshName{};
-    std::string mMeshFile{};
+    std::vector<Mesh*> mMeshes{};
+    std::map<std::string, std::vector<Material*>> mMaterials{};
+    std::map<std::string, std::vector<Texture*>> mTextures{};
 
-    std::vector<Mesh&> mMeshes{};
-    std::vector<Material&> mMaterials{};
-    std::vector<Texture&> mTextures{};
-    std::vector<Shader&> mShaders{};
+    Shader& mShader;
   };
 }
 
