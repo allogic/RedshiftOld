@@ -1,5 +1,4 @@
 #include <Redshift/World.h>
-#include <Redshift/Importer.h>
 
 #include <Redshift/Components/Model.h>
 
@@ -13,6 +12,6 @@ namespace rsh
     : Component{ world, actor }
     , mShader{ mWorld->GetShader(shaderName) }
   {
-    Importer::LoadFbx(world, modelFile);
+    //Importer::LoadFbx(world, modelFile);
   }
 }

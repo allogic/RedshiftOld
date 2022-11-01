@@ -6,14 +6,14 @@ find_package(OpenGL REQUIRED)
 
 set(TARGET_NAME Runtime)
 
-file(GLOB_RECURSE SOURCE
-  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-  ${VENDOR_DIR}/ImGui/imgui.cpp ${VENDOR_DIR}/ImGui/imgui_draw.cpp ${VENDOR_DIR}/ImGui/imgui_tables.cpp ${VENDOR_DIR}/ImGui/imgui_widgets.cpp ${VENDOR_DIR}/ImGui/imgui_impl_glfw.cpp ${VENDOR_DIR}/ImGui/imgui_impl_opengl3.cpp
-  ${VENDOR_DIR}/Glad/glad.c
-)
+file(GLOB_RECURSE GLAD_SOURCE ${VENDOR_DIR}/Glad/*.c ${VENDOR_DIR}/Glad/*.cpp)
+file(GLOB_RECURSE IMGUI_SOURCE ${VENDOR_DIR}/ImGui/*.c ${VENDOR_DIR}/ImGui/*.cpp)
+file(GLOB_RECURSE TARGET_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/*.c ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 
 add_executable(${TARGET_NAME}
-  ${SOURCE}
+  ${GLAD_SOURCE}
+  ${IMGUI_SOURCE}
+  ${TARGET_SOURCE}
 )
 
 set_target_properties(${TARGET_NAME} PROPERTIES
