@@ -2,20 +2,7 @@
 #define RSH_HOT_LOADER_H
 
 #include <string>
-
-#include <Redshift/Platform.h>
-
-#if defined(OS_WINDOWS)
-  #include <filesystem>
-#elif defined(OS_LINUX)
-  #include <experimental/filesystem>
-  namespace std
-  {
-    namespace filesystem = experimental::filesystem;
-  }
-#else
-  #error "Platform not supported!"
-#endif
+#include <filesystem>
 
 #include <Runtime/WatchDog.h>
 

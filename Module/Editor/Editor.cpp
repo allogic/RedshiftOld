@@ -274,8 +274,8 @@ private:
           {
             ImGui::PushItemWidth(ImGui::GetWindowWidth() - ImGui::GetTreeNodeToLabelSpacing() - 100.0f);
 
-            ImGui::Text(model->GetMeshName().c_str());
-            ImGui::Text(model->GetMeshFile().c_str());
+            ImGui::Text("%s", model->GetMeshName().c_str());
+            ImGui::Text("%s", model->GetMeshFile().c_str());
 
             ImGui::PopItemWidth();
             ImGui::TreePop();

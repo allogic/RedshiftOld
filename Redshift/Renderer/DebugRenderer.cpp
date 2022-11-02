@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include <Redshift/World.h>
 
 #include <Redshift/Components/Camera.h>
